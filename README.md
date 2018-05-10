@@ -246,7 +246,7 @@ On the other hand, in comparison with Promises,
 the CPS functions allow for clean separation between exceptions such as bugs 
 that need to be caught as early as possible, and the asynchronous errors 
 that are expected and returned via the error callbacks calls.
-The absence of that feature for Promises had been the subject of [their critics](https://medium.com/@avaq/broken-promises-2ae92780f33).
+The absence of similar feature for Promises attracted [considerable criticisms](https://medium.com/@avaq/broken-promises-2ae92780f33).
 
 
 ## Signatures
