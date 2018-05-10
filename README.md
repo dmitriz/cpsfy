@@ -48,7 +48,7 @@ The constructed promise `new Promise(producer)` only keeps the very first call o
 whereas the producer function itself can call its callbacks multiple times,
 each of which is regarded as output of the CPS function and is retained.
 
-## Any Promise
+## Promises
 Any JavaScript promise generates the CPS function via its `.then` method invocation
 that completely captures the information held by the promise:
 ```js
@@ -74,7 +74,7 @@ The CPS functions include this case by not restricting the number arguments
 passed to any of its callback functions.
 
 
-## HTTP request
+## HTTP requests
 In a similar vein, any HTTP request with callback(s) can be regarded as parametrized CPS function:
 ```js
 const = (url, options, data) => cb => request(url, options, data, cb)
@@ -93,7 +93,7 @@ Or the query function can return its result in multiple chunks, each with a sepa
 Further, the Database query funtion can hold a state that is advanced with each call.
 Similarly, any Database access can be cancelled by subsequent call of the same CPS function with suitable parameters. 
 
-## Web Socket
+## Web Sockets
 Here is a generic CPS function parametrized by its url `path`:
 ```js
 const WebSocket = require('ws')
@@ -102,7 +102,7 @@ const createWS = path => callback =>
 ```
 The callback will be called repeatedly with every new socket value emited.
 
-## Pull Stream
+## Pull Streams
 A [Pull-stream](https://pull-stream.github.io/)
 is essentially a function `f(params, callback)` that is called repeatedly
 by the sink to produce on-demand stream of data.
@@ -111,4 +111,3 @@ is a parametrized CPS function
 ```js
 const pullStream = params => callback => {...}
 ```
-
