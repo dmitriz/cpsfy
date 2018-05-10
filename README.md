@@ -117,6 +117,7 @@ advantages of Promises over callbacks,
 that we would like to consider here in the light of CPS functions
 and explain how, in our view, the latter point of view can enjoy the same advantages.
 
+## Returning results
 > No inversion of control: similarly to synchronous code, Promise-based functions return results, they don’t (directly) continue – and control – execution via callbacks. That is, the caller stays in control.
 
 We regard the CPS functions returning their output in similar fashion as promises, 
@@ -137,6 +138,8 @@ Thus, CPS functions can be regarded as generalization of promises,
 where callbacks are allowed to be called multiple times with several arguments each time,
 rather than with a single value.
 
+
+## Chaining
 > Chaining is simpler: If the callback of `then()` returns a Promise (e.g. the result of calling another Promise-based function) then `then()` returns that Promise (how this really works is more complicated and explained later). As a consequence, you can chain then() method calls: 
 ```js
 asyncFunction1(a, b)
@@ -170,6 +173,7 @@ CPS.of(cpsFunction1(a, b))
   });
 ```
 
+## Asynchronous composition
 > Composing asynchronous calls (loops, mapping, etc.): is a little easier, because you have data (Promise objects) you can work with.
 
 Similar to promises wrapping their data, 
@@ -195,6 +199,7 @@ In regard of composing asynchronous calls, with CPS functions it can be as simpl
 the above example.
 
 
+## Error handling
 > Error handling: As we shall see later, error handling is simpler with Promises, because, once again, there isn’t an inversion of control. Furthermore, both exceptions and asynchronous errors are managed the same way.
 
 In regards of error handling, 
@@ -238,6 +243,7 @@ that are expected and returned via the error callbacks calls.
 The absence of that feature for Promises had been the subject of [their critics](https://medium.com/@avaq/broken-promises-2ae92780f33).
 
 
+## Signatures
 > Cleaner signatures: With callbacks, the parameters of a function are mixed; some are input for the function, others are responsible for delivering its output. With Promises, function signatures become cleaner; all parameters are input.
 
 The "curried nature" of the (parametrized) CPS functions 
@@ -258,6 +264,8 @@ except that the CPS function do not impose any restricitons on the
 number of their callback calls, nor the number of arguments passed to each callback
 with each call.
 
+
+## Standardization
 > Standardized: Prior to Promises, there were several incompatible ways of handling asynchronous results (Node.js callbacks, XMLHttpRequest, IndexedDB, etc.). With Promises, there is a clearly defined standard: ECMAScript 6. ES6 follows the standard Promises/A+ [1]. Since ES6, an increasing number of APIs is based on Promises.
 
 The CPS functions build directly on the standard already established for JavaScript functions.
