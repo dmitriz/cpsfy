@@ -84,6 +84,21 @@ Or the query function can return its result in multiple chunks, each with a sepa
 Further, the Database query funtion can hold a state that is advanced with each call.
 Similarly, any Database access can be cancelled by subsequent call of the same CPS function with suitable parameters. 
 
+## Middleware e.g. in Express or Redux
+[Express Framework](https://expressjs.com/) in NodeJs popularised
+the concept of [middleware](https://expressjs.com/en/guide/writing-middleware.html)
+that later found its place in other frameworks such as 
+[Redux](https://redux.js.org/advanced/middleware#understanding-middleware).
+In each case, a *middleware* is a special kind of function,
+plain in case of Express and curried in case of Redux,
+which has one continuation callback among its parameters.
+To each middleware in each of these frameworks, 
+there is the associated parametrized CPS function,
+obtained by switching parameters and (un)currying.
+As the correspondence `middleware <-> CPS function` is in both ways,
+it allows for each side to benefit from the other.
+
+
 ## Web Sockets
 Here is a generic CPS function parametrized by its url `path`:
 ```js
@@ -91,11 +106,25 @@ const WebSocket = require('ws')
 const createWS = path => callback => 
   new WebSocket(path).on('message', callback)
 ```
-The callback will be called repeatedly with every new socket value emited.
+The callback will be called repeatedly with every new socket message emited.
 
-## Pull Streams
-A [Pull-stream](https://pull-stream.github.io/)
-is essentially a function `f(abort, callback)` that is called repeatedly
+Other websocket events can be subscribed by other callbacks,
+so the CPS function with its muiltiple callbacks
+can encapsulate the entire socket functionality.
+
+
+## Stream libraries
+
+### Pull Streams
+The [Pull Streams](https://pull-stream.github.io/)
+present an ingenious way of implementing 
+a rich on-demand stream functionality,
+including back pressure,
+entirely with plain JavaScript functions.
+In a way, they gave some of the original inspirations
+for the general CPS function pattern.
+
+Indeed, a Pull Stream is essentially a function `f(abort, callback)` that is called repeatedly
 by the sink to produce on-demand stream of data.
 Any such function can be clearly curried into a
 is a parametrized CPS function 
@@ -103,6 +132,44 @@ is a parametrized CPS function
 const pullStream = params => callback => {...}
 ```
 
+### [Flyd](https://github.com/paldepind/flyd)
+Any `flyd` stream can be wrapped into a CPS function with single callback called with single argument:
+```js
+const cpsFun = callback => flydStream
+	.map(x => callback(x))
+```
+The resulting `cpsFun` function, when called with any `callback`,
+simply subsribe that callback to the stream events.
+
+Conversely, any CPS function `cpsFun` can be simply called with
+any `flyd` stream in place of one of its callback arguments:
+```js
+let x = flyd.stream()
+cpsFun(x)
+```
+That will push the first argument of any callback call of `x` into the stream.
+
+
+## Event aggregation
+Similarly to [`flyd` streams](https://github.com/paldepind/flyd/#creating-streams),
+CPS functions can subscribe their callbacks to any event listener:
+```js
+const cpsFun = callback =>
+	document.getElementById('button')
+		.addEventListener('click', callback)
+```
+Furthermore, more complex CPS functions can similarly subscribe to 
+muiltiple events:
+```js
+const cpsFun = (cb1, cb2) => {
+	document.getElementById('button1')
+		.addEventListener('click', cb1)
+	document.getElementById('button2')
+		.addEventListener('click', cb2)
+}
+```
+and thereby serve as functional event aggregators
+encapsulating the events.
 
 
 # Comparison with Promises and Callbacks
