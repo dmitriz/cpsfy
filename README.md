@@ -20,7 +20,7 @@ const paramCps = (param1, param2, ...) => (f1, f2, ...) => { ... }
 We shall adopt somewhat loose terminology calling *parametrized CPS functions* both
 the curried function `paramCps` and its return value `paramCps(params)`,
 in the hope that the context will make clear the precisce meaning.
-In the same vein, by a function call of the parametrized CPS function,
+In the same vein, by a *function call* of the parametrized CPS function,
 we mean its call with both parameters and callbacks passed.
 Otherwise `parmCps(params)` is considered a *partial call*.
 
@@ -105,7 +105,8 @@ const pullStream = params => callback => {...}
 
 
 
-## Comparison with Promises and Callbacks
+# Comparison with Promises and Callbacks
+
 Our main motivation for dealing with CPS functions is to enhance
 the power of common coding patters into a single unified abstraction,
 which can capture all the advantages typically associated with Promises vs callbacks.
@@ -198,7 +199,7 @@ the above example.
 
 In regards of error handling, 
 the following paragraph in here http://exploringjs.com/es6/ch_promises.html#_chaining-and-errors
-might be relevant:
+seems relevant:
 
 > There can be one or more then() method calls that don’t have error handlers. Then the error is passed on until there is an error handler.
 ```js
@@ -227,6 +228,15 @@ There is, however, no a priori restriction for the error callback
 to be the second argument, it can also be the first callback
 as in [Fluture](https://github.com/fluture-js/Fluture) or Folktale's [`Data.Task`](https://github.com/folktale/data.task), or the last one, or anywhere inbetween.
 
+Similar to Promises, also for CPS functions, handling 
+both exceptions and asynchronous errors can be managed the same way, if necessary:
+
+On the other hand, in comparison with Promises, 
+the CPS functions allow for clean separation between exceptions such as bugs 
+that need to be caught as early as possible, and the asynchronous errors 
+that are expected and returned via the error callbacks calls.
+The absence of that feature for Promises had been the subject of [their critics](https://medium.com/@avaq/broken-promises-2ae92780f33).
+
 
 > Cleaner signatures: With callbacks, the parameters of a function are mixed; some are input for the function, others are responsible for delivering its output. With Promises, function signatures become cleaner; all parameters are input.
 
@@ -251,6 +261,4 @@ with each call.
 > Standardized: Prior to Promises, there were several incompatible ways of handling asynchronous results (Node.js callbacks, XMLHttpRequest, IndexedDB, etc.). With Promises, there is a clearly defined standard: ECMAScript 6. ES6 follows the standard Promises/A+ [1]. Since ES6, an increasing number of APIs is based on Promises.
 
 The CPS functions build directly on the standard already established for JavaScript functions.
-The provided methods such as `of`, `map`, `flatMap` (aka `chain`) strictly follow
-the general standards for algebraic data types established by Functional Programming languages.
-
+The provided methods such as `of` (aka `pure`, `return`), `map` (aka `fmap`), `flatMap` (aka `chain`, `bind`) strictly follow the general standards for algebraic data types established by Functional Programming languages and Category Theory.
