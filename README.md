@@ -24,16 +24,7 @@ In the same vein, by a function call of the parametrized CPS function,
 we mean its call with both parameters and callbacks passed.
 Otherwise `parmCps(params)` is considered a *partial call*.
 
-## Motivation
-A common weakness of the callback-passing style among other arguments
-is mixing the function input with output, making the code harder to read.
 
-In contrast, the parametrized CPS functions do not suffer from this problem.
-Their curried nature ensures clean separation between the input parameters
-and the callbacks that are used to hold the output only.
-The principle here is analogous to how that separation is achieved by promises,
-except that CPS function do not impose any restricitons on the 
-number of the output events as well as the number of arguments passed with each callback call.
 
 # Examples of CPS functions
 
@@ -111,3 +102,155 @@ is a parametrized CPS function
 ```js
 const pullStream = params => callback => {...}
 ```
+
+
+
+## Comparison with Promises and Callbacks
+Our main motivation for dealing with CPS functions is to enhance
+the power of common coding patters into a single unified abstraction,
+which can capture all the advantages typically associated with Promises vs callbacks.
+
+In the [introductory section into Promises](http://exploringjs.com/es6/ch_promises.html#sec_introduction-promises) of his wonderful book [Exploring ES6](http://exploringjs.com/es6/),
+[Dr. Axel Rauschmayer](http://dr-axel.de/) collected a list of 
+advantages of Promises over callbacks,
+that we would like to consider here in the light of CPS functions
+and explain how, in our view, the latter point of view can enjoy the same advantages.
+
+> No inversion of control: similarly to synchronous code, Promise-based functions return results, they don’t (directly) continue – and control – execution via callbacks. That is, the caller stays in control.
+
+We regard the CPS functions returning their output in similar fashion as promises, 
+via the arguments inside each callback call.
+Recall that a result inside promise can only be extracted via a callback,
+which is essentially the same as passing the callback to a CPS function:
+```js
+// pass callbacks to promise
+const promise.then(cb1, cb2) 
+// => result is delivered via cb1(result)
+```
+```js
+// pass callbacks to CPS function
+const cps(f1, f2)
+// => a tuple (vector) of results is deliverd via f1(res1, res2, ...)
+```
+Thus, CPS functions can be regarded as generalization of promises,
+where callbacks are allowed to be called multiple times with several arguments each time,
+rather than with a single value.
+
+> Chaining is simpler: If the callback of `then()` returns a Promise (e.g. the result of calling another Promise-based function) then `then()` returns that Promise (how this really works is more complicated and explained later). As a consequence, you can chain then() method calls: 
+```js
+asyncFunction1(a, b)
+  .then(result1 => {
+      console.log(result1);
+      return asyncFunction2(x, y);
+  })
+  .then(result2 => {
+      console.log(result2);
+  });
+```
+
+In our view, the complexity of chaing of the callbacks is due to the lack of the methods for doing it.
+On a basic level, a Promise wraps a CPS function into an object providing such methods.
+However, the Promise wrapper also add restricitons to the functionality and generally does a lot more.
+On the other hand, to have similar chaining methods, much less powerful methods are needed,
+that can be uniformly provided for general CPS functions. 
+The above example can then be generalized to arbitrary CPS functions:
+
+```js
+// wrapper providing the chaing methods
+CPS.of(cpsFunction1(a, b))
+	// 'flatMap' (also called 'chain') is used to chain with parametrized CPS functions
+  .flatMap(result1 => {
+      console.log(result1);
+      return cpsFunction2(x, y);
+  })
+  // 'map' is used to chain with ordinary functions
+  .map(result2 => {
+      console.log(result2);
+  });
+```
+
+> Composing asynchronous calls (loops, mapping, etc.): is a little easier, because you have data (Promise objects) you can work with.
+
+Similar to promises wrapping their data, 
+we regard the CPS functions as wrapping the outputs of their callbacks.
+Whenever methods are needed, a CPS function can be explicitly wrapped into 
+its CPS object via the `CPS.of`, 
+similar to how the `Promise` constructor wraps its producer function,
+except that `CPS.of` does nothing else.
+There is no recursive unwrapping of "thenables" nor other promises as with
+the Promise constructor.
+
+In addition, the CPS object `CPS.of(cpsFunction)` retains the same information
+by delivering the same functionality via direct funtion calls with the same callbacks!
+That is, the following calls are identical: 
+```js
+cpsFunction(cb1, cb2, ...)
+CPS.of(cpsFunction)(cb1, cb2, ...)
+```
+That means, the wrapped CPS function can be dropped directly into the same code
+preserving all the functionality with no change!
+
+In regard of composing asynchronous calls, with CPS functions it can be as simple as in
+the above example.
+
+
+> Error handling: As we shall see later, error handling is simpler with Promises, because, once again, there isn’t an inversion of control. Furthermore, both exceptions and asynchronous errors are managed the same way.
+
+In regards of error handling, 
+the following paragraph in here http://exploringjs.com/es6/ch_promises.html#_chaining-and-errors
+might be relevant:
+
+> There can be one or more then() method calls that don’t have error handlers. Then the error is passed on until there is an error handler.
+```js
+asyncFunc1()
+.then(asyncFunc2)
+.then(asyncFunc3)
+.catch(function (reason) {
+    // Something went wrong above
+});
+```
+
+And here is the same example with CPS functions:
+```js
+CPS.of(cpsFunc1)
+.flatMap(cpsFunc2)
+.flatMap(cpsFunc3)
+.map(null, reason => {
+    // Something went wrong above
+});
+```
+Here the `map` method is used with two arguments
+and the second callback considered as holding errors,
+in the same way as the Promises achieve that effect.
+
+There is, however, no a priori restriction for the error callback
+to be the second argument, it can also be the first callback
+as in [Fluture](https://github.com/fluture-js/Fluture) or Folktale's [`Data.Task`](https://github.com/folktale/data.task), or the last one, or anywhere inbetween.
+
+
+> Cleaner signatures: With callbacks, the parameters of a function are mixed; some are input for the function, others are responsible for delivering its output. With Promises, function signatures become cleaner; all parameters are input.
+
+The "curried nature" of the (parametrized) CPS functions 
+ensures clean separation between their input parameters
+and the callbacks that are used to hold the output only:
+```js
+const paramCps = (param1, param2, ...) => (cb1, cb2, ...) => { ... }
+```
+Here the output holding callbacks `cb1, cb2, ...` are 
+cleanly "curried away" from the input parameters `param1, param2, ...`.
+
+Note that, without currying, it would not be possible to achieve similar separation.
+If function is called directly without currying, it is impossible to tell
+which arguments are meant for input and which for output.
+
+The principle here is very analogous to how that separation is achieved by Promises,
+except that the CPS function do not impose any restricitons on the 
+number of their callback calls, nor the number of arguments passed to each callback
+with each call.
+
+> Standardized: Prior to Promises, there were several incompatible ways of handling asynchronous results (Node.js callbacks, XMLHttpRequest, IndexedDB, etc.). With Promises, there is a clearly defined standard: ECMAScript 6. ES6 follows the standard Promises/A+ [1]. Since ES6, an increasing number of APIs is based on Promises.
+
+The CPS functions build directly on the standard already established for JavaScript functions.
+The provided methods such as `of`, `map`, `flatMap` (aka `chain`) strictly follow
+the general standards for algebraic data types established by Functional Programming languages.
+
