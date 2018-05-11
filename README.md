@@ -6,12 +6,17 @@ Tiny goodies for Continuation-Passing-Style functions
 ## Terminology
 A *Continuation-Passing-Style (CPS) function* is any JavaScript function
 ```js
-const cps = (f1, f2, ...) => { ... }
+const cps = (f1, f2, ...) => { /* fNs are called arbitrarily often with some arguments */ }
 ```
 that expects to be called with zero or several functions as its arguments.
-The number of arguments can change from call to call and is not required to be bounded.
+We also call the argument functions `f1, f2, ...` the "callbacks"
+due to the way how they are used.
+Each of the callbacks can be called arbitrarily many times
+with zero to many arguments each time.
+The number of arguments inside each callback 
+can change from call to call and is not required to be bounded.
 
-By *parametrized CPS function* we mean any curried function with zero or more parameters 
+By a *parametrized CPS function* we mean any curried function with zero or more parameters 
 that returns a CPS function:
 ```js
 const paramCps = (param1, param2, ...) => (f1, f2, ...) => { ... }
@@ -21,8 +26,11 @@ We shall adopt somewhat loose terminology calling *parametrized CPS functions* b
 the curried function `paramCps` and its return value `paramCps(params)`,
 in the hope that the context will make clear the precisce meaning.
 In the same vein, by a *function call* of the parametrized CPS function,
-we mean its call with both parameters and callbacks passed.
-Otherwise `parmCps(params)` is considered a *partial call*.
+we mean its call with both arguments and callbacks passed:
+```js
+paramCps(...args)(...callbacks)
+```
+Otherwise `parmCps(...args)` is considered a *partial call*.
 
 ## Using CPS functions
 Using CPS functions is as simple as using JavaScript Promises:
@@ -246,20 +254,19 @@ that can be uniformly provided for general CPS functions.
 The above example can then be generalized to arbitrary CPS functions:
 
 ```js
-// wrapper providing the chaing methods
+// wrapper providing methods
 CPS(cpsFunction1(a, b))
-	// 'flatMap' (also called 'chain') is used to chain with parametrized CPS functions
+	// 'flatMap' (aka 'chain') is used to compose parametrized CPS functions
   .flatMap(result1 => {
       console.log(result1);
       return cpsFunction2(x, y);
   })
-  // 'map' is used to chain with ordinary functions
+  // 'map' is used to compose CPS outputs with ordinary functions
   .map(result2 => {
       console.log(result2);
   });
 ```
-Here `CPS` is a lightweight object wrapper providing the `map` and `flatMap` methods among others,
-as well as the static wrapper `CPS.of`,
+Here `CPS(...)` is a lightweight object wrapper providing the `map` and `flatMap` methods among others,
 such that `CPS.of` and `map` conform to the [Pointed Functor](https://stackoverflow.com/questions/39179830/how-to-use-pointed-functor-properly/41816326#41816326) and `CPS.of` and `flatMap` 
 to the [Monadic](https://github.com/rpominov/static-land/blob/master/docs/spec.md#monad) [interface](https://github.com/fantasyland/fantasy-land#monad).
 At the same time, the full functional structure is preserved allowing for drop in replacement
