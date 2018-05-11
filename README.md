@@ -6,9 +6,18 @@ Tiny goodies for Continuation-Passing-Style functions
 ## Terminology
 A *Continuation-Passing-Style (CPS) function* is any JavaScript function
 ```js
-const cps = (f1, f2, ...) => { /* fNs are called arbitrarily often with some arguments */ }
+const cps = (f1, f2, ...) => { 
+	/* f1, f2, ... are called arbitrarily often with any number of arguments */ 
+}
 ```
 that expects to be called with zero or several functions as its arguments.
+By *expects* we mean that this library and the following discussion 
+only applies when functions are passed.
+In a strictly typed language that would mean those arguments are required to be functions.
+However, in JavaScript, where it is possible to pass any argument,
+we don't aim to force errors when some arguments passed are not functions
+and let the standard JavaScript engine deal with it the usual way.
+
 We also call the argument functions `f1, f2, ...` the "callbacks"
 due to the way how they are used.
 Each of the callbacks can be called arbitrarily many times
@@ -35,7 +44,8 @@ Otherwise `parmCps(...args)` is considered a *partial call*.
 ## Using CPS functions
 Using CPS functions is as simple as using JavaScript Promises:
 ```js
-// Set up database query as parametrized CPS function with 2 callbacks
+// Set up database query as parametrized CPS function with 2 callbacks,
+// one for the result and one for the error
 const cpsQuery = query => (resBack, errBack) => 
 	queryDb(query, (err, res) => err 
 		? resBack(res) 
@@ -52,17 +62,21 @@ cpsQuery({name: 'Jane'})(
 ## Promise producers
 Any producer (aka executor) function 
 ```js
-const producer = function(resolve, reject) { ... }
+const producer = function(resolve, reject) {
+	// some work ...
+	if (/* everything is good */) resolve(result)
+	else reject(error) 
+}
 ``` 
 passed to the [Promise constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) is an example of a CPS function. 
 
 The constructed promise `new Promise(producer)` only keeps the very first call of either of the callbacks,
 whereas the producer function itself can call its callbacks multiple times,
-each of which is regarded as output of the CPS function and is retained.
+each of which would be fully retained as output in case of CPS functions.
 
 ## Promises
-Any JavaScript promise generates a CPS function via its `.then` method invocation
-that completely captures the information held by the promise:
+Any JavaScript Promise generates a CPS function via its `.then` method
+that completely captures the information held by the Promise:
 ```js
 const cpsPromise = (onFulfilled, onRejected) => promise.then(onFulfilled, onRejected)
 ```
@@ -819,4 +833,164 @@ and the other way around:
 	(...ys) => cpsF(...ys))((...cbs) => cbs.map(cb => cb(...xs))
 )
 ```
+
+
+## CPS.ap
+The `ap` operator plays the important role of
+*running functions in parallel* and combining their output via ordinary functions.
+
+
+### Running CPS functions in parallel
+Similarly to `map(f)` applying a plain function `f` to (the output of) a CPS function,
+`ap(cpsF)` applies functions that are themselves outputs of some CPS function,
+delivered via callbacks. 
+A simple example is getting result from a database query via `cpsDb` function
+and display it with via function transformer obtained from an independent query:
+```js
+// returns result via 'cb(result)' call
+const cpsDb = query => cb => getQuery(query, cb)
+// returns transformer function via 'cb(transformer)'
+const cpsTransformer = path => cb => getTransformer(path, cb)
+// Now use the 'ap' operator to apply the transformer to the query result:
+const getTransformedRes = (query, path) => CPS(cpsDb(query)).ap(cpsTransformer(path))
+// or equivalently in the functional style, without the need of the 'CPS' wrapper:
+const getTransformedRes = (query, path) => ap(cpsTransformer(path))(cpsDb(query))
+```
+
+Note that we could have used `map` and `flatMap` to run the same functions sequentially,
+one after another:
+```js
+(query, path) => CPS(cpsDb(query))
+	.flatMap(result => cpsTransformer(path)
+		.map(transformer => transformer(result)))
+```
+Here we have to nest, in order to keep `result` in the scope of the second function.
+However, `result` from the first function was not needed to run the `cpsTransformer`,
+so it was a waste of time and resources to wait for the query `result`
+before getting the `transformer`.
+It would be more efficient to run both functions in parallel and then combine the results,
+which is precisely what the `ap` operator does.
+
+
+### Lifting functions of muiltiple parameters
+Perhaps the most important use of the `ap` operator is lifting plain functions
+to act on results of CPS functional computations.
+That way simple plain functions can be created and re-used
+with arbitrary data, regardless of how the data are retrieved.
+In the above example we have used the general purpose plain function
+```js
+const f =(result, transformer) => transformer(result)
+```
+which is, of course, just the ordinary function call.
+That function was "lifted" to act on the data delivered as outputs
+from separate CPS functions.
+
+Since this use case is very common,
+we have the convenience operator doing exactly that called `lift`:
+```js
+const getTransformedRes = (query, path) => 
+	lift(transformer => transformer(result))
+		(cpsDb(query), cpsTransformer(path))
+```
+
+#### Promise.all
+The common way to run Promises in parallel via `Promise.all`
+is a special case of the `lift` usage,
+corresponding to lifting the function 
+combining values in array:
+```js
+const combine = (...args) => args
+Promise.all = promiseArray => lift(combine)(...promiseArray)
+```
+
+Similarly, the same `combine` function (or any other) can be lifted
+over to act on outputs of CPS functions:
+```js
+(cpsF1, cpsF2, ...) => lift((x1, x2, ...) => f(x1, x2, ...))(cpsF1, cpsF2, ...)
+```
+
+
+#### Usage notes
+Note that `lift` (and `ap`) are best used when 
+their arguments can only be retrieved as outputs from separate CPS functions.
+If for instance, both `result` and `transformer`
+can be delivered via single query,
+using `lift` would be a waste of its parallel execution functionality.
+Instead we could have used the simple `map` with a single CPS function:
+```js
+const getTransformedResSingle = (query, path) =>
+	CPS(getData(query, path)).map((result, transformer) => transformer(result))
+```
+Note how the `map` function is applied with two arguments,
+which assumes the `getData` function to have these in a single callback output 
+as `callback(result, transformer)`.
+
+
+### Applying multiple functions inside `ap`
+
+As with `map` and `flatMap`, the same rules apply for `ap`:
+```js
+const transformed = CPS(cpsFun).ap(F1, F2, ...)
+```
+When called with callbacks `(cb1, cb2, ...)`,
+the output from `cb1` is transformed with the output function from `F1`,
+the output from `cb2` with function from `F2` and so on.
+
+For instance, a CPS function with two callbacks such as `(resBack, errBack)`
+can be `ap`ed over a pair of CPS functions, outputting plain functions each
+```js
+// These call some remote API
+const cpsResTransformer = cb => getResTransformer(cb)
+const cpsErrHandler = cb => getErrHandler(cb)
+// This requires error handlers
+const cpsValue = (resBack, errBack) => getValue(resBack, errBack)
+// Now run all requests in parallel and consume both outputs as they arrive
+// via plain function call
+CPS(cpsValue).ap(cpsResTransformer, cpsErrHandler)(
+	res => console.log("Transformed Result: ", res)
+	err => console.log("The Error had been handled: ", err)
+)
+```
+
+The above pattern can be very powrful,
+for instance the `cpsErrHandler` function
+can include a remote retry or cleanup service
+that is now completely abstracted away from the main code pipeline!
+
+
+
+### Applicative laws
+The `ap` operator together with `of` conforms to the [Applicative interface](https://github.com/rpominov/static-land/blob/master/docs/spec.md#applicative)
+
+
+
+## CPS.merge
+The `merge` operator merges outputs events from multiple CPS functions,
+which occurs separately for each callback slot:
+```js
+// merge outputs into single CPS function
+const cpsMerged = merge(cpsF1, cpsF2, ...)
+// cb1 receives all outputs from the first callback of each of the cpsF1, cpsF2, ...
+cpsMerged(cb1, cb2, ...)
+```
+Here the `N`-th callback of `cpsMerged` gets called each time
+the `N`-th callback of any of the functions `cpsF1`, `cpsF2`, ...,
+with the same arguments.
+This behaviour corresponds to merging the values emitted by 
+each event stream.
+
+### Relation with Promise.race
+The `merge` operator generalizes the functionality provided for Promises via `Promise.race`.
+Since Promises only take the first emitted value from each output,
+merging those results in the earliest value from all being picked by the Promise,
+hence the direct analogy with `Promise.race`.
+
+
+
+### Commutative Monoid
+The `merge` operator makes the set of all CPS functions a commutative Monoid,
+where the identity is played by the trivial CPS function that never emits any output.
+
+
+
 
