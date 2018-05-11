@@ -376,7 +376,18 @@ CPS(cpsFun).map(f)
 CPS.map(cpsFun)(f)
 ```
 
-
+## Conventions
+In the following we slightly abuse the notation by placing methods directly
+on the CPS functions, where the meaning is always after wrapping the functions into `CPS`.
+That is, we write 
+```js
+cpsFun.map(f)
+// instead of 
+CPS(cpsFun).map(f)
+```
+We could have used instead the equivalent functional style `map(f)(cpsFun)`,
+but the fluent style seems more common in JavaScript and closer to how Promises are used,
+so we use it instead.
 
 
 ## CPS.map
