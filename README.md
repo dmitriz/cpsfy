@@ -710,47 +710,66 @@ and "flattening" the event streams via simple merging.
 ### Monadic laws
 When used with single callback argument,
 `of` and `flatMap` satisfy the regular monadic laws.
-The latters look more symmetric when written for 
-[the "flattening" map](https://funkia.github.io/jabz/#flatten)
-(aka Haskell's `join`),
-that can be derived from `flatMap`:
+
+The associativity law analogue for Promises is the equivalence of:
 ```js
-// the CPS identity
-const cpsId = (...args) => cb => cb(...args)
-// deriving 'flatten' from 'flatMap'
-const flatten = cpsFun => cpsFun.flatMap(cpsId)
+promise
+	.then(x1 => promise1(x1))
+	.then(x2 => promise2(x2))
+promise
+	.then(x1 => promise1.then(x2 => promise2(x2)))
 ```
-Or more directly in case of single callback:
+For CPS functions, this looks nearly identical:
 ```js
-// 'flatten' applies to CPS function whose output is another CPS function
-// we pass our callback directly to that output CPS function as argument
-// and pass the resulting function as new callback for cpsFun
-const flatten = cpsFun =>
-	callback => cpsFun(outputCps => outputCps(callback))
+cpsFun
+	.flatMap(x1 => cpsFun1(x1))
+	.flatMap(x2 => cpsFun2(x2))
+cpsFun
+	.flatMap(x1 => cpsFun1.flatMap(x2 => cpsFun2(x2)))
 ```
-Similarly, with multiple callbacks, we pass all of them to each output CPS function in the same order:
+And since these are just functions, 
+both expressions can be direclty expanded into
 ```js
-const flatten = cpsFun =>
-	(...callbacks) => cpsFun.appy(null, outputCpsArray => 
-		outputCpsArray.map(outputCps => outputCps(...callback)))
+cb => cpsFun(x1 => cpsFun1(x1)(x2 => cpsFun2(x2)(cb)))
+```
+That is, the output `x1` of `cpsFun` is passed to `cpsFun1`,
+which transforms it into `x2` as output, 
+subsequently passed to `cpsFun2`,
+whose output is finally diverted direclty into `cb`.
+
+More generally, similar law still holds for mulitple arguments,
+that is the following are equivalent
+```js
+cpsFun
+	.flatMap(f1, f2, ...)
+	.flatMap(g1, g2, ...)
+cpsFun
+	.flatMap(
+		(...xs) => f1(...xs).flatMap((...ys) => g1(...ys)),
+		(...xs) => f2(...xs).flatMap((...ys) => g2(...ys)),
+			...
+	)
+```
+and both expand into
+```js
+(...cbs) => cpsFun(
+	(...xs) => f1(...xs)((...ys) => g1(...ys)(...cbs)),
+	(...xs) => f2(...xs)((...ys) => g2(...ys)(...cbs)),
+		...
+)
 ```
 
-Conversely, `flatMap` can be derived from `flatten`:
+
+The monadic identity laws asserts that both following 
+expressions are equivalent to the CPS function `cpsFun`:
 ```js
-// 'flatMap' is the "flattened" 'map', as the name says ;)
-const flatMap = (...fs) => cpsFun => flatten(cpsFun.map(...fs))
+cpsFun
+// is equivalent to
+cpsFun.flatMap(x => of(x))
+```
+```js
+x => cpsFun1(x)
+flatMap(cpsFun, x => cb => cb(x))
 ```
 
-The `flatten` function is simpler than `flatMap` in that it takes only one set of arguments,
-with Monadic laws becoming analogous to those of [Monoid](https://github.com/rpominov/static-land/blob/master/docs/spec.md#monoid). The associativity law asserts the equivalence of the following functions:
-```js
-const doubleFlatten = cpsFun => flatten(flatten(cpsFun))
-const doubleFlatten = cpsFun => flatten(cpsFun.map(flatten))
-```
-Expanding the above direct definition of `flatten` for single callback we get
-```js
-const doubleFlatten = cpsFun => cb1 => flatten(cpsFun)(oFun => oFun(cb1))
-const doubleFlatten = cpsFun => cb1 => cpsFun(oFun => o(cb2)) (oFun => oFun(cb1))
-
-```
 
