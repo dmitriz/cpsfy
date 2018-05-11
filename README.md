@@ -24,7 +24,20 @@ In the same vein, by a *function call* of the parametrized CPS function,
 we mean its call with both parameters and callbacks passed.
 Otherwise `parmCps(params)` is considered a *partial call*.
 
-
+## Using CPS functions
+Using CPS functions is as simple as using JavaScript Promises:
+```js
+// Set up database query as parametrized CPS function with 2 callbacks
+const cpsQuery = query => (resBack, errBack) => 
+	queryDb(query, (err, res) => err 
+		? resBack(res) 
+		: errBack(err))
+// Now just call as regular curried function
+cpsQuery({name: 'Jane'})(
+	result => console.log("Your Query returned: ", result), 
+	error => console.error("Sorry, here is what happened: ", error)
+)
+```
 
 # Examples of CPS functions
 
@@ -170,6 +183,11 @@ const cpsFun = (cb1, cb2) => {
 ```
 and thereby serve as functional event aggregators
 encapsulating the events.
+Every time any of the event is emitted,
+the corresponding callback will fire
+with entire event data passed as arguments.
+That way the complete event information 
+remains accessible via the CPS function. 
 
 
 # Comparison with Promises and Callbacks
@@ -229,7 +247,7 @@ The above example can then be generalized to arbitrary CPS functions:
 
 ```js
 // wrapper providing the chaing methods
-CPS.of(cpsFunction1(a, b))
+CPS(cpsFunction1(a, b))
 	// 'flatMap' (also called 'chain') is used to chain with parametrized CPS functions
   .flatMap(result1 => {
       console.log(result1);
@@ -240,11 +258,12 @@ CPS.of(cpsFunction1(a, b))
       console.log(result2);
   });
 ```
-Here `CPS.of` is a lightweight object wrapper providing the `map` and `flatMap` methods among others,
+Here `CPS` is a lightweight object wrapper providing the `map` and `flatMap` methods among others,
+as well as the static wrapper `CPS.of`,
 such that `CPS.of` and `map` conform to the [Pointed Functor](https://stackoverflow.com/questions/39179830/how-to-use-pointed-functor-properly/41816326#41816326) and `CPS.of` and `flatMap` 
 to the [Monadic](https://github.com/rpominov/static-land/blob/master/docs/spec.md#monad) [interface](https://github.com/fantasyland/fantasy-land#monad).
 At the same time, the full functional structure is preserved allowing for drop in replacement
-`cpsFun` with `CPS.of(cpsFun)`, see below.
+`cpsFun` with `CPS(cpsFun)`, see below.
 
 ## Asynchronous composition
 > Composing asynchronous calls (loops, mapping, etc.): is a little easier, because you have data (Promise objects) you can work with.
@@ -252,18 +271,18 @@ At the same time, the full functional structure is preserved allowing for drop i
 Similar to promises wrapping their data, 
 we regard the CPS functions as wrapping the outputs of their callbacks.
 Whenever methods are needed, a CPS function can be explicitly wrapped into 
-its CPS object via the `CPS.of`, 
+its CPS object via the `CPS`, 
 similar to how the `Promise` constructor wraps its producer function,
-except that `CPS.of` does nothing else.
+except that `CPS` does nothing else.
 There is no recursive unwrapping of "thenables" nor other promises as with
 the Promise constructor.
 
-In addition, the CPS object `CPS.of(cpsFunction)` retains the same information
+In addition, the CPS object `CPS(cpsFunction)` retains the same information
 by delivering the same functionality via direct funtion calls with the same callbacks!
 That is, the following calls are identical: 
 ```js
 cpsFunction(cb1, cb2, ...)
-CPS.of(cpsFunction)(cb1, cb2, ...)
+CPS(cpsFunction)(cb1, cb2, ...)
 ```
 That means, the wrapped CPS function can be dropped directly into the same code
 preserving all the functionality with no change!
@@ -291,7 +310,7 @@ asyncFunc1()
 
 And here is the same example with CPS functions:
 ```js
-CPS.of(cpsFunc1)
+CPS(cpsFunc1)
 .flatMap(cpsFunc2)
 .flatMap(cpsFunc3)
 .map(null, reason => {
@@ -343,3 +362,395 @@ with each call.
 
 The CPS functions build directly on the standard already established for JavaScript functions.
 The provided methods such as `of` (aka `pure`, `return`), `map` (aka `fmap`), `flatMap` (aka `chain`, `bind`) strictly follow the general standards for algebraic data types established by Functional Programming languages and Category Theory.
+
+
+# Functional and Fluent API
+
+The `CPS` function transforms any CPS function into that very same CPS function, 
+to which in addition all API methods can be applied.
+The same methods are provided on the `CPS` namespace and
+can be applied directly to CPS functions with the same effect.
+For instance, the following expressions are equivalent ([in the sense of fantasyland](https://github.com/fantasyland/fantasy-land#terminology)):
+```js
+CPS(cpsFun).map(f)
+CPS.map(cpsFun)(f)
+```
+
+
+
+
+## CPS.map
+The `map` method and the equivalent `CPS.map` function in their simplest form 
+are similar to `Array.map` as well as other `map` functions/methods used in JavaScript.
+
+### Mapping over single function
+In the simplest case of a single function `x => f(x)` with one argument,
+the corresponding transformation of the CPS function only affects the first callback,
+very similar to how the function inside `.then` method of a promise only affects the fulfilled value:
+```js
+const newPromise = oldPromise.then(res => f(res))
+```
+Except that the `map` behavior is simpler with no complex promise recognition nor any thenable unwrapping:
+```js
+const newCps = CPS(oldCps).map(res => f(res))
+```
+The `newCps` function will call its first callback
+with the single transformed value `f(res)`,
+whereas the functionality of the other callbacks remains unchanged.
+
+
+### Mapping over multiple functions
+To transform results inside other callbacks, the same `map` method
+can be used with mulitple functions:
+```js
+const newCps = CPS(oldCps).map(res => f(res), err => g(err))
+```
+Here we are calling the second result `err` in analogy with promises,
+however, in general, it is just the second callback argument with no other meaning.
+The resulting CPS function will call its first and second callbacks
+with correspondingly transformed arguments `f(res)` and `g(res)`,
+whereas all other callbacks will be passed from `newCps` to `oldCps` unchanged.
+
+The latter property generalized the praised feature of the Promises,
+where a single error handler can deal with all accumulated errors.
+In our case, the same behavior occurs for the `n`-th callback
+that will be picked by only those `map` invocations holding functions at their `n`-th spot.
+For instance, a possible third callback `progress` 
+will similaly be handled only invocations of `map(f1, f2, f3)`
+with some `f3` provided.
+
+
+### Mapping over maps taking multiple arguments
+The single function `map` infocation actually applies the function to all the arguments
+passed to the callback. That means, the above pattern can be generalized to
+```js
+const newCps = CPS(oldCps).map((res1, res2, ...) => f(res1, res2, ...))
+```
+or just passing all the results as arguments:
+```js
+const newCps = CPS(oldCps).map((...args) => f(...args))
+```
+or some of them:
+```js
+const newCps = CPS(oldCps).map((iAmThrownAway, ...rest) => f(...rest))
+```
+or picking props from multiple objects via destructuring:
+
+```js
+const newCps = CPS(oldCps).map(({name: name1}, {name: name2}) => f(name1, name2))
+```
+Now the names from objects will go into `f`.
+None of these is possible with promises where only single values are ever being passed.
+
+
+### Functor laws
+The `map` method for single functions of single argument satisfies the functor laws.
+That is, the following pairs of expressions are equivalent:
+```js
+cpsFun.map(f).map(g)
+cpsFun.map(x => g(f(x)))
+```
+```js
+cpsFun
+cpsFun.map(x => x)
+```
+
+In fact, we have more general equivalences with multiple arguments:
+```js
+cpsFun.map(f1, f2, ...).map(g1, g2, ...)
+cpsFun.map(x1 => g1(f1(x1)), x2 => g2(f2(x2)), ...)
+```
+where in addition, the number of `f`'s can differ from the number of `g`'s,
+in which case the missing maps have to replaced by the identities.
+
+
+### CPS.of
+The static method `CPS.of` that we simply call `of` here
+is the simplest way to wrap values into a CPS function:
+```js
+const of = (x1, x2, ...) => callback => callback(x1, x2, ...)
+```
+or equivalently
+```js
+const of = (...args) => callback => callback(...args)
+```
+
+Here the full tuple `(x1, x2, ...)` becomes the single output of
+the created CPS function `of(x1, x2, ...)`.
+
+As mentioned before, 
+`of` and `map` for single functions of single argument 
+conform to the [Pointed Functor](https://stackoverflow.com/questions/39179830/how-to-use-pointed-functor-properly/41816326#41816326),
+that is the following expressions are equivalent:
+```js
+of(x).map(f)
+of(f(x))
+```
+The first function applies `f` to transform its single output,
+whereas the second one outputs `f(x)` direclty into its callback, which is obviously the same.
+
+More generally, the following are still equivalent
+with the same reasoning:
+```js
+of(x1, x2, ...).map(f)
+of(f(x1, x2, ...))
+```
+
+
+## CPS.flatMap
+
+### Transforming multiple arguments into multiple arguments
+There is a certain lack of symmetry with the `map` method,
+due to the way the function are called with several arguments but 
+only ever return a single value.
+
+But what if we want not only to consume, but also to pass multiple arguments to the callback of the new CPS function?
+
+No problem. Except that, we should wrap these into another CPS function and use `flatMap` instead:
+```js
+const newCps = CPS(oldCps).flatMap((x1, x2, ...) => of(x1 + 1, x2 * 2))
+```
+of equivalently and more directly
+```js
+const newCps = CPS(oldCps).flatMap((x1, x2, ...) => cb => cb(x1 + 1, x2 * 2))
+```
+
+Here we pass both `x1 + 1` and `x2 * 2` simultaneously into the transformation callback `cb`.
+Similar to promises, we can regard `(x1, x2, ...)` as the tuple of values held inside the CPS function,
+in fact, being passed to its first callback. 
+Now the `flatMap` receives this tuple,
+trasnforms it according to the second CPS function, i.e. into the pair `(x1 + 1, x2 * 2)`,
+and finally passes it into the first callback of `newCps`.
+The final result is exactly the intended one, that is, 
+the result tuple output `(x1, x2, ...)` from `oldCps` is transformed into the new pair `(x1 + 1, x2 * 2)`
+that becomes the output of `newCps`.
+
+
+### Why is it called `flatMap`?
+Have you noticed the difference between how `map` and `flatMap` are used?
+Here is the simplest case comparison:
+```js
+cpsFun.map(x => x+1)
+cpsFun.flatMap(x => of(x+1))
+```
+The first time the value `x+1` is passed directly,
+the second time it is wrapped into CPS function with `of`.
+The first time the return value of the function is used,
+the second time it is the output value of the CPS function inside `flatMap`.
+
+The "Promised" way is very similar:
+```js
+promise.then(x => x + 1)
+promise.then(x => Promise.resolve(x))
+```
+Except that both times `then` is used,
+so we don't have to choose between `map` and `flatMap`.
+However, such simplicity comes with its cost.
+Since `then` has to do its work to detect 
+and recursively unwrap any promise or thenable,
+there can be a loss in performance as well as 
+in safety to refactor 
+```js
+promise.then(f).then(g)
+```
+to
+```js
+promise.then(x => g(f(x)))
+```
+which is [not always the same](...).
+
+On the other hand, our `map` method
+conforms to the Functor composition law,
+that is the following are always equivalent
+and safe to refactor to each other (as mentioned above):
+```js
+cpsFun.map(f).map(g)
+cpsFun.map(x => g(f(x)))
+```
+And since there is no other work involved,
+our performance wins.
+
+However, if we try use `map` in the second case,
+instead of `flatMap`, we get
+```js
+cpsFun.map(x => of(x+1))
+```
+which emits `of(x+1)` as output, rather than `x+1`.
+That is, the output result of our CPS function is another CPS function,
+so we get our value wrapped twice.
+This is where `flatMap` becomes useful,
+in that in removes one of the layers,
+aka "flattens" the result.
+
+And the rule becomes very simple:
+
+*Use `map` with "plain" functions and `flatMap` with CPS functions inside*
+
+
+### Composing multiple outputs
+In the previous case we had `flatMap` over a CPS function with single output,
+even when the output itself is a tuple.
+In comparison, a general Promise has two outputs - the result and the error.
+Of course, in case of Promises, there are more restrctions such as only one of these two
+outputs can be emitted.
+
+No such restrictions are iposed on CPS functions,
+where two or more callbacks can receive arbitrary number of outputs arbitrarily often.
+To keep things simple, consider how the Promise functionality can be extended
+without the output exclusivity restriction:
+```js
+const cpsFun = (cb1, cb2) => {
+	/* some work here... */
+	cb1(res1)
+	/* some more work... */
+	cb2(res2)
+}
+```
+So both callbacks are called with their individual results at different moments.
+
+A very useful and realistic example of this functionality would be,
+when the server sent an error but then eventually managed to deliver the data.
+That would be impossible to implement with Promises.
+
+Back to our example,
+we now want to use the output for the next CPS computation:
+```js
+const newCps = cpsFun.flatMap(res => anotherCps(res))
+```
+We are now chaining aka sequentially executing `cpsFun`,
+followed by the next parametrized CPS function
+`anotherCps` applied to the result `res` of the previous computation.
+
+So how should we combine both computations?
+And should we apply the second one to `res1` or `res2`?
+
+If you read the above description of the `map`, you know the answer.
+The principle is the same. As we only pass one function to `flatMap`,
+only the first callback is affected. 
+That is, we must pass only the first result `res1` to `anotherCps`.
+Whose output will be our final result inside the first callback,
+whereas all other callbacks remain unchanged.
+
+So the functionality of `newCps` is equivalent to the following:
+```js
+const newCps = (...args) => cpsFun(
+	res1 => anotherCps(res1)(...args), 
+	res2 => cb2(args[1])
+)
+```
+Note how all callbacks are passed to the inner CPS function in the same order as `args`.
+That guarantees that no outgoing information from `anotherCps` can ever get lost.
+
+
+### Passing multiple CPS functions to `flatMap`
+Similarly to `map`, also `flatMap` accepts arbitrary number of functins, 
+this time CPS functions:
+```js
+const newCps = oldCps.flatMap(
+	res1 => anotherCps1(res1), 
+	res2 => anotherCps2(res2), 
+		...
+)
+```
+Look how similar it is with Promises usage:
+```js
+// Promises
+promise.then(
+	res => anotherPromise(res),
+	error => errorHandlerPromise(err) 
+)
+// CPS functions
+cpsFun.flatMap(
+	res => anotherCps(res),
+	err => errorHandlerCps(err)	
+)
+```
+You can barely tell the difference, can you?
+
+Or, since the CPS functions are just functions, 
+we can even drop any Promise `then` function directly into `flatMap`:
+```js
+// CPS functions
+cpsFun.flatMap(
+	res => anotherPromise.then(res),
+	error => errorHandlerPromise.then(err)
+)
+// or just the shorter
+cpsFun.flatMap( anotherPromise.then, errorHandlerPromise.then )
+```
+
+On the other hand, the CPS functions are more powerful
+in that they can call their callbacks multiple times in the future,
+with the potential of passing further important information back to the caller.
+Also we don't want to prescribe in which callback the error should go,
+treating all the callbacks in a uniform way.
+Here is some pseudocode demonstrating general usage of `flatMap`
+with mulitple functions:
+```js
+const newCps = oldCps.flatMap(
+	(x1, x2, ...) => cpsFun1(x1, x2, ...),
+	(y1, y2, ...) => cpsFun2(y1, y2, ...),
+		...
+)
+```
+And the functionality of `newCps` is equivalent to
+```js
+const newCps = (cb1, cb2, ...) => oldCps(
+	(x1, x2, ...) => cpsFun1(x1, x2, ...)(cb1, cb2, ...)
+	(y1, y2, ...) => cpsFun1(y1, y2, ...)(cb1, cb2, ...)
+		...
+)
+```
+As any other CPS function, our `newCps` accepts arbitrary number of callbacks
+that are simply all passed to each interior CPS function in the same order.
+That leads to the effect of capturing output events from each of them,
+and "flattening" the event streams via simple merging.
+
+
+### Monadic laws
+When used with single callback argument,
+`of` and `flatMap` satisfy the regular monadic laws.
+The latters look more symmetric when written for 
+[the "flattening" map](https://funkia.github.io/jabz/#flatten)
+(aka Haskell's `join`),
+that can be derived from `flatMap`:
+```js
+// the CPS identity
+const cpsId = (...args) => cb => cb(...args)
+// deriving 'flatten' from 'flatMap'
+const flatten = cpsFun => cpsFun.flatMap(cpsId)
+```
+Or more directly in case of single callback:
+```js
+// 'flatten' applies to CPS function whose output is another CPS function
+// we pass our callback directly to that output CPS function as argument
+// and pass the resulting function as new callback for cpsFun
+const flatten = cpsFun =>
+	callback => cpsFun(outputCps => outputCps(callback))
+```
+Similarly, with multiple callbacks, we pass all of them to each output CPS function in the same order:
+```js
+const flatten = cpsFun =>
+	(...callbacks) => cpsFun.appy(null, outputCpsArray => 
+		outputCpsArray.map(outputCps => outputCps(...callback)))
+```
+
+Conversely, `flatMap` can be derived from `flatten`:
+```js
+// 'flatMap' is the "flattened" 'map', as the name says ;)
+const flatMap = (...fs) => cpsFun => flatten(cpsFun.map(...fs))
+```
+
+The `flatten` function is simpler than `flatMap` in that it takes only one set of arguments,
+with Monadic laws becoming analogous to those of [Monoid](https://github.com/rpominov/static-land/blob/master/docs/spec.md#monoid). The associativity law asserts the equivalence of the following functions:
+```js
+const doubleFlatten = cpsFun => flatten(flatten(cpsFun))
+const doubleFlatten = cpsFun => flatten(cpsFun.map(flatten))
+```
+Expanding the above direct definition of `flatten` for single callback we get
+```js
+const doubleFlatten = cpsFun => cb1 => flatten(cpsFun)(oFun => oFun(cb1))
+const doubleFlatten = cpsFun => cb1 => cpsFun(oFun => o(cb2)) (oFun => oFun(cb1))
+
+```
+
