@@ -711,6 +711,7 @@ and "flattening" the event streams via simple merging.
 When used with single callback argument,
 `of` and `flatMap` satisfy the regular monadic laws.
 
+#### Associativity law
 The associativity law analogue for Promises is the equivalence of:
 ```js
 promise
@@ -759,17 +760,45 @@ and both expand into
 )
 ```
 
-
+#### Identity laws
 The monadic identity laws asserts that both following 
 expressions are equivalent to the CPS function `cpsFun`:
 ```js
 cpsFun
 // is equivalent to
-cpsFun.flatMap(x => of(x))
+flatMap(y => of(y))(cpsFun)
 ```
+Here `cpsFun` is any CPS function,
+whose output is composed with the CPS identity `y => of(y)`.
+
+
+On the other hand, taking a parametrized CPS function 
+`x => cpsFun(x)` and moving the identity to other side,
+we get the other law asserting the equivalence of:
 ```js
-x => cpsFun1(x)
-flatMap(cpsFun, x => cb => cb(x))
+x => cpsF(x)
+// is equivalent to
+x => flatMap(y => cpsF(y))(cb => cb(x))
 ```
 
+Once expanded, both equivalences are 
+became straightforward to check.
+More interestingly, they still hold for multiple arguments:
+```js
+cpsFun
+// is equivalent to
+cpsFun.flatMap(
+	(...ys) => of(...ys),
+	(...ys) => of(...ys),
+		... /* any number of identities */
+)
+```
+and the other way around:
+```js
+(...xs) => cpsF(...xs)
+// is equivalent to
+(...xs) => flatMap(
+	(...ys) => cpsF(...ys))((...cbs) => cbs.map(cb => cb(...xs))
+)
+```
 
