@@ -347,7 +347,10 @@ to be the second argument, it can also be the first callback
 as in [Fluture](https://github.com/fluture-js/Fluture) or Folktale's [`Data.Task`](https://github.com/folktale/data.task), or the last one, or anywhere inbetween.
 
 Similar to Promises, also for CPS functions, handling 
-both exceptions and asynchronous errors can be managed the same way, if necessary:
+both exceptions and asynchronous errors can be managed the same way, if necessary.
+Or the multiple callbacks feature of CPS functions can be utilized
+to handle errors of different nature in different callbacks,
+such as for instance [Fun-Task does](https://github.com/rpominov/fun-task/blob/master/docs/exceptions.md)
 
 On the other hand, in comparison with Promises, 
 the CPS functions allow for clean separation between exceptions such as bugs 
