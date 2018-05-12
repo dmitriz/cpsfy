@@ -397,8 +397,22 @@ can be applied directly to CPS functions with the same effect.
 For instance, the following expressions are equivalent ([in the sense of fantasyland](https://github.com/fantasyland/fantasy-land#terminology)):
 ```js
 CPS(cpsFun).map(f)
-CPS.map(cpsFun)(f)
+map(f)(cpsFun)
+map(f, cpsFun)
 ```
+Note that the functional style let us simply drop in CPS functions as plain functions,
+whereas to use `map` as method we need to wrap them into `CPS()` first.
+
+And the equivalent multiple argument versions are:
+```js
+CPS(cpsFun).map(f1, f2, ...)
+map(f1, f2, ...)(cpsFun)
+map(f1, f2, ..., cpsFun)
+```
+In the last expression, only the last argument is a CPS function,
+whereas all other arguments are arbitrary functions
+acting by means of their return values.
+
 
 ## Conventions
 In the following we slightly abuse the notation by placing methods directly
