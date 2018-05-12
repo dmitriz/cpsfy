@@ -41,6 +41,7 @@ paramCps(...args)(...callbacks)
 ```
 Otherwise `parmCps(...args)` is considered a *partial call*.
 
+
 ## Using CPS functions
 Using CPS functions is as simple as using JavaScript Promises:
 ```js
@@ -56,6 +57,63 @@ cpsQuery({name: 'Jane'})(
 	error => console.error("Sorry, here is what happened: ", error)
 )
 ```
+The latter is very similar to how Promises are used:
+```js
+cpsQuery({name: 'Jane'}).then(
+	result => console.log("Your Query returned: ", result), 
+	error => console.error("Sorry, here is what happened: ", error)
+)
+```
+Except that, calling `then` method is replaced by the direct function call,
+and arbitrary number of callbacks is allowed,
+each of which can be called arbitrary many times,
+as e.g. in the event streams.
+A Promise is essentially a CPS function with its first event cached,
+that can be implemented by chaining (via `flatMap`) any CPS function
+with the one picking and caching the first output from any callback.
+
+
+## What about Callback Hell?
+There is an actual website called [*Callback Hell*](http://callbackhell.com/).
+The proposed solution consisted of splitting into mulitple functions and giving names.
+However, naming is hard and
+[is not always recommended](https://www.cs.ucf.edu/~dcm/Teaching/COT4810-Fall%202012/Literature/Backus.pdf).
+Using CPS functions and the `map` and `flatMap` operators,
+we can break that code into the sequence of small functions
+without the need to name them:
+```js
+// wrap into `CPS` object to have the `map` and `flatMap` methods
+CPS(cb => fs.readdir(source, cb))
+	// the output of previous callback appears as function arguments
+	.flatMap((err, files) => cb => 
+		err ? console.log('Error finding files: ' + err) : cb(files)
+	)
+	.flatMap(files => cb => files.forEach((filename, fileIndex) => {
+      console.log(filename)
+      // make use of the multiple outputs passed to `cb` for each file
+      // simply add `filename` to the optput inside `cb` to be consumed later
+      gm(source + filename).size((err, values) => cb(err, values, filename))
+	  }))
+  .flatMap((err, values, filename) => cb => 
+		err ? console.log('Error identifying file size: ' + err) : cb(values, filename)
+	)
+  // now we have `filename` and `values` as we need
+  .flatMap((values, filename) => cb => {
+   	console.log(filename + ' : ' + values)
+    aspect = (values.width / values.height)
+    // as before, simply pass our callback
+    // and handle all outputs in the next function
+    widths.forEach(cb)
+	})
+	.flatMap(((width, widthIndex) => cb => {
+    height = Math.round(width / aspect)
+    console.log('resizing ' + filename + 'to ' + height + 'x' + height)
+    this.resize(width, height).write(dest + 'w' + width + '_' + filename, cb)
+	}.bind(this))
+	.map(err => err ? console.log('Error writing file: ' + err) : '')
+
+```
+
 
 # Examples of CPS functions
 
@@ -210,6 +268,9 @@ the corresponding callback will fire
 with entire event data passed as arguments.
 That way the complete event information 
 remains accessible via the CPS function. 
+
+
+
 
 
 # Comparison with Promises and Callbacks
@@ -386,6 +447,8 @@ with each call.
 
 The CPS functions build directly on the standard already established for JavaScript functions.
 The provided methods such as `of` (aka `pure`, `return`), `map` (aka `fmap`), `flatMap` (aka `chain`, `bind`) strictly follow the general standards for algebraic data types established by Functional Programming languages and Category Theory.
+
+
 
 
 # Functional and Fluent API
