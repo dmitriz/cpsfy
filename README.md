@@ -9,7 +9,7 @@ const getServerStuff = callback => ajaxCall(json => callback(json))
 const getServerStuff = ajaxCall
 ```
 
-	* --- From [Mostly adequate guide to FP](https://github.com/MostlyAdequate/mostly-adequate-guide)*
+*--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
 
 
 # CPS functions
