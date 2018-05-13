@@ -165,6 +165,14 @@ CPS(cpsFun)
 		err => console.err("Something bad happened: ", err)
 	)
 ```
+Here `(x, y)` is the first output from `cpsFun` (the one passed into the first callback).
+Now every such output will be passed into `somePromise`
+that will subsequently pass its result or error into the final callbacks
+that are attached via plain function call.
+And even better, the error callbacks will also receive 
+all error outputs from `cpsFun`, basically whatever is passed into its second callback.
+The outputs from both functions are simply merged together, 
+due to the "flattening" job performed by the `flatMap`.
 
 
 ## Node API
