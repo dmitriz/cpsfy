@@ -1,7 +1,8 @@
 # tiny-cps
 Tiny goodies for Continuation-Passing-Style functions
 
-> ```js
+> 
+```js
 // ignorant
 const getServerStuff = callback => ajaxCall(json => callback(json))
 // enlightened
