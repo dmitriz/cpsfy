@@ -1,6 +1,16 @@
 # tiny-cps
 Tiny goodies for Continuation-Passing-Style functions
 
+> ```js
+// ignorant
+const getServerStuff = callback => ajaxCall(json => callback(json))
+// enlightened
+const getServerStuff = ajaxCall
+```
+
+	* --- From [Mostly adequate guide to FP](https://github.com/MostlyAdequate/mostly-adequate-guide)*
+
+
 # CPS functions
 
 ## Terminology
@@ -173,6 +183,12 @@ And even better, the error callbacks will also receive
 all error outputs from `cpsFun`, basically whatever is passed into its second callback.
 The outputs from both functions are simply merged together, 
 due to the "flattening" job performed by the `flatMap`.
+
+Conversely, any CPS function, being just a function accepting callbacks as its arguments, 
+can be dropped into the Promise constructor 
+(from any Promise implementation) to return the Promise 
+holding the first argument from the first output in the first callback,
+or that from the second callback, treated as error.
 
 
 ## Node API
