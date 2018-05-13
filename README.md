@@ -105,7 +105,7 @@ CPS(cb => fs.readdir(source, cb))
     // and handle all outputs in the next function
     widths.forEach(cb)
 	})
-	.flatMap(((width, widthIndex) => cb => {
+	.flatMap((width, widthIndex) => cb => {
     height = Math.round(width / aspect)
     console.log('resizing ' + filename + 'to ' + height + 'x' + height)
     this.resize(width, height).write(dest + 'w' + width + '_' + filename, cb)
@@ -113,6 +113,18 @@ CPS(cb => fs.readdir(source, cb))
 	.map(err => err ? console.log('Error writing file: ' + err) : '')
 
 ```
+
+Any such sequence of computations can be similaly achieved with just two operators - `map` and `flatMap`.
+In fact, just the single more powerful `flatMap` is enough, as e.g. the following are equivalent:
+```js
+cpsFun.map((x, y) => f(x, y))
+cpsFun.flatMap((x, y) => cb => cb(f(x, y))) 
+```
+A limitation of `flatMap` is its sequential nature.
+To run computations in parallel, the `ap` (aka `apply`) operator
+is more suitable, see below.
+
+
 
 
 # Examples of CPS functions
@@ -142,7 +154,17 @@ The important restictions for functions arising that way are:
 1. At most one callback function is called.
 2. Each of the callback functions is called precisely with one argument.
 
-The general CPS functions do assume such restrictions.
+The general CPS functions do not assume such restrictions.
+
+As any Promise provides a CPS function via its `then` method with two callbacks,
+it can be dropped direclty into any CPS operator:
+```js
+CPS(cpsFun)
+	.flatMap((x, y) => somePromise(x, y).then)(
+		res => console.log("Result is: ", res),
+		err => console.err("Something bad happened: ", err)
+	)
+```
 
 
 ## Node API
