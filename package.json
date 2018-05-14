@@ -5,7 +5,7 @@
   "description": "Transform Node Errback API to CPS function",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dmitriz"
+    "url": "https://github.com/dmitriz/cpsfy"
   },
   "scripts": {
     "test": "ava test.js",
