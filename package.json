@@ -1,5 +1,5 @@
 {
-  "version": "0.1.3",
+  "version": "0.1.4",
   "name": "cpsfy",
   "main": "index.js",
   "description": "Transform Node Errback API to CPS function",
