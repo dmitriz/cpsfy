@@ -1,0 +1,18 @@
+{
+  "version": "0.1.0",
+  "name": "cpsfy",
+  "main": "index.js",
+  "description": "Transform Node Errback API to CPS function",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmitriz"
+  },
+  "scripts": {
+    "test": "ava test.js",
+    "pub": "npm version patch && npm publish && git push",
+    "sync": "git ac && git pull --rebase && git push"
+  },
+  "keywords": [],
+  "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
+  "license": "MIT"
+}
