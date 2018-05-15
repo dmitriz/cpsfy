@@ -264,7 +264,7 @@ const createWS = path => callback =>
 The callback will be called repeatedly with every new socket message emited.
 
 Other websocket events can be subscribed by other callbacks,
-so the CPS function with its muiltiple callbacks
+so the CPS function with its multiple callbacks
 can encapsulate the entire socket functionality.
 
 
@@ -1065,7 +1065,7 @@ It would be more efficient to run both functions in parallel and then combine th
 which is precisely what the `ap` operator does.
 
 
-### Lifting functions of muiltiple parameters
+### Lifting functions of multiple parameters
 Perhaps the most important use of the `ap` operator is lifting plain functions
 to act on results of CPS functional computations.
 That way simple plain functions can be created and re-used
