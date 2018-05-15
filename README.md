@@ -136,6 +136,21 @@ To run computations in parallel, the `ap` (aka `apply`) operator
 is more suitable, see below.
 
 
+## Asynchronous iteration over array
+On of the functions in the above example illustrates 
+how multiple outputs fit nicely in the asynchronous iteration pattern:
+```js
+const jobCps = files => cb => files.forEach((filename, fileIndex) => {
+  console.log(filename)
+  gm(source + filename).size((err, values) => cb(err, values, filename))
+})
+```
+Here we create the `jobCps` function that takes on callback
+and calls it repeatedly for each `file`.
+That wouldn't work with Promises that can only hold single value each,
+so you would need to create as many Promises as the number of elements in the `file` array.
+Instead, we have a single CPS function as above to hold all the asynchronous outputs for all files!
+
 
 
 # Examples of CPS functions
