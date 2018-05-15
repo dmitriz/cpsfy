@@ -977,6 +977,57 @@ and the other way around:
 ```
 
 
+## Application of `flatMap`: Turn Node API into Promise style callbacks
+The Node style callbacks with error argument first
+force their errors to be handled each single time:
+```js
+someNodeFunction(param, callback((error, result) => {
+	if (error) handle...
+	doMoreWork(result, callback((error, result) => {
+		...
+	}))
+}))
+```
+In constrast, Promises make it possible to handle all errors with one callback:
+```js
+promise
+	.then(doSomeWork)
+	.then(doMoreWork)
+		...
+	.catch(handleAllErrors)
+```
+Many libraries offering methods to "promisify" Node style callbacks.
+The trouble is the [Gorilla-Banana Problem](https://www.johndcook.com/blog/2011/07/19/you-wanted-banana/): Promises added a lot of other functionality and limitations that not everyone needs.
+For instance, it is perfectly legal to call the callbacks muiltiple times
+(for which there are many use cases such as streams and event handlers),
+whereas the "promisification" would only see the first call.
+
+On the other hand, we can curry any callback-last Node method into CPS function
+```js
+const cpsErrback = (...args) => cb => nodeApi(...args, cb)
+```
+and subsequently `flatMap` it into "Promise" style CPS function
+with the same pair of callbacks, except that no other functionality is added:
+```js
+const promiseStyle = CPS(cpsErrback)
+	.flatMap((error, ...results) => (resBack, errBack) => error 
+		? errBack(error) 
+		: resBack(...results) 
+	)
+```
+Now we can chain these CPS funcitons exactly like promises,
+passing only the first callback, and handle all errors at the end in the second callback.
+```js
+promiseStyle
+	.flatMap(doSomeWork)
+	.map(doMoreWork)
+		...
+	.flatMap(null, handleAllErrors)
+
+```
+
+
+
 ## CPS.ap
 The `ap` operator plays the important role of
 *running functions in parallel* and combining their output via ordinary functions.
