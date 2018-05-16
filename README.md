@@ -14,6 +14,103 @@ const getServerStuff = ajaxCall
 
 # CPS functions
 
+> [The Mother of all Monads](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/the-mother-of-all-monads)
+
+
+## Why?
+
+Functions are the most basic and powerful concept.
+A whole program can be written as funciton,
+taking input data and producing output.
+However, the function's return value is often too limited for the latter,
+for instance, most Node API methods rely on output data 
+returned via callbacks rather than functions' return values.
+The latter is of course the well-known 
+[Continuation-Passing Style (CPS)](https://en.wikipedia.org/wiki/Continuation-passing_style)
+
+
+## What is new here?
+Traditionally Continuation-Passing Style is implemented 
+via callbacks as part of the function's parameters:
+```js
+const api = (input, callback) => doSomeWork(input, callback)
+```
+A fundamental problem here is that the input and output data are getting mixed
+among function's parameters, making it hard to separate one from another.
+
+Our main proposal is to solve this problem via currying:
+```js
+const api = input => callback => doSomeWork(input, callback)
+```
+Now the output is cleanly separated from the input via the function's signature.
+Further parameters can easily be added to the input:
+```js
+const api = (input1, input2, ...) => callback => doSomeWork(input1, ..., callback)
+```
+as well as to the output:
+```js
+const api = (input1, input2, ...) => (callback1, callbacks2, ...) => 
+	doSomeWork(input1, ... , callback1, ...)
+```
+
+### Variadic input and output
+JavaScript's functions are variadic by design,
+that is, are capable of accepting arbitrary number of arguments at the runtime.
+That feature makes it very convenient to implement optional parameters or set defaults:
+```js
+const f = (required, optionalWithDefault = default, iAmOptional) => {...}
+```
+Now, given the clean separation provided by currying as mentioned above, 
+we get for free the full functional variadic power provded by JS:
+```js
+const api = (...inputs) => (...callbacks) => doSomeWork(inputs, callbacks)
+```
+Here `...inputs` is the array holding all arguments passed to the function
+at the run time, see the [Rest parameters syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters).
+In particular, also zero arguments are allowed on each side.
+
+
+### Full power of multiple outputs streams
+By its design, JavaScript's function can call 
+any of its callbacks arbitrarily many times at arbitrary moments.
+This provides a simple implementation of multiple data streams
+emitted from a single function.
+Each stream value is passed as arguments of the callback,
+that is, a whole list of values can be emitted at the same time.
+
+
+### Functional progamming paradigm
+The proposed curried design rests on the well-known paradigms.
+It generalizes the [Kleisli arrows](https://en.wikipedia.org/wiki/Kleisli_category) 
+`a -> m b` associated to the Monad `m`.
+In our case, the Continuation Monad corresponds to the single-callback case:
+```js
+const monad = callback => computation(callback)
+```
+which can be regarded as a "suspended computation".
+The CPS Monad structure is provided via the `of` and `chain` methods
+(aka `return` and `bind` in Haskell, or `unit` and `flatMap` in Scala), see below.
+As part of the variadic functionality, we also extend these methods
+to accept arbitrary number of arguments that are matched against the callbacks.
+This allows for easy handling of multiple output streams with single methods.
+
+In addition to the Monad methods dealing with sequential computations, 
+the Applicative `ap` and derived `lift` are dealing with parallel ones.
+As well as the Monoidal method `merge` dealing with merging multiple streams. 
+
+
+### Lazy or eager?
+The lazy vs eager functionality is already built in the function design:
+```js
+const cpsFun = input => callback => doSomeWork(callback)
+// lazy - waiting to be called
+cpsFun(input)
+// eager - running with the callback passed
+cpsFun(input)(callback)
+```
+Both are of course just functions and function calls, and can be used depending on the need.
+
+
 ## Terminology
 A *Continuation-Passing-Style (CPS) function* is any JavaScript function
 ```js
