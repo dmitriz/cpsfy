@@ -29,6 +29,12 @@ The latter is of course the well-known
 [Continuation-Passing Style (CPS)](https://en.wikipedia.org/wiki/Continuation-passing_style)
 
 
+## The missing composability
+The famous article by John Backus ["Can Programming Be Liberated from the von Neumann Style? A Functional Style and Its Algebra of Programs"](https://www.cs.ucf.edu/~dcm/Teaching/COT4810-Fall%202012/Literature/Backus.pdf)
+advocated to "reduce the code obesity" by building generic hierarchical ways of composing programs.
+The present proposal attempts to provide some way how such composability can be achieved.
+
+
 ## What is new here?
 Traditionally Continuation-Passing Style is implemented 
 via callbacks as part of the function's parameters:
@@ -109,6 +115,7 @@ cpsFun(input)
 cpsFun(input)(callback)
 ```
 Both are of course just functions and function calls, and can be used depending on the need.
+
 
 
 ## Terminology
