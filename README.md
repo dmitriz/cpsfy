@@ -11,6 +11,8 @@ const getServerStuff = ajaxCall
 
 *--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
 
+> Simplicity is prerequisite for reliability. - Dijkstra
+
 
 # CPS functions
 
@@ -18,21 +20,20 @@ const getServerStuff = ajaxCall
 
 
 ## Why?
-
 Functions are the most basic and powerful concept.
 A whole program can be written as funciton,
 taking input data and producing output.
-However, the function's return value is often too limited for the latter,
-for instance, most Node API methods rely on output data 
+However, viewing function's return value as the only output is often too limited.
+For instance, all asynchronous Node API methods rely on the output data 
 returned via callbacks rather than functions' return values.
 The latter is of course the well-known 
 [Continuation-Passing Style (CPS)](https://en.wikipedia.org/wiki/Continuation-passing_style)
 
 
-## The missing composability
+## Advanced composability
 The famous article by John Backus ["Can Programming Be Liberated from the von Neumann Style? A Functional Style and Its Algebra of Programs"](https://www.cs.ucf.edu/~dcm/Teaching/COT4810-Fall%202012/Literature/Backus.pdf)
-advocated to "reduce the code obesity" by building generic hierarchical ways of composing programs.
-The present proposal attempts to provide some way how such composability can be achieved.
+advocated to "reduce the code obesity" by building generic hierarchical ways of composing entire programs.
+The present proposal attempts to provide some way of how such composability can be achieved.
 
 
 ## What is new here?
@@ -48,15 +49,15 @@ Our main proposal is to solve this problem via currying:
 ```js
 const api = input => callback => doSomeWork(input, callback)
 ```
-Now the output is cleanly separated from the input via the function's signature.
+Now the output is cleanly separated from the input via the function's curried signature.
 Further parameters can easily be added to the input:
 ```js
 const api = (input1, input2, ...) => callback => doSomeWork(input1, ..., callback)
 ```
-as well as to the output:
+as well as to the callbacks accepting output:
 ```js
 const api = (input1, input2, ...) => (callback1, callbacks2, ...) => 
-	doSomeWork(input1, ... , callback1, ...)
+  doSomeWork(input1, ... , callback1, ...)
 ```
 
 ### Variadic input and output
@@ -64,7 +65,7 @@ JavaScript's functions are variadic by design,
 that is, are capable of accepting arbitrary number of arguments at the runtime.
 That feature makes it very convenient to implement optional parameters or set defaults:
 ```js
-const f = (required, optionalWithDefault = default, iAmOptional) => {...}
+const f = (required, optionalWithDefault = default, iAmOptional) => { ... }
 ```
 Now, given the clean separation provided by currying as mentioned above, 
 we get for free the full functional variadic power provded by JS:
@@ -72,7 +73,7 @@ we get for free the full functional variadic power provded by JS:
 const api = (...inputs) => (...callbacks) => doSomeWork(inputs, callbacks)
 ```
 Here `...inputs` is the array holding all arguments passed to the function
-at the run time, see the [Rest parameters syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters).
+at the run time, by means of the [Rest parameters syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters).
 In particular, also zero arguments are allowed on each side.
 
 
@@ -102,7 +103,8 @@ This allows for easy handling of multiple output streams with single methods.
 
 In addition to the Monad methods dealing with sequential computations, 
 the Applicative `ap` and derived `lift` are dealing with parallel ones.
-As well as the Monoidal method `merge` dealing with merging multiple streams. 
+As well as the Monoidal method `merge` dealing with merging multiple streams.
+See the paper by [Conal Elliot, "Push-Pull Functional Reactive Programming"](http://conal.net/papers/push-pull-frp/push-pull-frp.pdf).
 
 
 ### Lazy or eager?
@@ -122,7 +124,7 @@ Both are of course just functions and function calls, and can be used depending 
 A *Continuation-Passing-Style (CPS) function* is any JavaScript function
 ```js
 const cps = (f1, f2, ...) => { 
-	/* f1, f2, ... are called arbitrarily often with any number of arguments */ 
+  /* f1, f2, ... are called arbitrarily often with any number of arguments */ 
 }
 ```
 that expects to be called with zero or several functions as its arguments.
@@ -163,20 +165,20 @@ Using CPS functions is as simple as using JavaScript Promises:
 // Set up database query as parametrized CPS function with 2 callbacks,
 // one for the result and one for the error
 const cpsQuery = query => (resBack, errBack) => 
-	queryDb(query, (err, res) => err 
-		? resBack(res) 
-		: errBack(err))
+  queryDb(query, (err, res) => err 
+    ? resBack(res) 
+    : errBack(err))
 // Now just call as regular curried function
 cpsQuery({name: 'Jane'})(
-	result => console.log("Your Query returned: ", result), 
-	error => console.error("Sorry, here is what happened: ", error)
+  result => console.log("Your Query returned: ", result), 
+  error => console.error("Sorry, here is what happened: ", error)
 )
 ```
 The latter is very similar to how Promises are used:
 ```js
 cpsQuery({name: 'Jane'}).then(
-	result => console.log("Your Query returned: ", result), 
-	error => console.error("Sorry, here is what happened: ", error)
+  result => console.log("Your Query returned: ", result), 
+  error => console.error("Sorry, here is what happened: ", error)
 )
 ```
 Except that, calling `then` method is replaced by the direct function call,
@@ -199,43 +201,63 @@ without the need to name them:
 ```js
 // wrap into `CPS` object to have the `map` and `flatMap` methods
 CPS(cb => fs.readdir(source, cb))
-	// the output of previous callback appears as function arguments
-	.flatMap((err, files) => cb => 
-		err ? console.log('Error finding files: ' + err) : cb(files)
-	)
-	.flatMap(files => cb => files.forEach((filename, fileIndex) => {
+  // the output of previous callback appears as function arguments
+  .flatMap((err, files) => cb => 
+    err ? console.log('Error finding files: ' + err) : cb(files)
+  )
+  .flatMap(files => cb => files.forEach((filename, fileIndex) => {
       console.log(filename)
       // make use of the multiple outputs passed to `cb` for each file
       // simply add `filename` to the optput inside `cb` to be consumed later
       gm(source + filename).size((err, values) => cb(err, values, filename))
-	  }))
+    }))
   .flatMap((err, values, filename) => cb => 
-		err ? console.log('Error identifying file size: ' + err) : cb(values, filename)
-	)
+    err ? console.log('Error identifying file size: ' + err) : cb(values, filename)
+  )
   // now we have `filename` and `values` as we need
   .flatMap((values, filename) => cb => {
-   	console.log(filename + ' : ' + values)
+    console.log(filename + ' : ' + values)
     aspect = (values.width / values.height)
     // as before, simply pass our callback
     // and handle all outputs in the next function
     widths.forEach(cb)
-	})
-	.flatMap((width, widthIndex) => cb => {
+  })
+  .flatMap((width, widthIndex) => cb => {
     height = Math.round(width / aspect)
     console.log('resizing ' + filename + 'to ' + height + 'x' + height)
     this.resize(width, height).write(dest + 'w' + width + '_' + filename, cb)
-	}.bind(this))
-	.map(err => err ? console.log('Error writing file: ' + err) : '')
+  }.bind(this))
+  .map(err => err ? console.log('Error writing file: ' + err) : '')
 
 ```
+Equivalently, we can use the `pipeline` operator for the same result
+in functional style:
+```js
+pipeline( cb => fs.readdir(source, cb) ) (
+  flatMap( (err, files) => cb => ... ),
+  flatMap( files => cb => files.forEach((filename, fileIndex) => {... }) ),
+  flatMap( (err, values, filename) => cb => ... ),
+  flatMap( (values, filename) => cb => { ... } ),
+  flatMap( (width, widthIndex) => cb => ... ),
+  map( err => err ? console.log('Error writing file: ' + err) : '' ),
+)
+```
+In the latter pattern there is no wrapper around the first CPS function,
+it is simply passed around through all the transformations in the sequence.
 
 Any such sequence of computations can be similaly achieved with just two operators - `map` and `flatMap`.
 In fact, just the single more powerful `flatMap` is enough, as e.g. the following are equivalent:
 ```js
-cpsFun.map((x, y) => f(x, y))
-cpsFun.flatMap((x, y) => cb => cb(f(x, y))) 
+CPS(cpsFun).map((x, y) => f(x, y))
+CPS(cpsFun).flatMap((x, y) => cb => cb(f(x, y)))
 ```
-A limitation of `flatMap` is its sequential nature.
+or, equivalently, using the `pipeline` operator
+```js
+pipeline(cpsFun)( map((x, y) => f(x, y)) )
+pipeline(cpsFun)( flatMap((x, y) => cb => cb(f(x, y)) )
+```
+
+A limitation of the `flatMap` is its sequential nature.
 To run computations in parallel, the `ap` (aka `apply`) operator
 is more suitable, see below.
 
@@ -263,9 +285,9 @@ Instead, we have a single CPS function as above to hold all the asynchronous out
 Any producer (aka executor) function 
 ```js
 const producer = function(resolve, reject) {
-	// some work ...
-	if (/* everything is good */) resolve(result)
-	else reject(error) 
+  // some work ...
+  if (/* everything is good */) resolve(result)
+  else reject(error) 
 }
 ``` 
 passed to the [Promise constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) is an example of a CPS function. 
@@ -290,10 +312,10 @@ As any Promise provides a CPS function via its `then` method with two callbacks,
 it can be dropped direclty into any CPS operator:
 ```js
 CPS(cpsFun)
-	.flatMap((x, y) => somePromise(x, y).then)(
-		res => console.log("Result is: ", res),
-		err => console.err("Something bad happened: ", err)
-	)
+  .flatMap((x, y) => somePromise(x, y).then)(
+    res => console.log("Result is: ", res),
+    err => console.err("Something bad happened: ", err)
+  )
 ```
 Here `(x, y)` is the first output from `cpsFun` (the one passed into the first callback).
 Now every such output will be passed into `somePromise`
@@ -395,7 +417,7 @@ const pullStream = params => callback => {...}
 Any `flyd` stream can be wrapped into a CPS function with single callback called with single argument:
 ```js
 const cpsFun = callback => flydStream
-	.map(x => callback(x))
+  .map(x => callback(x))
 ```
 The resulting `cpsFun` function, when called with any `callback`,
 simply subsribe that callback to the stream events.
@@ -414,17 +436,17 @@ Similarly to [`flyd` streams](https://github.com/paldepind/flyd/#creating-stream
 CPS functions can subscribe their callbacks to any event listener:
 ```js
 const cpsFun = callback =>
-	document.getElementById('button')
-		.addEventListener('click', callback)
+  document.getElementById('button')
+    .addEventListener('click', callback)
 ```
 Furthermore, more complex CPS functions can similarly subscribe to 
 muiltiple events:
 ```js
 const cpsFun = (cb1, cb2) => {
-	document.getElementById('button1')
-		.addEventListener('click', cb1)
-	document.getElementById('button2')
-		.addEventListener('click', cb2)
+  document.getElementById('button1')
+    .addEventListener('click', cb1)
+  document.getElementById('button2')
+    .addEventListener('click', cb2)
 }
 ```
 and thereby serve as functional event aggregators
@@ -497,7 +519,7 @@ The above example can then be generalized to arbitrary CPS functions:
 ```js
 // wrapper providing methods
 CPS(cpsFunction1(a, b))
-	// 'flatMap' (aka 'chain') is used to compose parametrized CPS functions
+  // 'flatMap' (aka 'chain') is used to compose parametrized CPS functions
   .flatMap(result1 => {
       console.log(result1);
       return cpsFunction2(x, y);
@@ -878,10 +900,10 @@ To keep things simple, consider how the Promise functionality can be extended
 without the output exclusivity restriction:
 ```js
 const cpsFun = (cb1, cb2) => {
-	/* some work here... */
-	cb1(res1)
-	/* some more work... */
-	cb2(res2)
+  /* some work here... */
+  cb1(res1)
+  /* some more work... */
+  cb2(res2)
 }
 ```
 So both callbacks are called with their individual results at different moments.
@@ -912,8 +934,8 @@ whereas all other callbacks remain unchanged.
 So the functionality of `newCps` is equivalent to the following:
 ```js
 const newCps = (...args) => cpsFun(
-	res1 => anotherCps(res1)(...args), 
-	res2 => cb2(args[1])
+  res1 => anotherCps(res1)(...args), 
+  res2 => cb2(args[1])
 )
 ```
 Note how all callbacks are passed to the inner CPS function in the same order as `args`.
@@ -925,22 +947,22 @@ Similarly to `map`, also `flatMap` accepts arbitrary number of functins,
 this time CPS functions:
 ```js
 const newCps = oldCps.flatMap(
-	res1 => anotherCps1(res1), 
-	res2 => anotherCps2(res2), 
-		...
+  res1 => anotherCps1(res1), 
+  res2 => anotherCps2(res2), 
+    ...
 )
 ```
 Look how similar it is with Promises usage:
 ```js
 // Promises
 promise.then(
-	res => anotherPromise(res),
-	error => errorHandlerPromise(err) 
+  res => anotherPromise(res),
+  error => errorHandlerPromise(err) 
 )
 // CPS functions
 cpsFun.flatMap(
-	res => anotherCps(res),
-	err => errorHandlerCps(err)	
+  res => anotherCps(res),
+  err => errorHandlerCps(err) 
 )
 ```
 You can barely tell the difference, can you?
@@ -950,8 +972,8 @@ we can even drop any Promise `then` function directly into `flatMap`:
 ```js
 // CPS functions
 cpsFun.flatMap(
-	res => anotherPromise.then(res),
-	error => errorHandlerPromise.then(err)
+  res => anotherPromise.then(res),
+  error => errorHandlerPromise.then(err)
 )
 // or just the shorter
 cpsFun.flatMap( anotherPromise.then, errorHandlerPromise.then )
@@ -966,17 +988,17 @@ Here is some pseudocode demonstrating general usage of `flatMap`
 with mulitple functions:
 ```js
 const newCps = oldCps.flatMap(
-	(x1, x2, ...) => cpsFun1(x1, x2, ...),
-	(y1, y2, ...) => cpsFun2(y1, y2, ...),
-		...
+  (x1, x2, ...) => cpsFun1(x1, x2, ...),
+  (y1, y2, ...) => cpsFun2(y1, y2, ...),
+    ...
 )
 ```
 And the functionality of `newCps` is equivalent to
 ```js
 const newCps = (cb1, cb2, ...) => oldCps(
-	(x1, x2, ...) => cpsFun1(x1, x2, ...)(cb1, cb2, ...)
-	(y1, y2, ...) => cpsFun1(y1, y2, ...)(cb1, cb2, ...)
-		...
+  (x1, x2, ...) => cpsFun1(x1, x2, ...)(cb1, cb2, ...)
+  (y1, y2, ...) => cpsFun1(y1, y2, ...)(cb1, cb2, ...)
+    ...
 )
 ```
 As any other CPS function, our `newCps` accepts arbitrary number of callbacks
@@ -993,18 +1015,18 @@ When used with single callback argument,
 The associativity law analogue for Promises is the equivalence of:
 ```js
 promise
-	.then(x1 => promise1(x1))
-	.then(x2 => promise2(x2))
+  .then(x1 => promise1(x1))
+  .then(x2 => promise2(x2))
 promise
-	.then(x1 => promise1.then(x2 => promise2(x2)))
+  .then(x1 => promise1.then(x2 => promise2(x2)))
 ```
 For CPS functions, this looks nearly identical:
 ```js
 cpsFun
-	.flatMap(x1 => cpsFun1(x1))
-	.flatMap(x2 => cpsFun2(x2))
+  .flatMap(x1 => cpsFun1(x1))
+  .flatMap(x2 => cpsFun2(x2))
 cpsFun
-	.flatMap(x1 => cpsFun1.flatMap(x2 => cpsFun2(x2)))
+  .flatMap(x1 => cpsFun1.flatMap(x2 => cpsFun2(x2)))
 ```
 And since these are just functions, 
 both expressions can be direclty expanded into
@@ -1020,21 +1042,21 @@ More generally, similar law still holds for mulitple arguments,
 that is the following are equivalent
 ```js
 cpsFun
-	.flatMap(f1, f2, ...)
-	.flatMap(g1, g2, ...)
+  .flatMap(f1, f2, ...)
+  .flatMap(g1, g2, ...)
 cpsFun
-	.flatMap(
-		(...xs) => f1(...xs).flatMap((...ys) => g1(...ys)),
-		(...xs) => f2(...xs).flatMap((...ys) => g2(...ys)),
-			...
-	)
+  .flatMap(
+    (...xs) => f1(...xs).flatMap((...ys) => g1(...ys)),
+    (...xs) => f2(...xs).flatMap((...ys) => g2(...ys)),
+      ...
+  )
 ```
 and both expand into
 ```js
 (...cbs) => cpsFun(
-	(...xs) => f1(...xs)((...ys) => g1(...ys)(...cbs)),
-	(...xs) => f2(...xs)((...ys) => g2(...ys)(...cbs)),
-		...
+  (...xs) => f1(...xs)((...ys) => g1(...ys)(...cbs)),
+  (...xs) => f2(...xs)((...ys) => g2(...ys)(...cbs)),
+    ...
 )
 ```
 
@@ -1066,9 +1088,9 @@ More interestingly, they still hold for multiple arguments:
 cpsFun
 // is equivalent to
 cpsFun.flatMap(
-	(...ys) => of(...ys),
-	(...ys) => of(...ys),
-		... /* any number of identities */
+  (...ys) => of(...ys),
+  (...ys) => of(...ys),
+    ... /* any number of identities */
 )
 ```
 and the other way around:
@@ -1076,7 +1098,7 @@ and the other way around:
 (...xs) => cpsF(...xs)
 // is equivalent to
 (...xs) => flatMap(
-	(...ys) => cpsF(...ys))((...cbs) => cbs.map(cb => cb(...xs))
+  (...ys) => cpsF(...ys))((...cbs) => cbs.map(cb => cb(...xs))
 )
 ```
 
@@ -1086,19 +1108,19 @@ The Node style callbacks with error argument first
 force their errors to be handled each single time:
 ```js
 someNodeFunction(param, callback((error, result) => {
-	if (error) handle...
-	doMoreWork(result, callback((error, result) => {
-		...
-	}))
+  if (error) handle...
+  doMoreWork(result, callback((error, result) => {
+    ...
+  }))
 }))
 ```
 In constrast, Promises make it possible to handle all errors with one callback:
 ```js
 promise
-	.then(doSomeWork)
-	.then(doMoreWork)
-		...
-	.catch(handleAllErrors)
+  .then(doSomeWork)
+  .then(doMoreWork)
+    ...
+  .catch(handleAllErrors)
 ```
 Many libraries offering methods to "promisify" Node style callbacks.
 The trouble is the [Gorilla-Banana Problem](https://www.johndcook.com/blog/2011/07/19/you-wanted-banana/): Promises added a lot of other functionality and limitations that not everyone needs.
@@ -1114,19 +1136,19 @@ and subsequently `flatMap` it into "Promise" style CPS function
 with the same pair of callbacks, except that no other functionality is added:
 ```js
 const promiseStyle = CPS(cpsErrback)
-	.flatMap((error, ...results) => (resBack, errBack) => error 
-		? errBack(error) 
-		: resBack(...results) 
-	)
+  .flatMap((error, ...results) => (resBack, errBack) => error 
+    ? errBack(error) 
+    : resBack(...results) 
+  )
 ```
 Now we can chain these CPS funcitons exactly like promises,
 passing only the first callback, and handle all errors at the end in the second callback.
 ```js
 promiseStyle
-	.flatMap(doSomeWork)
-	.map(doMoreWork)
-		...
-	.flatMap(null, handleAllErrors)
+  .flatMap(doSomeWork)
+  .map(doMoreWork)
+    ...
+  .flatMap(null, handleAllErrors)
 
 ```
 
@@ -1158,8 +1180,8 @@ Note that we could have used `map` and `flatMap` to run the same functions seque
 one after another:
 ```js
 (query, path) => CPS(cpsDb(query))
-	.flatMap(result => cpsTransformer(path)
-		.map(transformer => transformer(result)))
+  .flatMap(result => cpsTransformer(path)
+    .map(transformer => transformer(result)))
 ```
 Here we have to nest, in order to keep `result` in the scope of the second function.
 However, `result` from the first function was not needed to run the `cpsTransformer`,
@@ -1186,8 +1208,8 @@ Since this use case is very common,
 we have the convenience operator doing exactly that called `lift`:
 ```js
 const getTransformedRes = (query, path) => 
-	lift(transformer => transformer(result))
-		(cpsDb(query), cpsTransformer(path))
+  lift(transformer => transformer(result))
+    (cpsDb(query), cpsTransformer(path))
 ```
 
 #### Promise.all
@@ -1216,7 +1238,7 @@ using `lift` would be a waste of its parallel execution functionality.
 Instead we could have used the simple `map` with a single CPS function:
 ```js
 const getTransformedResSingle = (query, path) =>
-	CPS(getData(query, path)).map((result, transformer) => transformer(result))
+  CPS(getData(query, path)).map((result, transformer) => transformer(result))
 ```
 Note how the `map` function is applied with two arguments,
 which assumes the `getData` function to have these in a single callback output 
@@ -1244,8 +1266,8 @@ const cpsValue = (resBack, errBack) => getValue(resBack, errBack)
 // Now run all requests in parallel and consume both outputs as they arrive
 // via plain function call
 CPS(cpsValue).ap(cpsResTransformer, cpsErrHandler)(
-	res => console.log("Transformed Result: ", res)
-	err => console.log("The Error had been handled: ", err)
+  res => console.log("Transformed Result: ", res)
+  err => console.log("The Error had been handled: ", err)
 )
 ```
 
