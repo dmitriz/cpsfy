@@ -498,6 +498,7 @@ Note that syntax for CPS function is even shorter - ther is no `.then` method ne
 
 ## Chaining
 > Chaining is simpler: If the callback of `then()` returns a Promise (e.g. the result of calling another Promise-based function) then `then()` returns that Promise (how this really works is more complicated and explained later). As a consequence, you can chain then() method calls: 
+
 > ```js
 asyncFunction1(a, b)
   .then(result1 => {
