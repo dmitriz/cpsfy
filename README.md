@@ -235,9 +235,9 @@ in functional style:
 ```js
 pipeline( cb => fs.readdir(source, cb) ) (
   flatMap( (err, files) => cb => ... ),
-  flatMap( files => cb => files.forEach((filename, fileIndex) => {... }) ),
+  flatMap( files => cb => files.forEach((filename, fileIndex) => ... ) ),
   flatMap( (err, values, filename) => cb => ... ),
-  flatMap( (values, filename) => cb => { ... } ),
+  flatMap( (values, filename) => cb => ... ),
   flatMap( (width, widthIndex) => cb => ... ),
   map( err => err ? console.log('Error writing file: ' + err) : '' ),
 )
