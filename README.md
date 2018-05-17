@@ -1318,3 +1318,35 @@ where the identity is played by the trivial CPS function that never emits any ou
 
 
 
+## CPS.filter
+The `filter` operator does the obvious thing,
+that is trasform one CPS function into another by filtering the output.
+As the output may have several arguments,
+the filter function is also variadic:
+```js
+const cpsFiltered = filter(pred)(cpsFun)
+```
+Here `pred` is a Boolean function called for each output tuple.
+The resulting `cpsFiltered` emits only the output for which `pred` returns `true`.
+
+
+### Filtering over multiple functions
+Consistently with other operators,
+also `filter` accepts multiple predicate functions,
+each matched against the ouput from the corresponding callback.
+
+That is, the filtered function
+```js
+const cpsFiltered = filter(p1, p2, ...)(cpsFun)
+```
+when passed callbacks `(cb1, cb2, ...)`,
+calls `cb1` with the same output `(x1, x2, ...)` as `cpsFun` does,
+as long as `p1(x1, x2, ...)` returns `true`.
+Similarly, `p2` filters the output of `cb2` and so on.
+The callbacks not corresponding to any predicate function
+will be unaffected and the predicates corresponding to no callbacks 
+are ignored.
+
+
+
+
