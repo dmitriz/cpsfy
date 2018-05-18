@@ -9,5 +9,8 @@
   },
   "keywords": [],
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "markdown-toc": "^1.2.0"
+  }
 }
