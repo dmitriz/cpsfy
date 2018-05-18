@@ -1341,12 +1341,73 @@ const cpsFiltered = filter(p1, p2, ...)(cpsFun)
 ```
 when passed callbacks `(cb1, cb2, ...)`,
 calls `cb1` with the same output `(x1, x2, ...)` as `cpsFun` does,
-as long as `p1(x1, x2, ...)` returns `true`.
+as long as `p1(x1, x2, ...)` returns `true`, otherwise the call is skipped.
 Similarly, `p2` filters the output of `cb2` and so on.
 The callbacks not corresponding to any predicate function
 will be unaffected and the predicates corresponding to no callbacks 
 are ignored.
 
+
+### Implementation via `chain`
+Filtering is really chaining:
+```js
+// pass through only input truthy `pred`
+const cpsFilter = pred => (...input) => cb => {
+  if (pred(...input)) cb(...input)
+}
+// now chain with `cpsFilter(pred)`:
+const filter = pred => CPS(cpsFun)
+  .chain(cpsFilter(pred))
+```
+And the variadic version reuses the same `cpsFilter` applied to each predicate:
+```js
+// call `chain` with the list of arguments, one per each predicate
+const filter = (...pred) => CPS(cpsFun)
+  .chain(...pred.map(cpsFilter))
+// or using the `pipeline` operator
+const filter = (...pred) => pipeline(cpsFun)( 
+  chain(...pred.map(cpsFilter)) 
+)
+```
+
+
+
+
+## CPS.scan
+The `scan` operator acts as "partial reduce" for each output.
+Important example include stream of states affected by stream of actions:
+```js
+const cpsState = scan(f)(initState)(cpsAction)
+```
+Here `f` is the reducing function accepting current `state` and
+the next `action` and returning the next state as `f(state, action)`.
+Similarly to `filter`, `scan` can also be derived from `chain`:
+```js
+const scan = f => state => cpsAction => pipeline(cpsAction)(
+  // action may contain several arguments
+  chain((...action) => cb => {
+    state = f(state, ...action)
+    cb(state)
+  })
+)
+```
+Note that the function inside `chain` updates the `state` outside its scope,
+so it is not pure, however, we can still `chain` it like any other function.
+
+And here is the mulitple arguments generalization:
+
+```js
+// `reducers` and `states` are matched together by index
+const scan = (...reducers) => (...states) => {
+  cpsAction => pipeline(cpsAction)(
+    // chaining with multiple reducers, one per state
+    chain(...states.map((, idx) => cb => {
+      // accessing states and reducers by index
+      cb( states[idx] = reducers[idx](states[idx], ...action) )
+    })
+  ))
+}
+```
 
 
 
