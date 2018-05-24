@@ -809,13 +809,23 @@ are similar to `Array.map` as well as other `map` functions/methods used in Java
 In the simplest case of a single function `x => f(x)` with one argument,
 the corresponding transformation of the CPS function only affects the first callback,
 very similar to how the function inside `.then` method of a promise only affects the fulfilled value:
+
 ```js
-const newPromise = oldPromise.then(res => f(res))
+const newPromise = oldPromise.then(f)
 ```
+
 Except that the `map` behavior is simpler with no complex promise recognition nor any thenable unwrapping:
+
 ```js
-const newCps = CPS(oldCps).map(res => f(res))
+const newCps = CPS(oldCps).map(f)
 ```
+
+or without wrapping
+
+```js
+const newCps = pipeline(oldCps)(map(f))
+```
+
 The `newCps` function will call its first callback
 with the single transformed value `f(res)`,
 whereas the functionality of the other callbacks remains unchanged.
@@ -824,9 +834,13 @@ whereas the functionality of the other callbacks remains unchanged.
 ### Mapping over multiple functions
 To transform results inside other callbacks, the same `map` method
 can be used with mulitple functions:
+
 ```js
 const newCps = CPS(oldCps).map(res => f(res), err => g(err))
+// or simply
+const newCps = CPS(oldCps).map(f, g)
 ```
+
 Here we are calling the second result `err` in analogy with promises,
 however, in general, it is just the second callback argument with no other meaning.
 The resulting CPS function will call its first and second callbacks
@@ -842,25 +856,34 @@ will similaly be handled only invocations of `map(f1, f2, f3)`
 with some `f3` provided.
 
 
-### Mapping over maps taking multiple arguments
+### Map taking multiple arguments
 The single function `map` infocation actually applies the function to all the arguments
 passed to the callback. That means, the above pattern can be generalized to
+
 ```js
 const newCps = CPS(oldCps).map((res1, res2, ...) => f(res1, res2, ...))
 ```
+
 or just passing all the results as arguments:
+
 ```js
 const newCps = CPS(oldCps).map((...args) => f(...args))
+// which is the same as
+const newCps = CPS(oldCps).map(f)
 ```
-or some of them:
+
+or passing only some of the arguments:
+
 ```js
 const newCps = CPS(oldCps).map((iAmThrownAway, ...rest) => f(...rest))
 ```
+
 or picking props from multiple objects via destructuring:
 
 ```js
 const newCps = CPS(oldCps).map(({name: name1}, {name: name2}) => f(name1, name2))
 ```
+
 Now the names from objects will go into `f`.
 None of these is possible with promises where only single values are ever being passed.
 
