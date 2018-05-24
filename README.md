@@ -1,6 +1,8 @@
 # tiny-cps
 Tiny goodies for Continuation-Passing-Style functions
 
+> Simplicity is prerequisite for reliability. - Dijkstra
+
 > 
 ```js
 // ignorant
@@ -10,8 +12,6 @@ const getServerStuff = ajaxCall
 ```
 
 *--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
-
-> Simplicity is prerequisite for reliability. - Dijkstra
 
 - [CPS functions](#cps-functions)
   * [Why?](#why)
@@ -75,7 +75,7 @@ const getServerStuff = ajaxCall
     + [Filtering over multiple functions](#filtering-over-multiple-functions)
     + [Implementation via `chain`](#implementation-via-chain)
   * [CPS.scan](#cpsscan)
-  
+
 
 # CPS functions
 
@@ -183,6 +183,10 @@ cpsFun(input)(callback)
 Both are of course just functions and function calls, and can be used depending on the need.
 
 
+### "Do less" is a feature
+The proposed CPS desing API is minimal and focused on doing just one thing --
+*a style to write and combine plain JavaScript funcitons with callbacks*.
+
 
 ## Terminology
 A *Continuation-Passing-Style (CPS) function* is any JavaScript function
@@ -256,17 +260,48 @@ with the one picking and caching the first output from any callback.
 
 ## What about Callback Hell?
 There is an actual website called [*Callback Hell*](http://callbackhell.com/).
-The proposed solution consisted of splitting into mulitple functions and giving names.
+The following callback hell example is shown:
+```js
+fs.readdir(source, function (err, files) {
+  if (err) {
+    console.log('Error finding files: ' + err)
+  } else {
+    files.forEach(function (filename, fileIndex) {
+      console.log(filename)
+      gm(source + filename).size(function (err, values) {
+        if (err) {
+          console.log('Error identifying file size: ' + err)
+        } else {
+          console.log(filename + ' : ' + values)
+          aspect = (values.width / values.height)
+          widths.forEach(function (width, widthIndex) {
+            height = Math.round(width / aspect)
+            console.log('resizing ' + filename + 'to ' + height + 'x' + height)
+            this.resize(width, height).write(dest + 'w' + width + '_' + filename, function(err) {
+              if (err) console.log('Error writing file: ' + err)
+            })
+          }.bind(this))
+        }
+      })
+    })
+  }
+})
+```
+
+The proposed solution to avoid this "hell" consisted of splitting into mulitple functions and giving names.
 However, naming is hard and
 [is not always recommended](https://www.cs.ucf.edu/~dcm/Teaching/COT4810-Fall%202012/Literature/Backus.pdf).
+
+
 Using CPS functions and the `map` and `chain` operators,
-we can break that code into the sequence of small functions
+we can break that code into the sequence of small functions, chained one after another
 without the need to name them:
 ```js
 // wrap into `CPS` object to have the `map` and `chain` methods
 CPS(cb => fs.readdir(source, cb))
   // the output of previous callback appears as function arguments
   .chain((err, files) => cb => 
+    // only files are passed to the callback, whereas error produces no continuation
     err ? console.log('Error finding files: ' + err) : cb(files)
   )
   .chain(files => cb => files.forEach((filename, fileIndex) => {
@@ -294,8 +329,10 @@ CPS(cb => fs.readdir(source, cb))
   .map(err => err ? console.log('Error writing file: ' + err) : '')
 
 ```
-Equivalently, we can use the `pipeline` operator for the same result
-in functional style:
+
+Equivalently, we can use the `pipeline` operator to achieve the same result
+in more functional style:
+
 ```js
 pipeline( cb => fs.readdir(source, cb) ) (
   chain( (err, files) => cb => ... ),
@@ -306,16 +343,20 @@ pipeline( cb => fs.readdir(source, cb) ) (
   map( err => err ? console.log('Error writing file: ' + err) : '' ),
 )
 ```
+
 In the latter pattern there is no wrapper around the first CPS function,
 it is simply passed around through all the transformations in the sequence.
 
 Any such sequence of computations can be similaly achieved with just two operators - `map` and `chain`.
 In fact, just the single more powerful `chain` is enough, as e.g. the following are equivalent:
+
 ```js
 CPS(cpsFun).map((x, y) => f(x, y))
 CPS(cpsFun).chain((x, y) => cb => cb(f(x, y)))
 ```
+
 or, equivalently, using the `pipeline` operator
+
 ```js
 pipeline(cpsFun)( map((x, y) => f(x, y)) )
 pipeline(cpsFun)( chain((x, y) => cb => cb(f(x, y)) )
@@ -329,12 +370,14 @@ is more suitable, see below.
 ## Asynchronous iteration over array
 On of the functions in the above example illustrates 
 how multiple outputs fit nicely in the asynchronous iteration pattern:
+
 ```js
 const jobCps = files => cb => files.forEach((filename, fileIndex) => {
   console.log(filename)
   gm(source + filename).size((err, values) => cb(err, values, filename))
 })
 ```
+
 Here we create the `jobCps` function that takes on callback
 and calls it repeatedly for each `file`.
 That wouldn't work with Promises that can only hold single value each,
@@ -346,7 +389,8 @@ Instead, we have a single CPS function as above to hold all the asynchronous out
 # Examples of CPS functions
 
 ## Promise producers
-Any producer (aka executor) function 
+Any producer (aka executor) function
+
 ```js
 const producer = function(resolve, reject) {
   // some work ...
@@ -354,6 +398,7 @@ const producer = function(resolve, reject) {
   else reject(error) 
 }
 ``` 
+
 passed to the [Promise constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) is an example of a CPS function. 
 
 The constructed promise `new Promise(producer)` only keeps the very first call of either of the callbacks,
@@ -363,9 +408,11 @@ each of which would be fully retained as output in case of CPS functions.
 ## Promises
 Any JavaScript Promise generates a CPS function via its `.then` method
 that completely captures the information held by the Promise:
+
 ```js
 const cpsPromise = (onFulfilled, onRejected) => promise.then(onFulfilled, onRejected)
 ```
+
 The important restictions for functions arising that way are:
 1. At most one callback function is called.
 2. Each of the callback functions is called precisely with one argument.
@@ -374,6 +421,7 @@ The general CPS functions do not assume such restrictions.
 
 As any Promise provides a CPS function via its `then` method with two callbacks,
 it can be dropped direclty into any CPS operator:
+
 ```js
 CPS(cpsFun)
   .chain((x, y) => somePromise(x, y).then)(
@@ -381,6 +429,7 @@ CPS(cpsFun)
     err => console.err("Something bad happened: ", err)
   )
 ```
+
 Here `(x, y)` is the first output from `cpsFun` (the one passed into the first callback).
 Now every such output will be passed into `somePromise`
 that will subsequently pass its result or error into the final callbacks
@@ -399,9 +448,11 @@ or that from the second callback, treated as error.
 
 ## Node API
 Any Node-Style function with one of more callbacks can be curried into a parametrized CPS function:
+
 ```js
 const readFileCPS = (path, options) => callback => fs.readFile(path, options, callback)
 ```
+
 Here `readFileCPS` returns a CPS function for each values of its parameters `(path, options)`.
 
 Typically Node API callbacks are called with at least two arguments as `callback(error, arg1, ...)`,
@@ -412,16 +463,19 @@ passed to any of its callback functions.
 
 ## HTTP requests
 In a similar vein, any HTTP request with callback(s) can be regarded as parametrized CPS function:
+
 ```js
 const = (url, options, data) => cb => request(url, options, data, cb)
 ```
 
 ## Database Access
 Any async database access API with callback can be curried into parametrized CPS functions:
+
 ```js
 const queryDb = (db, query) => callback => getQuery(db, query, callback)
 const insertDb = (db, data) => callback => inserData(db, data, callback)
 ```
+
 In most cases each of these is considered a single request resulting in either success of failure.
 However, more general CPS functions can implement more powerful functionality with multiple callback calls.
 For instance, the function can run multiple data insetion attempts with progress reported back to client.
@@ -446,11 +500,13 @@ it allows for each side to benefit from the other.
 
 ## Web Sockets
 Here is a generic CPS function parametrized by its url `path`:
+
 ```js
 const WebSocket = require('ws')
 const createWS = path => callback => 
   new WebSocket(path).on('message', callback)
 ```
+
 The callback will be called repeatedly with every new socket message emited.
 
 Other websocket events can be subscribed by other callbacks,
@@ -472,7 +528,8 @@ for the general CPS function pattern.
 Indeed, a Pull Stream is essentially a function `f(abort, callback)` that is called repeatedly
 by the sink to produce on-demand stream of data.
 Any such function can be clearly curried into a
-is a parametrized CPS function 
+is a parametrized CPS function
+
 ```js
 const pullStream = params => callback => {...}
 ```
