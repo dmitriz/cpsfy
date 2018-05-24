@@ -33,6 +33,6 @@ test('map over multiple functions', t => {
 
 test('map over more functions than callbacks, the extra functions are ignored', t => {
 	const cpsFun = cb => cb(42)
-	const mappedCpsFun = map(x => x * 2, x => x + 10)(cpsFun)
+	const mappedCpsFun = map(x => x*2, x => x+10)(cpsFun)
 	mappedCpsFun(res => t.is(res, 84))	
 })

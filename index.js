@@ -1,5 +1,7 @@
+// (...args) -> CPS
 const of = (...args) => cb => cb(...args)
 
+// (...fns) -> CPS -> CPS
 const map = (...fns) => cpsFun =>
 	(...cbs) => cpsFun(
 		// precompose every callback with fn matched by index or pass directly the args
@@ -9,11 +11,12 @@ const map = (...fns) => cpsFun =>
 		)
 	)
 
+// (...fns) -> CPS -> CPS
 const chain = (...cpsFns) => cpsFun =>
 	(...cbs) => cpsFun(
 		// precompose every callback with fn matched by index or pass directly the args
 		// collect functions in array and pass as callbacks to cpsFun
-		cpsFns.map(
+		...cpsFns.map(
 			// all callbacks get passed to each cpsFn
 			cpsFn => (...args) => cpsFn(...args)(...cbs)
 		)
