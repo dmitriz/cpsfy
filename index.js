@@ -1,5 +1,9 @@
-// (...args) -> CPS
-const of = (...args) => cb => cb(...args)
+// [[a]] -> CPS
+const of = (...arrays) => (...cbs) => {
+	arrays.forEach(
+		(array, idx) => cbs[idx] && cbs[idx](...array)
+	)	
+}
 
 // (...fns) -> CPS -> CPS
 const map = (...fns) => cpsFun =>
@@ -22,4 +26,4 @@ const chain = (...cpsFns) => cpsFun =>
 		)
 	)
 
-module.exports = {of, map, chain}
+module.exports = { of, map, chain }
