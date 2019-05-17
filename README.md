@@ -1304,9 +1304,8 @@ promiseStyle
 
 
 ## CPS.ap
-The `ap` operator plays the important role of
-*running functions in parallel* and combining their output via ordinary functions.
-
+The `ap` operator plays an important role when
+*running functions in parallel* and combining their outputs.
 
 ### Running CPS functions in parallel
 Similarly to `map(f)` applying a plain function `f` to (the output of) a CPS function,
