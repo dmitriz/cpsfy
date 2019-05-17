@@ -89,7 +89,7 @@ A whole program can be written as funciton,
 taking input data and producing output.
 However, viewing function's return value as the only output is often too limited.
 For instance, all asynchronous Node API methods rely on the output data 
-returned via callbacks rather than functions' return values.
+returned via callbacks rather than via functions' return values.
 The latter is of course the well-known 
 [Continuation-Passing Style (CPS)](https://en.wikipedia.org/wiki/Continuation-passing_style)
 
@@ -138,7 +138,7 @@ const api = (...inputs) => (...callbacks) => doSomeWork(inputs, callbacks)
 ```
 Here `...inputs` is the array holding all arguments passed to the function
 at the run time, by means of the [Rest parameters syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters).
-In particular, also zero arguments are allowed on each side.
+In particular, zero arguments are also allowed on each side.
 
 
 ### Full power of multiple outputs streams
@@ -147,27 +147,28 @@ any of its callbacks arbitrarily many times at arbitrary moments.
 This provides a simple implementation of multiple data streams
 emitted from a single function.
 Each stream value is passed as arguments of the callback,
-that is, a whole list of values can be emitted at the same time.
+that is, a whole list of values can be emitted at the same time
+as arguments of the same function call.
 
 
 ### Functional progamming paradigm
 The proposed curried design rests on the well-known paradigms.
 It generalizes the [Kleisli arrows](https://en.wikipedia.org/wiki/Kleisli_category) 
 `a -> m b` associated to the Monad `m`.
-In our case, the Continuation Monad corresponds to the single-callback case:
+In our case, the Continuation Monad `m b` corresponds to passing single `callback` function
 ```js
 const monad = callback => computation(callback)
 ```
-which can be regarded as a "suspended computation".
-The CPS Monad structure is provided via the `of` and `chain` methods
+and can be regarded as a "suspended computation".
+The Monad structure is provided via the `of` and `chain` methods
 (aka `return` and `bind` in Haskell, or `unit` and `flatMap` in Scala), see below.
-As part of the variadic functionality, we also extend these methods
-to accept arbitrary number of arguments that are matched against the callbacks.
+As part of the variadic functionality, we generalize these Monadic methods
+by allowing for arbitrary number of function arguments that are matched against the callbacks, see below.
 This allows for easy handling of multiple output streams with single methods.
 
-In addition to the Monad methods dealing with sequential computations, 
-the Applicative `ap` and derived `lift` are dealing with parallel ones.
-As well as the Monoidal method `merge` dealing with merging multiple streams.
+In addition to generalized Monadic methods dealing with sequential computations, 
+generalized Applicative `ap` and derived `lift` are dealing with parallel ones.
+As well as Monoidal method `merge` dealing with merging multiple streams.
 See the paper by [Conal Elliot, "Push-Pull Functional Reactive Programming"](http://conal.net/papers/push-pull-frp/push-pull-frp.pdf).
 
 
@@ -201,14 +202,16 @@ only applies when functions are passed.
 In a strictly typed language that would mean those arguments are required to be functions.
 However, in JavaScript, where it is possible to pass any argument,
 we don't aim to force errors when some arguments passed are not functions
-and let the standard JavaScript engine deal with it the usual way.
+and let the standard JavaScript engine deal with it the usual way,
+as per [garbage in, garbage out (GIGO)](https://en.wikipedia.org/wiki/Garbage_in,_garbage_out) principle.
 
-We also call the argument functions `f1, f2, ...` the "callbacks"
+We also call the argument functions `f1, f2, ...` "callbacks"
 due to the way how they are used.
-Each of the callbacks can be called arbitrarily many times
+Each of the callbacks can be called arbitrarily many times or never,
 with zero to many arguments each time.
 The number of arguments inside each callback 
-can change from call to call and is not required to be bounded.
+can change from call to call and is even allowed to unlimitedly grow,
+e.g. `n`th call may involve passing `n` arguments. 
 
 By a *parametrized CPS function* we mean any curried function with zero or more parameters 
 that returns a CPS function:
@@ -244,9 +247,9 @@ cpsQuery({name: 'Jane'})(
 ```
 The latter is very similar to how Promises are used:
 ```js
-cpsQuery({name: 'Jane'}).then(
-  result => console.log("Your Query returned: ", result), 
-  error => console.error("Sorry, here is what happened: ", error)
+promiseQuery({name: 'Jane'}).then(
+  result => console.log("Your query returned: ", result), 
+  error => console.error("Sorry, an error happened: ", error)
 )
 ```
 Except that, calling `then` method is replaced by the direct function call,
@@ -288,50 +291,55 @@ fs.readdir(source, function (err, files) {
 })
 ```
 
-The proposed solution to avoid this "hell" consisted of splitting into mulitple functions and giving names.
+The solution proposed there to avoid this "hell" consists of splitting into mulitple functions and giving names to each.
 However, naming is hard and
 [is not always recommended](https://www.cs.ucf.edu/~dcm/Teaching/COT4810-Fall%202012/Literature/Backus.pdf).
 
 
-Using CPS functions and the `map` and `chain` operators,
-we can break that code into the sequence of small functions, chained one after another
+Using CPS functions along with `map` and `chain` operators,
+we can break that code into a sequence of small functions, chained one after another
 without the need to name them:
 ```js
-// wrap into `CPS` object to have the `map` and `chain` methods
+// wrap into `CPS` object to have `map` and `chain` methods available,
+// directory files are passed as 2nd argument to cb, error as 1st
 CPS(cb => fs.readdir(source, cb))
-  // the output of previous callback appears as function arguments
+  // chain method passes instead the same 1st and 2nd arguments into the new CPS function
   .chain((err, files) => cb => 
     // only files are passed to the callback, whereas error produces no continuation
     err ? console.log('Error finding files: ' + err) : cb(files)
   )
+  // chain modifies the CPS by passing `files`` from inside `cb` into the next CPS function instead
   .chain(files => cb => files.forEach((filename, fileIndex) => {
       console.log(filename)
       // make use of the multiple outputs passed to `cb` for each file
       // simply add `filename` to the optput inside `cb` to be consumed later
       gm(source + filename).size((err, values) => cb(err, values, filename))
     }))
+  // now again chain accepts CPS function with the same 3 arguments as previously passed to `cb`
   .chain((err, values, filename) => cb => 
     err ? console.log('Error identifying file size: ' + err) : cb(values, filename)
   )
-  // now we have `filename` and `values` as we need
+  // now we have `values` and `filename` as we need
   .chain((values, filename) => cb => {
     console.log(filename + ' : ' + values)
     aspect = (values.width / values.height)
-    // as before, simply pass our callback
-    // and handle all outputs in the next function
+    // as before, simply pass to callback `cb`
+    // and handle all outputs in the next `chain` function
     widths.forEach(cb)
   })
+  // now that we have called `cb` multiple times, each time chain passes new values to its CPS function
   .chain((width, widthIndex) => cb => {
     height = Math.round(width / aspect)
     console.log('resizing ' + filename + 'to ' + height + 'x' + height)
     this.resize(width, height).write(dest + 'w' + width + '_' + filename, cb)
   }.bind(this))
+  // finally errors are handled via map method
   .map(err => err ? console.log('Error writing file: ' + err) : '')
 
 ```
 
-Equivalently, we can use the `pipeline` operator to achieve the same result
-in more functional style:
+Equivalently, we can use the `pipeline` operator (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Pipeline_operator) to achieve the same result
+in more functional (aka point-free) style:
 
 ```js
 pipeline( cb => fs.readdir(source, cb) ) (
@@ -378,7 +386,7 @@ const jobCps = files => cb => files.forEach((filename, fileIndex) => {
 })
 ```
 
-Here we create the `jobCps` function that takes on callback
+Here we create the `jobCps` function that accepts callback
 and calls it repeatedly for each `file`.
 That wouldn't work with Promises that can only hold single value each,
 so you would need to create as many Promises as the number of elements in the `file` array.
@@ -399,25 +407,25 @@ const producer = function(resolve, reject) {
 }
 ``` 
 
-passed to the [Promise constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) is an example of a CPS function. 
+as one typically passed to the [Promise constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) is an example of a CPS function. 
 
 The constructed promise `new Promise(producer)` only keeps the very first call of either of the callbacks,
-whereas the producer function itself can call its callbacks multiple times,
-each of which would be fully retained as output in case of CPS functions.
+whereas the producer function itself may call its callbacks multiple times,
+each of which would be fully retained as output when CPS functions are used instead of promises.
 
 ## Promises
 Any JavaScript Promise generates a CPS function via its `.then` method
 that completely captures the information held by the Promise:
 
 ```js
-const cpsPromise = (onFulfilled, onRejected) => promise.then(onFulfilled, onRejected)
+const cpsFromPromise = (onFulfilled, onRejected) => promise.then(onFulfilled, onRejected)
 ```
 
-The important restictions for functions arising that way are:
-1. At most one callback function is called.
+The important restictions for CPS functions arising that way are:
+1. Among many callbacks passed, at most one is ever called.
 2. Each of the callback functions is called precisely with one argument.
 
-The general CPS functions do not assume such restrictions.
+More general CPS functions do not have such limitations.
 
 As any Promise provides a CPS function via its `then` method with two callbacks,
 it can be dropped direclty into any CPS operator:
@@ -431,7 +439,7 @@ CPS(cpsFun)
 ```
 
 Here `(x, y)` is the first output from `cpsFun` (the one passed into the first callback).
-Now every such output will be passed into `somePromise`
+Now every such output will be passed into `somePromise` via `chain`,
 that will subsequently pass its result or error into the final callbacks
 that are attached via plain function call.
 And even better, the error callbacks will also receive 
@@ -442,8 +450,8 @@ due to the "flattening" job performed by the `chain`.
 Conversely, any CPS function, being just a function accepting callbacks as its arguments, 
 can be dropped into the Promise constructor 
 (from any Promise implementation) to return the Promise 
-holding the first argument from the first output in the first callback,
-or that from the second callback, treated as error.
+holding the first argument from the first output as its resolved value,
+while that from the second callback as error.
 
 
 ## Node API
@@ -457,8 +465,8 @@ Here `readFileCPS` returns a CPS function for each values of its parameters `(pa
 
 Typically Node API callbacks are called with at least two arguments as `callback(error, arg1, ...)`,
 where the first argument is used as indication of error. 
-The CPS functions include this case by not restricting the number arguments 
-passed to any of its callback functions.
+CPS functions generalize this case to arbitrary number of callbacks 
+accepting arbitrary number of arguments each.
 
 
 ## HTTP requests
@@ -478,10 +486,10 @@ const insertDb = (db, data) => callback => inserData(db, data, callback)
 
 In most cases each of these is considered a single request resulting in either success of failure.
 However, more general CPS functions can implement more powerful functionality with multiple callback calls.
-For instance, the function can run multiple data insetion attempts with progress reported back to client.
+For instance, a function can run multiple data insetion attempts with progress reported back to client.
 Or the query function can return its result in multiple chunks, each with a separate callback call.
-Further, the Database query funtion can hold a state that is advanced with each call.
-Similarly, any Database access can be cancelled by subsequent call of the same CPS function with suitable parameters. 
+Further, the database query funtion can hold a state that is advanced with each call.
+Similarly, any database access can be cancelled by subsequent call of the same CPS function with suitable parameters. 
 
 ## Middleware e.g. in Express or Redux
 [Express Framework](https://expressjs.com/) in NodeJs popularised
@@ -494,7 +502,7 @@ which has one continuation callback among its parameters.
 To each middleware in each of these frameworks, 
 there is the associated parametrized CPS function,
 obtained by switching parameters and (un)currying.
-As the correspondence `middleware <-> CPS function` is in both ways,
+As the correspondence `middleware <-> CPS function` goes in both ways,
 it allows for each side to benefit from the other.
 
 
@@ -510,7 +518,7 @@ const createWS = path => callback =>
 The callback will be called repeatedly with every new socket message emited.
 
 Other websocket events can be subscribed by other callbacks,
-so the CPS function with its multiple callbacks
+so that a single CPS function with its multiple callbacks
 can encapsulate the entire socket functionality.
 
 
@@ -586,12 +594,12 @@ remains accessible via the CPS function.
 
 Our main motivation for dealing with CPS functions is to enhance
 the power of common coding patterns into a single unified abstraction,
-which can capture the advantages typically associated with Promises vs callbacks.
+which can capture the advantages typically regarded for Promises over callbacks.
 
 In the [introductory section on Promises](http://exploringjs.com/es6/ch_promises.html#sec_introduction-promises) of his wonderful book [Exploring ES6](http://exploringjs.com/es6/),
 [Dr. Axel Rauschmayer](http://dr-axel.de/) collected a list of 
 advantages of Promises over callbacks,
-that we would like to consider here in the light of CPS functions
+that we would like to consider here in the light of the CPS functions
 and explain how, in our view, the latters can enjoy the same advantages.
 
 ## Returning results
@@ -614,7 +622,7 @@ const cps(f1, f2)
 Thus, CPS functions can be regarded as generalization of promises,
 where callbacks are allowed to be called multiple times with several arguments each time,
 rather than with a single value.
-Note that syntax for CPS function is even shorter - ther is no `.then` method needed.
+Note that syntax for CPS function is even shorter - there is no `.then` method needed.
 
 
 ## Chaining
@@ -631,9 +639,9 @@ asyncFunction1(a, b)
   });
 ```
 
-In our view, the complexity of chaing for the callbacks is merely due to the lack of the methods for doing it.
+In our view, the complexity of chaing for the callbacks is merely due to lacking convenience methods for doing it.
 On a basic level, a Promise wraps a CPS function into an object providing such methods.
-However, the Promise constructor also adds restricitons on the functionality and generally does a lot more.
+However, the Promise constructor also adds limitations on the functionality and generally does a lot more, sometimes at the cost of performance.
 On the other hand, to have similar chaining methods, much less powerful methods are needed,
 that can be uniformly provided for general CPS functions. 
 The above example can then be generalized to arbitrary CPS functions:
@@ -718,14 +726,14 @@ to be the second argument, it can also be the first callback
 as in [Fluture](https://github.com/fluture-js/Fluture) or Folktale's [`Data.Task`](https://github.com/folktale/data.task), or the last one, or anywhere inbetween.
 
 Similar to Promises, also for CPS functions, handling 
-both exceptions and asynchronous errors can be managed the same way, if necessary.
+both exceptions and asynchronous errors can be managed the same uniform way.
 Or the multiple callbacks feature of CPS functions can be utilized
 to handle errors of different nature in different callbacks,
 such as for instance [Fun-Task does](https://github.com/rpominov/fun-task/blob/master/docs/exceptions.md).
 
-On the other hand, in comparison with Promises, 
+On the other hand, in contrast to Promises, 
 the CPS functions allow for clean separation between exceptions such as bugs 
-that need to be caught as early as possible, and the asynchronous errors 
+that need to be caught as early as possible, and asynchronous errors 
 that are expected and returned via the error callbacks calls.
 The absence of similar feature for Promises attracted [considerable criticisms](https://medium.com/@avaq/broken-promises-2ae92780f33).
 
