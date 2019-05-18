@@ -1427,7 +1427,7 @@ CPS(cpsValue).ap(cpsResTransformer, cpsErrHandler)(
 )
 ```
 
-The above pattern can be very powrful,
+The above pattern can be very powerful,
 for instance the `cpsErrHandler` function
 can include a remote retry or cleanup service
 that is now completely abstracted away from the main code pipeline!
