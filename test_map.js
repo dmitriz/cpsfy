@@ -1,4 +1,4 @@
-const test = require('./curried-is')
+const test = require('./config').test
 const { map } = require('.')
 
 test('map over single function', t => {
