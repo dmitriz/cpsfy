@@ -5,3 +5,6 @@ yarn-error.log*
 
 # Dependency directories
 node_modules/
+
+# Apple garbage
+.DS_Store
