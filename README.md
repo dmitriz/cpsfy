@@ -402,7 +402,7 @@ Any producer (aka executor) function
 ```js
 const producer = function(resolve, reject) {
   // some work ...
-  if (/* everything is good */) resolve(result)
+  if (everythingIsOk) resolve(result)
   else reject(error) 
 }
 ``` 
@@ -461,9 +461,11 @@ Any Node-Style function with one of more callbacks can be curried into a paramet
 const readFileCPS = (path, options) => callback => fs.readFile(path, options, callback)
 ```
 
-Here `readFileCPS` returns a CPS function for each values of its parameters `(path, options)`.
+Here `readFileCPS` returns a CPS function for each values of its parameters 
+`(path, options)`.
 
-Typically Node API callbacks are called with at least two arguments as `callback(error, arg1, ...)`,
+Typically Node API callbacks are called with at least two arguments as 
+`callback(error, arg1, ...)`,
 where the first argument is used as indication of error. 
 CPS functions generalize this case to arbitrary number of callbacks 
 accepting arbitrary number of arguments each.
@@ -471,9 +473,36 @@ accepting arbitrary number of arguments each.
 
 ## HTTP requests
 In a similar vein, any HTTP request with callback(s) can be regarded as parametrized CPS function:
-
 ```js
-const = (url, options, data) => cb => request(url, options, data, cb)
+const request = require('request')
+// the CPS function is just the curried version
+const requestCps = options => callback => http.request(options, callback)
+```
+
+Now `requestCps` is can be composed with any function computing its `options` object, and the output arguments passed to `callback` can be mapped over any function or chained with any other CPS function:
+```js
+const customRequest = pipe (
+  prepareReqObject,
+  requestCps,
+  // args from callback passed to function inside chain
+  chain((err, res, body) => (resCallback, errCallback) => doWork(...))
+)
+```
+
+Or using the [native Node `https.request`](https://nodejs.org/api/https.html#https_https_request_options_callback):
+```js
+const https = require('https')
+const httpsReqCps = (url, options) => cb => http.request(url, options, cb)
+```
+and turning data events to plain CPS function outputs:
+```js
+const dataStreamCps = pipe (
+  httpsReqCps,
+  // attach `cb` as even listener
+  chain(response => cb => response.on('data', cb)),
+  // and handle the data in the next CPS function
+  chain(dataChunk => cb => cb(someTransformation(dataChunk)))
+)
 ```
 
 ## Database Access
@@ -585,8 +614,6 @@ the corresponding callback will fire
 with entire event data passed as arguments.
 That way the complete event information 
 remains accessible via the CPS function. 
-
-
 
 
 
