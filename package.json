@@ -10,11 +10,16 @@
   "scripts": {
     "test": "ava test*"
   },
-  "keywords": ["continuation", "functional", "monad"],
+  "keywords": [
+    "continuation",
+    "functional",
+    "monad"
+  ],
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "devDependencies": {
     "ava": "^1.4.1",
     "markdown-toc": "^1.2.0"
-  }
+  },
+  "dependencies": {}
 }
