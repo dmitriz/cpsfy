@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "ava test/*test.js",
-    "tape": "tape test/*test.js"
+    "tape": "tape test/*test.js",
+    "tap": "tap test/*test.js"
   },
   "keywords": [
     "continuation",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "ava": "^1.4.1",
     "markdown-toc": "^1.2.0",
+    "tap": "^14.0.0",
     "tape": "^4.10.1"
   },
   "dependencies": {}

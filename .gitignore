@@ -6,5 +6,8 @@ yarn-error.log*
 # Dependency directories
 node_modules/
 
+# Coverage
+.nyc_output
+
 # Apple garbage
 .DS_Store
