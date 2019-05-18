@@ -8,8 +8,8 @@
     "url": "https://github.com/dmitriz/tiny-cps"
   },
   "scripts": {
-    "test": "ava tests/*test.js",
-    "tape": "tape tests/*test.js"
+    "test": "ava test/*test.js",
+    "tape": "tape test/*test.js"
   },
   "keywords": [
     "continuation",
