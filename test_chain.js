@@ -1,4 +1,4 @@
-const test = require('./curried-test')
+const test = require('./curried-is')
 const { chain } = require('.')
 
 test('chain over single CPS function', t => {
