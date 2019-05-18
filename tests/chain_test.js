@@ -1,5 +1,5 @@
 const test = require('./config').test
-const { chain } = require('.')
+const { chain } = require('..')
 
 test('chain over single CPS function', t => {
 	const cpsFun = cb => cb(42)

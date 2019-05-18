@@ -1,5 +1,5 @@
 const test = require('./config').test
-const { map } = require('.')
+const { map } = require('..')
 
 test('map over single function', t => {
 	const cpsFun = cb => cb(42)

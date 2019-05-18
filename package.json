@@ -8,7 +8,8 @@
     "url": "https://github.com/dmitriz/tiny-cps"
   },
   "scripts": {
-    "test": "ava test*"
+    "test": "ava tests/*test.js",
+    "ttape": "tape tests/*test.js"
   },
   "keywords": [
     "continuation",
@@ -19,7 +20,8 @@
   "license": "MIT",
   "devDependencies": {
     "ava": "^1.4.1",
-    "markdown-toc": "^1.2.0"
+    "markdown-toc": "^1.2.0",
+    "tape": "^4.10.1"
   },
   "dependencies": {}
 }
