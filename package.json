@@ -5,12 +5,12 @@
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dmitriz"
+    "url": "https://github.com/dmitriz/tiny-cps"
   },
   "scripts": {
     "test": "ava test*"
   },
-  "keywords": [],
+  "keywords": ["continuation", "functional", "monad"],
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "devDependencies": {
