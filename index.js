@@ -10,11 +10,11 @@
  * which is equivalent to
  * 		fn(...f2(f1(x))...)
  */
-// const pipeline = (...args) => (...fns) =>
-// 	...fns.reduce(
-// 		(acc, fn) => fn(acc),
-// 		...args
-// 	)
+const pipeline = (...args) => (...fns) =>
+	...fns.reduce(
+		(acc, fn) => fn(acc),
+		...args
+	)
 
 
 // [[a]] -> CPS
