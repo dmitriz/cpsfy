@@ -26,4 +26,23 @@ const chain = (...cpsFns) => cpsFun =>
 		)
 	)
 
+/* 
+ * Pipeline Operator
+ * based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Pipeline_operator
+ * but additionally allows passing a chain of functions
+ * 
+ * write pipe chain  
+ *		x |> f1 |> f2 |> ... |> fn
+ * compactly as single function call
+ * 		pipeline(x)(f1, f2, ..., fn)
+ * which is equivalent to
+ * 		fn(...f2(f1(x))...)
+ */
+const pipeline = (...args) => (...fns) =>
+	...fns.reduce(
+		(acc, fn) => fn(acc),
+		...args
+	)
+
+
 module.exports = { of, map, chain }

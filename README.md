@@ -127,7 +127,7 @@ const api = (input1, input2, ...) => (callback1, callbacks2, ...) =>
 ### Variadic input and output
 JavaScript's functions are variadic by design,
 that is, are capable of accepting arbitrary number of arguments at the runtime.
-That feature makes it very convenient to implement optional parameters or set defaults:
+That feature makes it very convenient and powerful to implement optional parameters or set defaults:
 ```js
 const f = (required, optionalWithDefault = default, iAmOptional) => { ... }
 ```
@@ -182,6 +182,55 @@ cpsFun(input)
 cpsFun(input)(callback)
 ```
 Both are of course just functions and function calls, and can be used depending on the need.
+
+
+### Differences with Haskell
+Functional Programming in JavaScript has been largely influenced by Haskell.
+However, there are fundamental design differences with Haskell:
+
+##### JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function). 
+
+While one can always restrict to pure functions only, the available design allows to treat all functions uniformly, including non-pure ones. That provides considerable additional power at no extra cost. As a basic example, consider non-pure function mutating a variable
+```js
+var a = 0
+const f = x => {
+  x = x + a
+}
+```
+that can be (pre-)composed with any other function `g`:
+```js
+const g => y => y * 2
+const composed = y => f(g(x))
+// or equivalently in functional way
+const compose = (f,g) => x => f(g(x))
+const composed = compose(f,g)
+```
+The `compose` operator is defined in uniform fashion and thus allows to compose arbitrary non-pure funcitons without any extra cost.
+
+
+
+##### JavaScript functions are by design accepting arbitrary number of arguments. 
+
+Again, one can always restrict to single argument, but that way considerable additional power provided by the language design is lost. For instance, object methods (that in JavaScript are treated as regular functions) are often defined with no parameters. As basic example consider adding results of two separate computations:
+```js
+const f1 = x => someComputation1(x)
+const f2 = y => someComputation2(y)
+const add = (a, b) => a + b
+// binary addition is (pre-)composed with both f1, f2
+const result = (x, y) => add(f1(x), f2(y))
+```
+Defining such abstract composition operator is straightforward:
+```js
+const binaryCompose => (h, f1, f2) => (x, y) => h(f1(x), f2(y))
+const result = binaryCompose(add, f1, f2)
+```
+However, all 3 parameters `h, f1, f2` are mixed inside the signature, despite of their different roles. It is difficult to remember which function goes where and easy to introduce errors. A more readable and expressive way would be to use the curried signature:
+```js
+const binaryCompose1 => h => (f1, f2) => (x, y) => h(f1(x), f2(y))
+const result = binaryCompose1(add)(f1, f2)
+```
+Now the inside functions `f1, f2` are visibly separated from the outside `h`.
+The logic is much cleaner, probability of errors is lower and function is easier to test and debug. Such convenient separation between groups of functional parameters is easier in JavaScript than e.g. in Haskell with no distinction between curried and uncurried parameters.
 
 
 ### "Do less" is a feature
@@ -965,8 +1014,10 @@ that is the following expressions are equivalent:
 ```js
 of(x).map(f)
 of(f(x))
+// both expressions are equivalent to
+cb => cb(f(x))
 ```
-The first function applies `f` to transform its single output,
+In our case, the first expression maps `f` over the CPS function `cb => cb(x)` by transforming its single output `x`,
 whereas the second one outputs `f(x)` direclty into its callback, which is obviously the same.
 
 More generally, the following are still equivalent
@@ -974,6 +1025,8 @@ with the same reasoning:
 ```js
 of(x1, x2, ...).map(f)
 of(f(x1, x2, ...))
+// both expressions are equivalent to
+cb => cb(f(x1, x2, ...)) 
 ```
 
 
