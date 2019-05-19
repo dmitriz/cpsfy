@@ -23,8 +23,6 @@ const getServerStuff = ajaxCall
     + [Functional progamming paradigm](#functional-progamming-paradigm)
     + [Lazy or eager?](#lazy-or-eager)
     + [Differences with Haskell](#differences-with-haskell)
-        * [JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function).](#javascript-functions-are-by-design-not-required-to-be-purehttpsenwikipediaorgwikipure_function)
-        * [JavaScript functions are by design accepting arbitrary number of arguments.](#javascript-functions-are-by-design-accepting-arbitrary-number-of-arguments)
     + ["Do less" is a feature](#do-less-is-a-feature)
   * [Terminology](#terminology)
   * [Using CPS functions](#using-cps-functions)
@@ -80,7 +78,6 @@ const getServerStuff = ajaxCall
     + [Filtering over multiple functions](#filtering-over-multiple-functions)
     + [Implementation via `chain`](#implementation-via-chain)
   * [CPS.scan](#cpsscan)
-
 
 
 # CPS functions
@@ -194,7 +191,7 @@ Both are of course just functions and function calls, and can be used depending 
 Functional Programming in JavaScript has been largely influenced by Haskell.
 However, there are fundamental design differences with Haskell:
 
-##### JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function). 
+1. **JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function).**
 
 While one can always restrict to pure functions only, the available design allows to treat all functions uniformly, including non-pure ones. That provides considerable additional power at no extra cost. As a basic example, consider non-pure function mutating a variable
 ```js
@@ -215,7 +212,7 @@ The `compose` operator is defined in uniform fashion and thus allows to compose 
 
 
 
-##### JavaScript functions are by design accepting arbitrary number of arguments. 
+2. **JavaScript functions are by design accepting arbitrary number of arguments.**
 
 Again, one can always restrict to single argument, but that way considerable additional power provided by the language design is lost. For instance, object methods (that in JavaScript are treated as regular functions) are often defined with no parameters. As basic example consider adding results of two separate computations:
 ```js

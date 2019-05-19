@@ -8,8 +8,6 @@
     + [Functional progamming paradigm](#functional-progamming-paradigm)
     + [Lazy or eager?](#lazy-or-eager)
     + [Differences with Haskell](#differences-with-haskell)
-        * [JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function).](#javascript-functions-are-by-design-not-required-to-be-purehttpsenwikipediaorgwikipure_function)
-        * [JavaScript functions are by design accepting arbitrary number of arguments.](#javascript-functions-are-by-design-accepting-arbitrary-number-of-arguments)
     + ["Do less" is a feature](#do-less-is-a-feature)
   * [Terminology](#terminology)
   * [Using CPS functions](#using-cps-functions)
