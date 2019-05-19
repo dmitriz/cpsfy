@@ -191,7 +191,7 @@ Both are of course just functions and function calls, and can be used depending 
 Functional Programming in JavaScript has been largely influenced by Haskell.
 However, there are fundamental design differences with Haskell:
 
-1. **JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function).**
+#### JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function)
 
 While one can always restrict to pure functions only, the available design allows to treat all functions uniformly, including non-pure ones. That provides considerable additional power at no extra cost. As a basic example, consider non-pure function mutating a variable
 ```js
@@ -212,7 +212,7 @@ The `compose` operator is defined in uniform fashion and thus allows to compose 
 
 
 
-2. **JavaScript functions are by design accepting arbitrary number of arguments.**
+#### JavaScript functions are by design accepting arbitrary number of arguments
 
 Again, one can always restrict to single argument, but that way considerable additional power provided by the language design is lost. For instance, object methods (that in JavaScript are treated as regular functions) are often defined with no parameters. As basic example consider adding results of two separate computations:
 ```js
@@ -288,6 +288,7 @@ Using CPS functions is as simple as using JavaScript Promises:
 // Set up database query as parametrized CPS function with 2 callbacks,
 // one for the result and one for the error
 const cpsQuery = query => (resBack, errBack) => 
+  // assuming Node style callback with error param first
   queryDb(query, (err, res) => err 
     ? resBack(res) 
     : errBack(err))
@@ -304,12 +305,12 @@ promiseQuery({name: 'Jane'}).then(
   error => console.error("Sorry, an error happened: ", error)
 )
 ```
-Except that, calling `then` method is replaced by the direct function call,
+Except that, calling `then` method is replaced by plain function call
 and arbitrary number of callbacks is allowed,
 each of which can be called arbitrary many times,
 as e.g. in the event streams.
 A Promise is essentially a CPS function with its first event cached,
-that can be implemented by chaining (via `chain`) any CPS function
+that can be implemented by chaining (via [`chain`](#cpschain), see below) any CPS function
 with the one picking and caching the first output from any callback.
 
 
@@ -474,11 +475,10 @@ const cpsFromPromise = (onFulfilled, onRejected) =>
   promise.then(onFulfilled, onRejected)
 ```
 
-The important restictions for CPS functions arising that way are:
+The important restictions Promises arising that way are:
 1. Among many callbacks passed, at most one is ever called.
-2. Each of the callback functions is called precisely with one argument.
-
-More general CPS functions do not have such limitations.
+2. Each of the callbacks is called precisely with one argument.
+CPS functions do not have such limitations.
 
 As any Promise provides a CPS function via its `then` method with two callbacks,
 it can be dropped direclty into any CPS operator:
@@ -492,7 +492,7 @@ CPS(cpsFun)
 ```
 
 Here `(x, y)` is the first output from `cpsFun` (the one passed into the first callback).
-Now every such output will be passed into `somePromise` via `chain`,
+Now every such output will be passed into `somePromise` via [`chain`](#cpschain),
 that will subsequently pass its result or error into the final callbacks
 that are attached via plain function call.
 And even better, the error callbacks will also receive 
@@ -896,7 +896,7 @@ are similar to `Array.map` as well as other `map` functions/methods used in Java
 ### Mapping over single function
 In the simplest case of a single function `x => f(x)` with one argument,
 the corresponding transformation of the CPS function only affects the first callback,
-very similar to how the function inside `.then` method of a promise only affects the fulfilled value:
+very similar to how the function inside `.then` method of a Promise only affects the fulfilled value:
 
 ```js
 const newPromise = oldPromise.then(f)
@@ -906,17 +906,17 @@ Except that the `map` behavior is simpler with no complex promise recognition no
 
 ```js
 const newCps = CPS(oldCps).map(f)
-```
-
-or without wrapping
-
-```js
+// or equivalently in the point-free functional style
+const newCps = map(f)(oldCps)
+// or equivalently using pipeline
 const newCps = pipeline(oldCps)(map(f))
 ```
 
 The `newCps` function will call its first callback
 with the single transformed value `f(res)`,
 whereas the functionality of the other callbacks remains unchanged.
+
+Also the return value of the CPS function always remains unchanged after transforming with `map`.
 
 
 ### Mapping over multiple functions

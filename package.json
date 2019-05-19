@@ -2,6 +2,9 @@
   "version": "0.1.0",
   "name": "tiny-cps",
   "main": "index.js",
+  "files": [
+    "index.js"
+  ],
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "repository": {
     "type": "git",
