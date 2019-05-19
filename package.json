@@ -10,7 +10,8 @@
   "scripts": {
     "test": "ava test/*test.js",
     "tape": "tape test/*test.js",
-    "tap": "tap test/*test.js"
+    "tap": "tap test/*test.js",
+    "toc": "markdown-toc README.md > toc"
   },
   "keywords": [
     "continuation",

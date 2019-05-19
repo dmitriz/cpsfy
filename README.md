@@ -1,7 +1,7 @@
 # tiny-cps
 Tiny goodies for Continuation-Passing-Style functions
 
-> Simplicity is prerequisite for reliability. - Dijkstra
+> Simplicity is prerequisite for reliability. - [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
 
 > 
 ```js
@@ -13,6 +13,7 @@ const getServerStuff = ajaxCall
 
 *--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
 
+
 - [CPS functions](#cps-functions)
   * [Why?](#why)
   * [Advanced composability](#advanced-composability)
@@ -21,6 +22,10 @@ const getServerStuff = ajaxCall
     + [Full power of multiple outputs streams](#full-power-of-multiple-outputs-streams)
     + [Functional progamming paradigm](#functional-progamming-paradigm)
     + [Lazy or eager?](#lazy-or-eager)
+    + [Differences with Haskell](#differences-with-haskell)
+        * [JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function).](#javascript-functions-are-by-design-not-required-to-be-purehttpsenwikipediaorgwikipure_function)
+        * [JavaScript functions are by design accepting arbitrary number of arguments.](#javascript-functions-are-by-design-accepting-arbitrary-number-of-arguments)
+    + ["Do less" is a feature](#do-less-is-a-feature)
   * [Terminology](#terminology)
   * [Using CPS functions](#using-cps-functions)
   * [What about Callback Hell?](#what-about-callback-hell)
@@ -49,7 +54,7 @@ const getServerStuff = ajaxCall
   * [CPS.map](#cpsmap)
     + [Mapping over single function](#mapping-over-single-function)
     + [Mapping over multiple functions](#mapping-over-multiple-functions)
-    + [Mapping over maps taking multiple arguments](#mapping-over-maps-taking-multiple-arguments)
+    + [Map taking multiple arguments](#map-taking-multiple-arguments)
     + [Functor laws](#functor-laws)
     + [CPS.of](#cpsof)
   * [CPS.chain](#cpschain)
@@ -75,6 +80,7 @@ const getServerStuff = ajaxCall
     + [Filtering over multiple functions](#filtering-over-multiple-functions)
     + [Implementation via `chain`](#implementation-via-chain)
   * [CPS.scan](#cpsscan)
+
 
 
 # CPS functions
@@ -454,7 +460,7 @@ const producer = function(resolve, reject) {
   if (everythingIsOk) resolve(result)
   else reject(error) 
 }
-``` 
+```
 
 as one typically passed to the [Promise constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) is an example of a CPS function. 
 
@@ -467,7 +473,8 @@ Any JavaScript Promise generates a CPS function via its `.then` method
 that completely captures the information held by the Promise:
 
 ```js
-const cpsFromPromise = (onFulfilled, onRejected) => promise.then(onFulfilled, onRejected)
+const cpsFromPromise = (onFulfilled, onRejected) => 
+  promise.then(onFulfilled, onRejected)
 ```
 
 The important restictions for CPS functions arising that way are:
