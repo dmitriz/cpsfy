@@ -10,7 +10,3 @@ test('create CPS with multi-arg output', t => {
 	const callback = (x, y) => t.cis(9)(x + y)	
 	of(2, 7)(callback)
 })
-
-test('return value is always undefined', t => {
-	t.is(of(1, 4)(x => x), undefined)
-})

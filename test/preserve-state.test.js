@@ -5,9 +5,6 @@ const { map, chain } = require('..')
 // --- Preserving state
 
 const checkState = (name, cpsFn, cpsFn1) => {
-	test(name + 'return value is unchanged after mapping', t => {
-		t.is(cpsFn1(x=>1), 11)
-	})
 	test(name + 'enum props passed to transformed CPS fn', t => {
 		t.deepEqual([cpsFn1.p, cpsFn1.f], [12, f])
 	})
@@ -16,7 +13,7 @@ const checkState = (name, cpsFn, cpsFn1) => {
 	})
 }
 
-const cpsFn = cb => {cb(42); return 11}
+const cpsFn = cb => cb(42)
 const f = x => x - 4
 const protoObj = {a: 22}
 Object.setPrototypeOf(cpsFn, protoObj)

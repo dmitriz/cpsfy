@@ -41,9 +41,3 @@ test('chain over multiple functions merges the outputs', t => {
 		called = true
 	})	
 })
-
-test('return value is unchanged after chaining', t => {
-	const cpsFun = cb => {cb(42); return 11}
-	t.is( 11, chain(x => cb => x*2)(cpsFun)(x=>x) )
-	t.is( 11, chain(x => (cb1, cb2) => {cb1(x*2); cb2(x+1) })(cpsFun)(x=>x, x=>x) )
-})

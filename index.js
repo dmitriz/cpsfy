@@ -42,16 +42,16 @@ const inheritState = (target, source) => {
  *
  * @name CPS.of
  * @params {Tuple} (...args) tuple of arbitrary values
- * @returns {CPS Function} CPS.of(...args) that outputs (...args) inside its first callback (with `undefined` return value)
+ * @returns {CPS Function} CPS.of(...args) that outputs (...args) inside its first callback
  *
  * @example
  * CPS.of(x1, x2, x3)
  * 		is equivalent to CPS function 
- * cb => { cb(x1, x2, x3) }
+ * cb => cb(x1, x2, x3)
  *
  * Along with CPS.map conforms to the Pointed Functor spec, see https://stackoverflow.com/a/41816326/1614973
  */
-const of = (...args) => cb => { cb(...args) }
+const of = (...args) => cb => cb(...args)
 
 
 /**
@@ -70,7 +70,7 @@ const of = (...args) => cb => { cb(...args) }
  * CPS.map(f1, f2)(cpsFun)
  *		is equivalent to the CPS function
  * (cb1, cb2) => cb1(f1(2, 3)) + cb2(f2(7))
- * 		where f1 and f2 transform respective outputs while return value remains unchanged
+ * 		where f1 and f2 transform respective outputs
  */
 const map = (...fns) => cpsFun => {
 	let cpsNew = (...cbs) => cpsFun(
