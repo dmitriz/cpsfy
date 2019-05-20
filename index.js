@@ -27,11 +27,10 @@ const pipeline = (...args) => (...fns) => {
 /* ----- CPS operators ----- */
 
 // [[a]] -> CPS
-const of = (...arrays) => (...cbs) => {
-	arrays.forEach(
-		(array, idx) => cbs[idx] && cbs[idx](...array)
-	)	
-}
+// 		of(x1, x2, ...) 
+// is equivalent to
+// 		cb => cb(x1, x2, ...)
+const of = (...args) => cb => cb(...args)
 
 // (...fns) -> CPS -> CPS
 const map = (...fns) => cpsFun =>
