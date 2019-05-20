@@ -37,6 +37,3 @@ test('return value is unchanged after mapping', t => {
 	const cpsFun1 = (cb1, cb2) => {cb1(42); cb2(24); return 11}
 	t.is(map(x => x*2)(cpsFun1)(x=>x, x=>x), 11)
 })
-
-
-

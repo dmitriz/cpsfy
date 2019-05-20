@@ -53,9 +53,11 @@ const chain = (...cpsFns) => cpsFun =>
 		)
 	)
 
-const CPS = cpsFn => ({
-	map: (...args) => map(...args)(cpsFn),
-	chain: (...args) => chain(...args)(cpsFn)
-})
+const CPS = cpsFn => {
+	return {
+		map: (...args) => map(...args)(cpsFn),
+		chain: (...args) => chain(...args)(cpsFn)
+	}
+}
 
 module.exports = { pipeline, of, map, chain, CPS }

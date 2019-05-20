@@ -18,3 +18,13 @@ test('does not mutate object', t => {
 	CPS(obj)
 	t.deepEqual(obj, {})
 })
+
+
+// TODO ?
+// test('function call is delegated', t => {
+// 	const cpsFun = cb => cb(42)
+// 	t.is(
+// 		CPS(cpsFun)(x => x + 1),
+// 		43
+// 	)
+// })
