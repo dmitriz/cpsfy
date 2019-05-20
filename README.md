@@ -559,7 +559,7 @@ const dataStreamCps = pipe (
 ```
 
 ## Database Access
-Any async database access API with callback can be curried into parametrized CPS functions:
+Any async database access API with callbacks can be curried into parametrized CPS functions:
 
 ```js
 const queryDb = (db, query) => callback => getQuery(db, query, callback)
@@ -569,12 +569,12 @@ const insertDb = (db, data) => callback => inserData(db, data, callback)
 In most cases each of these is considered a single request resulting in either success of failure.
 However, more general CPS functions can implement more powerful functionality with multiple callback calls.
 For instance, a function can run multiple data insetion attempts with progress reported back to client.
-Or the query function can return its result in multiple chunks, each with a separate callback call.
+Or the query function can return its result in multiple chunks, each with a separate callback call. Or even subscribe to changes and update client in real time.
 Further, the database query funtion can hold a state that is advanced with each call.
 Similarly, any database access can be cancelled by subsequent call of the same CPS function with suitable parameters. 
 
 ## Middleware e.g. in Express or Redux
-[Express Framework](https://expressjs.com/) in NodeJs popularised
+The [Express Framework](https://expressjs.com/) in NodeJs popularised
 the concept of [middleware](https://expressjs.com/en/guide/writing-middleware.html)
 that later found its place in other frameworks such as 
 [Redux](https://redux.js.org/advanced/middleware#understanding-middleware).
@@ -590,7 +590,6 @@ it allows for each side to benefit from the other.
 
 ## Web Sockets
 Here is a generic CPS function parametrized by its url `path`:
-
 ```js
 const WebSocket = require('ws')
 const createWS = path => callback => 
@@ -619,7 +618,6 @@ Indeed, a Pull Stream is essentially a function `f(abort, callback)` that is cal
 by the sink to produce on-demand stream of data.
 Any such function can be clearly curried into a
 is a parametrized CPS function
-
 ```js
 const pullStream = params => callback => {...}
 ```
@@ -630,8 +628,8 @@ Any `flyd` stream can be wrapped into a CPS function with single callback called
 const cpsFun = callback => flydStream
   .map(x => callback(x))
 ```
-The resulting `cpsFun` function, when called with any `callback`,
-simply subsribe that callback to the stream events.
+The resulting CPS function `cpsFun`, when called with any `callback`,
+simply subsribes that callback to the stream events.
 
 Conversely, any CPS function `cpsFun` can be simply called with
 any `flyd` stream in place of one of its callback arguments:
@@ -661,12 +659,12 @@ const cpsFun = (cb1, cb2) => {
 }
 ```
 and thereby serve as functional event aggregators
-encapsulating the events.
+encapsulating multiple events.
 Every time any of the event is emitted,
 the corresponding callback will fire
 with entire event data passed as arguments.
-That way the complete event information 
-remains accessible via the CPS function. 
+That way complete information from multiple events
+remains accessible via single CPS function. 
 
 
 
@@ -674,7 +672,7 @@ remains accessible via the CPS function.
 
 Our main motivation for dealing with CPS functions is to enhance
 the power of common coding patterns into a single unified abstraction,
-which can capture the advantages typically regarded for Promises over callbacks.
+which can capture the advantages typically regarded as ones of Promises over callbacks.
 
 In the [introductory section on Promises](http://exploringjs.com/es6/ch_promises.html#sec_introduction-promises) of his wonderful book [Exploring ES6](http://exploringjs.com/es6/),
 [Dr. Axel Rauschmayer](http://dr-axel.de/) collected a list of 
@@ -725,7 +723,6 @@ However, the Promise constructor also adds limitations on the functionality and 
 On the other hand, to have similar chaining methods, much less powerful methods are needed,
 that can be uniformly provided for general CPS functions. 
 The above example can then be generalized to arbitrary CPS functions:
-
 ```js
 // wrapper providing methods
 CPS(cpsFunction1(a, b))
@@ -740,10 +737,10 @@ CPS(cpsFunction1(a, b))
   });
 ```
 Here `CPS(...)` is a lightweight object wrapper providing the `map` and `chain` methods among others,
-such that `CPS.of` and `map` conform to the [Pointed Functor](https://stackoverflow.com/questions/39179830/how-to-use-pointed-functor-properly/41816326#41816326) and `CPS.of` and `chain` 
-to the [Monadic](https://github.com/rpominov/static-land/blob/master/docs/spec.md#monad) [interface](https://github.com/fantasyland/fantasy-land#monad).
+such that `CPS.of` and `map` conform to the [Pointed Functor](https://stackoverflow.com/questions/39179830/how-to-use-pointed-functor-properly/41816326#41816326) and `CPS.of` with `CPS.chain` to the [Monadic](https://github.com/rpominov/static-land/blob/master/docs/spec.md#monad) [interface](https://github.com/fantasyland/fantasy-land#monad).
 At the same time, the full functional structure is preserved allowing for drop in replacement
 `cpsFun` with `CPS(cpsFun)`, see below.
+
 
 ## Asynchronous composition
 > Composing asynchronous calls (loops, mapping, etc.): is a little easier, because you have data (Promise objects) you can work with.
@@ -962,7 +959,6 @@ with some `f3` provided.
 
 
 ### Map taking arbitrarily many functions with arbitrary numbers of arguments
-
 In most general case, `map` applies its argument functions to several arguments passed at once to corresponding callbacks:
 ```js
 const oldCps = x => (cb1, cb2, cb3) => {
@@ -973,7 +969,6 @@ const newCps = CPS(oldCps).map(f1, f2, f3)
 ```
 
 That means, the pattern can be generalized to
-
 ```js
 const newCps = CPS(oldCps).map((res1, res2, ...) => f(res1, res2, ...))
 ```
@@ -1005,6 +1000,7 @@ cpsFun.map(f).map(g)
 // and
 cpsFun.map(x => g(f(x)))
 ```
+as well as
 ```js
 cpsFun
 // and
@@ -1588,8 +1584,6 @@ Since Promises only take the first emitted value from each output,
 merging those results in the earliest value from all being picked by the Promise,
 hence the direct analogy with `Promise.race`.
 
-
-
 ### Commutative Monoid
 The `merge` operator makes the set of all CPS functions a commutative Monoid,
 where the identity is played by the trivial CPS function that never emits any output.
@@ -1674,7 +1668,6 @@ Note that the function inside `chain` updates the `state` outside its scope,
 so it is not pure, however, we can still `chain` it like any other function.
 
 And here is the mulitple arguments generalization:
-
 ```js
 // `reducers` and `states` are matched together by index
 const scan = (...reducers) => (...states) => {
@@ -1687,6 +1680,5 @@ const scan = (...reducers) => (...states) => {
   ))
 }
 ```
-
 
 
