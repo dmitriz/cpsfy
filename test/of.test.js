@@ -6,8 +6,11 @@ test('create CPS functions with single output', t => {
 })
 
 test('create CPS with multi-arg output', t => {
-	t.is(
-		of(2, 7)((x,y) => x + y),
-		9
-	)
+	// callback to test that x + y = 9
+	const callback = (x, y) => t.cis(9)(x + y)	
+	of(2, 7)(callback)
+})
+
+test('return value is always undefined', t => {
+	t.is(of(1, 4)(x => x), undefined)
 })
