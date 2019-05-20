@@ -26,6 +26,15 @@ const pipeline = (...args) => (...fns) => {
 
 /* ----- CPS operators ----- */
 
+const inheritState = (target, source) => {
+	Object.setPrototypeOf(
+		target, Object.getPrototypeOf(source)
+	)
+	Object.assign(
+		target, source
+	)
+}
+
 // [[a]] -> CPS
 // 		of(x1, x2, ...) 
 // is equivalent to
@@ -33,18 +42,21 @@ const pipeline = (...args) => (...fns) => {
 const of = (...args) => cb => cb(...args)
 
 // (...fns) -> CPS -> CPS
-const map = (...fns) => cpsFun =>
-	(...cbs) => cpsFun(
+const map = (...fns) => cpsFun => {
+	let cpsNew = (...cbs) => cpsFun(
 		// precompose every callback with fn matched by index or pass directly the args
 		// collect functions in array and pass as callbacks to cpsFun
 		...cbs.map(
 			(cb, idx) => (...args) => fns[idx] ? cb(fns[idx](...args)) : cb(...args)
 		)
 	)
+	inheritState(cpsNew, cpsFun)
+	return cpsNew
+}
 
 // (...fns) -> CPS -> CPS
-const chain = (...cpsFns) => cpsFun =>
-	(...cbs) => cpsFun(
+const chain = (...cpsFns) => cpsFun => {
+	let cpsNew = (...cbs) => cpsFun(
 		// precompose every callback with fn matched by index or pass directly the args
 		// collect functions in array and pass as callbacks to cpsFun
 		...cpsFns.map(
@@ -52,6 +64,9 @@ const chain = (...cpsFns) => cpsFun =>
 			cpsFn => (...args) => cpsFn(...args)(...cbs)
 		)
 	)
+	inheritState(cpsNew, cpsFun)
+	return cpsNew	
+}
 
 const CPS = cpsFn => {
 	return {
