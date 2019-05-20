@@ -54,20 +54,9 @@ const chain = (...cpsFns) => cpsFun =>
 		)
 	)
 
+const CPS = cpsFn => ({
+	map: (...args) => map(...args)(cpsFn),
+	chain: (...args) => chain(...args)(cpsFn)
+})
 
-// TODO: fix is needed to avoid object mutation
-// add method to object by delegating to curried function applied to it
-const fn2method = (obj, name, fn) => {
-	obj[name] = (...args) => fn(...args)(obj)
-	return obj
-}
-
-// // CPS adds the methods to its argument
-const methods = { map, chain }
-const CPS = cpsFun => Object.keys(methods).reduce(
-	(acc, fnName) => fn2method(acc, fnName, methods[fnName]),
-	cpsFun
-)
-
-
-module.exports = { of, map, chain, pipeline }
+module.exports = { pipeline, of, map, chain, CPS }
