@@ -1,3 +1,31 @@
+/**
+ * Pipeline Operator
+ * based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Pipeline_operator
+ * but additionally allows passing a chain of functions
+ * 
+ * write pipe chain  
+ *		x |> f1 |> f2 |> ... |> fn
+ * compactly as single function call
+ * 		pipeline(x)(f1, f2, ..., fn)
+ * which is equivalent to
+ * 		fn(...f2(f1(x))...)
+ *
+ * multiple args:
+ *		pipeline(x,y)(f)
+ * is equivalent to
+ *		f(x, y)
+ */
+const pipeline = (...args) => (...fns) => {
+	const f1 = fns[0]
+	return fns.slice(1).reduce(
+		(acc, fn) => fn(acc),
+		f1(...args)
+	)
+}
+
+
+/* ----- CPS operators ----- */
+
 // [[a]] -> CPS
 const of = (...arrays) => (...cbs) => {
 	arrays.forEach(
@@ -42,24 +70,4 @@ const CPS = cpsFun => Object.keys(methods).reduce(
 )
 
 
-// TODO: fix implementation
-/**
- * Pipeline Operator
- * based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Pipeline_operator
- * but additionally allows passing a chain of functions
- * 
- * write pipe chain  
- *		x |> f1 |> f2 |> ... |> fn
- * compactly as single function call
- * 		pipeline(x)(f1, f2, ..., fn)
- * which is equivalent to
- * 		fn(...f2(f1(x))...)
- */
-// const pipeline = (...args) => (...fns) =>
-// 	...fns.reduce(
-// 		(acc, fn) => fn(acc),
-// 		...args
-// 	)
-
-
-module.exports = { of, map, chain }
+module.exports = { of, map, chain, pipeline }

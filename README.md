@@ -897,83 +897,104 @@ are similar to `Array.map` as well as other `map` functions/methods used in Java
 In the simplest case of a single function `x => f(x)` with one argument,
 the corresponding transformation of the CPS function only affects the first callback,
 very similar to how the function inside `.then` method of a Promise only affects the fulfilled value:
-
 ```js
 const newPromise = oldPromise.then(f)
 ```
 
 Except that the `map` behavior is simpler with no complex promise recognition nor any thenable unwrapping:
-
 ```js
 const newCps = CPS(oldCps).map(f)
-// or equivalently in the point-free functional style
+// or equivalently in point-free functional style
 const newCps = map(f)(oldCps)
 // or equivalently using pipeline
 const newCps = pipeline(oldCps)(map(f))
 ```
-
 The `newCps` function will call its first callback
 with the single transformed value `f(res)`,
 whereas the functionality of the other callbacks remains unchanged.
 
-Also the return value of the CPS function always remains unchanged after transforming with `map`.
+Also the return value of CPS function always remains unchanged after transforming with any `map` invocation, e.g. `newCps` above returns the same value as `oldCps`.
+
+
+The last two expressions have the advantage that no wrapping into `CPS()` is needed. The `pipeline` version in addition corresponds to the natural flow - get `oldCps` first, then pass to the transformer. This advantage appears even more visible with anonymous functions:
+```js
+// outputting 2-tuple of values
+const newCps = pipeline(x => cb => cb(x+1, x+2))(
+  // the 2-tuple is passed as args to function inside `map`
+  map((val1, val2) => val1 * val2)
+)
+// or equivalently using the `.map` method via CPS wrapper
+const newCps = CPS(x => cb => cb(x+1, x+2))
+  .map((val1, val2) => val1 * val2)
+// to compare with point-free style
+const newCps = map((val1, val2) => val1 * val2)(
+  x => cb => cb(x+1, x+2)
+)
+```
 
 
 ### Mapping over multiple functions
-To transform results inside other callbacks, the same `map` method
-can be used with mulitple functions:
 
+As `map(f)` is itself a function, its JavaScript signature provides us with the power to pass to it arbitrary number of arguments: `map(f1, f2, ...)`. This added power appear very handy for CPS functions with multiple outputs via multiple callbacks, where we can apply the `n`th function `fn` to transform the output of the `n`th callback:
 ```js
 const newCps = CPS(oldCps).map(res => f(res), err => g(err))
 // or simply
 const newCps = CPS(oldCps).map(f, g)
+// or equivalently in point-free style
+const newCps = map(f, g)(oldCps)
+// or with pipeline
+const newCps = pipeline(oldCps)(map(f,g))
 ```
 
 Here we are calling the second result `err` in analogy with promises,
-however, in general, it is just the second callback argument with no other meaning.
+however, in general, it can be any callback without extra meaning.
 The resulting CPS function will call its first and second callbacks
 with correspondingly transformed arguments `f(res)` and `g(res)`,
 whereas all other callbacks will be passed from `newCps` to `oldCps` unchanged.
 
-The latter property generalized the praised feature of the Promises,
+The latter property generalizes the praised feature of Promises,
 where a single error handler can deal with all accumulated errors.
-In our case, the same behavior occurs for the `n`-th callback
-that will be picked by only those `map` invocations holding functions at their `n`-th spot.
+In our case, the same behavior occurs for the `n`th callback
+that will be picked by only those `map` invocations holding functions at their `n`th spot.
 For instance, a possible third callback `progress` 
 will similaly be handled only invocations of `map(f1, f2, f3)`
 with some `f3` provided.
 
 
-### Map taking multiple arguments
-The single function `map` infocation actually applies the function to all the arguments
-passed to the callback. That means, the above pattern can be generalized to
+### Map taking arbitrarily many functions with arbitrary numbers of arguments
+
+In most general case, `map` applies its argument functions to several arguments passed at once to corresponding callbacks:
+```js
+const oldCps = x => (cb1, cb2, cb3) => {
+  cb1(vals1); cb2(vals2); cb3(vals3)
+}
+// now vals1 are tranformed with f1, vals2 with f2, vals3 with f3
+const newCps = CPS(oldCps).map(f1, f2, f3)
+```
+
+That means, the pattern can be generalized to
 
 ```js
 const newCps = CPS(oldCps).map((res1, res2, ...) => f(res1, res2, ...))
 ```
-
-or just passing all the results as arguments:
-
+or passing arbitrary number of arguments with [rest parameters syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters):
 ```js
 const newCps = CPS(oldCps).map((...args) => f(...args))
 // which is the same as
 const newCps = CPS(oldCps).map(f)
 ```
-
 or passing only some of the arguments:
-
 ```js
-const newCps = CPS(oldCps).map((iAmThrownAway, ...rest) => f(...rest))
+const newCps = CPS(oldCps)
+  .map((iAmThrownAway, ...rest) => f(...rest))
 ```
-
-or picking props from multiple objects via destructuring:
-
+or picking props from multiple objects selectively via destructuring:
 ```js
-const newCps = CPS(oldCps).map(({name: name1}, {name: name2}) => f(name1, name2))
+const newCps = CPS(oldCps)
+  // select only important props and transform as 2-tuple
+  .map(({name: name1}, {name: name2}) => f(name1, name2))
 ```
-
-Now the names from objects will go into `f`.
-None of these is possible with promises where only single values are ever being passed.
+None of these transformations would be as convenient with Promises where only single values are ever being passed.
 
 
 ### Functor laws
@@ -981,20 +1002,23 @@ The `map` method for single functions of single argument satisfies the functor l
 That is, the following pairs of expressions are equivalent:
 ```js
 cpsFun.map(f).map(g)
+// and
 cpsFun.map(x => g(f(x)))
 ```
 ```js
 cpsFun
+// and
 cpsFun.map(x => x)
 ```
 
 In fact, we have more general equivalences with multiple arguments:
 ```js
 cpsFun.map(f1, f2, ...).map(g1, g2, ...)
+// and
 cpsFun.map(x1 => g1(f1(x1)), x2 => g2(f2(x2)), ...)
 ```
 where in addition, the number of `f`'s can differ from the number of `g`'s,
-in which case the missing maps have to replaced by the identities.
+in which case the missing maps are replaced by the identities.
 
 
 ### CPS.of
@@ -1008,11 +1032,11 @@ or equivalently
 const of = (...args) => callback => callback(...args)
 ```
 
-Here the full tuple `(x1, x2, ...)` becomes the single output of
+Here the full tuple `(x1, x2, ...)` becomes a single output of
 the created CPS function `of(x1, x2, ...)`.
 
 As mentioned before, 
-`of` and `map` for single functions of single argument 
+`of` and `map` for single functions with single argument 
 conform to the [Pointed Functor](https://stackoverflow.com/questions/39179830/how-to-use-pointed-functor-properly/41816326#41816326),
 that is the following expressions are equivalent:
 ```js
@@ -1028,8 +1052,9 @@ More generally, the following are still equivalent
 with the same reasoning:
 ```js
 of(x1, x2, ...).map(f)
+// and
 of(f(x1, x2, ...))
-// both expressions are equivalent to
+// are equivalent to
 cb => cb(f(x1, x2, ...)) 
 ```
 
@@ -1038,28 +1063,29 @@ cb => cb(f(x1, x2, ...))
 
 ### Transforming multiple arguments into multiple arguments
 There is a certain lack of symmetry with the `map` method,
-due to the way the function are called with several arguments but 
+due to the way functions are called with several arguments but 
 only ever return a single value.
 
 But what if we want not only to consume, but also to pass multiple arguments to the callback of the new CPS function?
 
 No problem. Except that, we should wrap these into another CPS function and use `chain` instead:
 ```js
-const newCps = CPS(oldCps).chain((x1, x2, ...) => of(x1 + 1, x2 * 2))
-```
-of equivalently and more directly
-```js
-const newCps = CPS(oldCps).chain((x1, x2, ...) => cb => cb(x1 + 1, x2 * 2))
+const newCps = CPS(oldCps)
+  .chain((x1, x2, ...) => of(x1 + 1, x2 * 2))
+// or explicitly
+const newCps = CPS(oldCps)
+  .chain((x1, x2, ...) => cb => cb(x1 + 1, x2 * 2))
 ```
 
-Here we pass both `x1 + 1` and `x2 * 2` simultaneously into the transformation callback `cb`.
-Similar to promises, we can regard `(x1, x2, ...)` as the tuple of values held inside the CPS function,
-in fact, being passed to its first callback. 
-Now the `chain` receives this tuple,
-trasnforms it according to the second CPS function, i.e. into the pair `(x1 + 1, x2 * 2)`,
-and finally passes it into the first callback of `newCps`.
+Here we pass both `x1 + 1` and `x2 * 2` simultaneously into the callback `cb`.
+Generalizing Promises that only hold one value, we can regard `(x1, x2, ...)` as tuple of values held inside single CPS function,
+in fact, all being passed to only its first callback. 
+Now the output values of `oldCps` are passed to the functions inside
+ `chain`, get transformed it according to the second CPS function, 
+i.e. into the pair `(x1 + 1, x2 * 2)`,
+and finally passed to the first callback of `newCps`.
 The final result is exactly the intended one, that is, 
-the result tuple output `(x1, x2, ...)` from `oldCps` is transformed into the new pair `(x1 + 1, x2 * 2)`
+the result tuple output `(x1, x2, ...)` from `oldCps`'s first callback is transformed into the new pair `(x1 + 1, x2 * 2)`
 that becomes the output of `newCps`.
 
 
@@ -1070,22 +1096,22 @@ Here is the simplest case comparison:
 cpsFun.map(x => x+1)
 cpsFun.chain(x => of(x+1))
 ```
-The first time the value `x+1` is passed directly,
-the second time it is wrapped into CPS function with `of`.
-The first time the return value of the function is used,
+In the first expression the value `x+1` is passed directly,
+in the second it is wrapped into CPS function with `of`.
+The first time the return value of the function inside `map` is used,
 the second time it is the output value of the CPS function inside `chain`.
 
 The "Promised" way is very similar:
 ```js
-promise.then(x => x + 1)
-promise.then(x => Promise.resolve(x))
+promise.then(x => x+1)
+promise.then(x => Promise.resolve(x+1))
 ```
 Except that both times `then` is used,
 so we don't have to choose between `map` and `chain`.
 However, such simplicity comes with its cost.
 Since `then` has to do its work to detect 
-and recursively unwrap any promise or thenable,
-there can be a loss in performance as well as 
+and recursively unwrap any Promise or in fact any ["thenable"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve),
+there can be loss in performance as well as 
 in safety to refactor 
 ```js
 promise.then(f).then(g)
@@ -1094,18 +1120,19 @@ to
 ```js
 promise.then(x => g(f(x)))
 ```
-which is [not always the same](...).
+which is [not always the same](https://stackoverflow.com/a/50173415/1614973).
 
 On the other hand, our `map` method
 conforms to the Functor composition law,
-that is the following are always equivalent
+that is the following expressions are always equivalent
 and safe to refactor to each other (as mentioned above):
 ```js
 cpsFun.map(f).map(g)
+// and
 cpsFun.map(x => g(f(x)))
 ```
-And since there is no other work involved,
-our performance wins.
+And since now no other work is involved,
+performance wins.
 
 However, if we try use `map` in the second case,
 instead of `chain`, we get
@@ -1184,6 +1211,7 @@ That guarantees that no outgoing information from `anotherCps` can ever get lost
 
 
 ### Passing multiple CPS functions to `chain`
+
 Similarly to `map`, also `chain` accepts arbitrary number of functins, 
 this time CPS functions:
 ```js
@@ -1253,26 +1281,35 @@ When used with single callback argument,
 `of` and `chain` satisfy the regular monadic laws.
 
 #### Associativity law
-The associativity law analogue for Promises is the equivalence of:
+The associativity law analogue for Promises would be the equivalence of
 ```js
 promise
   .then(x1 => promise1(x1))
   .then(x2 => promise2(x2))
+// and
 promise
   .then(x1 => promise1.then(x2 => promise2(x2)))
 ```
-For CPS functions, this looks nearly identical:
+which [are, however, not always equivalent](https://stackoverflow.com/a/50173415/1614973).
+
+
+For CPS functions in contrast, we do indeed obtain true equivalence of
 ```js
 cpsFun
   .chain(x1 => cpsFun1(x1))
   .chain(x2 => cpsFun2(x2))
+// and
 cpsFun
   .chain(x1 => cpsFun1.chain(x2 => cpsFun2(x2)))
 ```
-And since these are just functions, 
+Because, since these are just functions, 
 both expressions can be direclty expanded into
 ```js
-cb => cpsFun(x1 => cpsFun1(x1)(x2 => cpsFun2(x2)(cb)))
+cb => cpsFun(
+  x1 => cpsFun1(x1)(
+    x2 => cpsFun2(x2)(cb)
+  )
+)
 ```
 That is, the output `x1` of `cpsFun` is passed to `cpsFun1`,
 which transforms it into `x2` as output, 
@@ -1285,6 +1322,7 @@ that is the following are equivalent
 cpsFun
   .chain(f1, f2, ...)
   .chain(g1, g2, ...)
+// and
 cpsFun
   .chain(
     (...xs) => f1(...xs).chain((...ys) => g1(...ys)),
@@ -1292,7 +1330,7 @@ cpsFun
       ...
   )
 ```
-and both expand into
+as both expand into
 ```js
 (...cbs) => cpsFun(
   (...xs) => f1(...xs)((...ys) => g1(...ys)(...cbs)),
@@ -1306,7 +1344,7 @@ The monadic identity laws asserts that both following
 expressions are equivalent to the CPS function `cpsFun`:
 ```js
 cpsFun
-// is equivalent to
+// and
 chain(y => of(y))(cpsFun)
 ```
 Here `cpsFun` is any CPS function,
@@ -1319,7 +1357,11 @@ we get the other law asserting the equivalence of:
 ```js
 x => cpsF(x)
 // is equivalent to
-x => chain(y => cpsF(y))(cb => cb(x))
+x => chain(
+  y => cpsF(y)
+)(
+  cb => cb(x)
+)
 ```
 
 Once expanded, both equivalences are 
@@ -1349,13 +1391,13 @@ The Node style callbacks with error argument first
 force their errors to be handled each single time:
 ```js
 someNodeFunction(param, callback((error, result) => {
-  if (error) handle...
+  if (error) mustHandle...
   doMoreWork(result, callback((error, result) => {
     ...
   }))
 }))
 ```
-In constrast, Promises make it possible to handle all errors with one callback:
+In constrast, Promises make it possible to handle all errors with one callback at the end:
 ```js
 promise
   .then(doSomeWork)
@@ -1363,9 +1405,10 @@ promise
     ...
   .catch(handleAllErrors)
 ```
+
 Many libraries offering methods to "promisify" Node style callbacks.
 The trouble is the [Gorilla-Banana Problem](https://www.johndcook.com/blog/2011/07/19/you-wanted-banana/): Promises added a lot of other functionality and limitations that not everyone needs.
-For instance, it is perfectly legal to call the callbacks muiltiple times
+For instance, it is perfectly legal to call callbacks muiltiple times
 (for which there are many use cases such as streams and event handlers),
 whereas the "promisification" would only see the first call.
 
@@ -1374,7 +1417,7 @@ On the other hand, we can curry any callback-last Node method into CPS function
 const cpsErrback = (...args) => cb => nodeApi(...args, cb)
 ```
 and subsequently `chain` it into "Promise" style CPS function
-with the same pair of callbacks, except that no other functionality is added:
+with the same pair of callbacks, except that no other functionality is added nor removed:
 ```js
 const promiseStyle = CPS(cpsErrback)
   .chain((error, ...results) => (resBack, errBack) => error 
@@ -1382,7 +1425,8 @@ const promiseStyle = CPS(cpsErrback)
     : resBack(...results) 
   )
 ```
-Now we can chain these CPS funcitons exactly like promises,
+
+Now we can chain these CPS funcitons exactly like Promises,
 passing only the first callback, and handle all errors at the end in the second callback.
 ```js
 promiseStyle
