@@ -164,11 +164,11 @@ const scan = (...reducers) => (...initStates) => {
     	// chain receives tuple of functions, one per reducer
     	...reducers.map((reducer, idx) =>
     		// nth CPS function inside chain receives nth callback output of cpsAction
-    		(...action) => cb => {
+    		(...action) => (...cbs) => {
 	      // accessing states and reducers by index
 	      // (undefined === states[idx]) && (states[idx] = initStates[idx])
 	      states[idx] = reducer(states[idx], ...action)
-	      cb( states[idx] )    		
+	      cbs[idx]( states[idx] )    		
     	}
     )
   ))
