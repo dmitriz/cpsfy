@@ -154,13 +154,23 @@ const chain = (...cpsFns) => cpsFun => {
  *		over reducers[n] starting from with initStates[n]
  *
  */
-const scan = (...reducers) => (...states) => {
-  cpsAction => pipeline(cpsAction)(
-    // chaining with multiple reducers, one per state
-    chain(...states.map((state, idx) => cb => {
-      // accessing states and reducers by index
-      cb( states[idx] = reducers[idx](states[idx], ...action) )
-    })
+const scan = (...reducers) => (...initStates) => {
+	let states = initStates
+
+	// chain cpsAction with tuple of CPS function
+  return cpsAction => pipeline(cpsAction)(
+    // chaining outputs of cpsAction with multiple reducers, one per state
+    chain(
+    	// chain receives tuple of functions, one per reducer
+    	...reducers.map((reducer, idx) =>
+    		// nth CPS function inside chain receives nth callback output of cpsAction
+    		(...action) => cb => {
+	      // accessing states and reducers by index
+	      // (undefined === states[idx]) && (states[idx] = initStates[idx])
+	      states[idx] = reducer(states[idx], ...action)
+	      cb( states[idx] )    		
+    	}
+    )
   ))
 }
 
@@ -192,4 +202,4 @@ const CPS = cpsFn => {
 	return cpsWrapped
 }
 
-module.exports = { pipeline, of, map, chain, CPS }
+module.exports = { pipeline, of, map, chain, scan, CPS }
