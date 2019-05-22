@@ -27,7 +27,6 @@ const pipeline = (...args) => (...fns) => {
 
 
 /* ----- CPS operators ----- */
-
 const inheritState = (target, source) => {
 	Object.setPrototypeOf(
 		target, Object.getPrototypeOf(source)
@@ -84,10 +83,28 @@ const map = (...fns) => cpsFun => {
 	return cpsNew
 }
 
-// (...fns) -> CPS -> CPS
+
+/**
+ * Chains outputs of a CPS function with arbitrary tuple of CPS functions
+ * 
+ * @signature (...cpsFns) -> CPS -> CPS (curried)
+ * @params {Tuple of CPS Functions} (...cpsFns)
+ * @curriedParam {CPS Function} cpsFun
+ * @returns {CPS Function} whose nth callback's output equals the nth callback's output of `cpsFun` transformed with nth function
+ *
+ * @example
+ * const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7, 9)
+ *		is CPS function with 2 callbacks and outputs (2, 3) and (7, 9) passed into corresponding callbacks
+ * const cpsF1 = (x, y) => (cb1, cb2) => { cb1(x + y); cb2(x - y) }
+ * const cpsF2 = (x, y) => cb => cb(x, -y)
+ *
+ * CPS.map(cpsF1, cpsF2)(cpsFun)
+ *		is equivalent to the CPS function
+ * (cb1, cb2) => cb1(5) + cb2(7, -9)
+ */
 const chain = (...cpsFns) => cpsFun => {
 	let cpsNew = (...cbs) => cpsFun(
-		// precompose every callback with fn matched by index or pass directly the args
+		// precompose every callback with fn matched by index or pass directly the args,
 		// collect functions in array and pass as callbacks to cpsFun
 		...cpsFns.map(
 			// all callbacks get passed to each cpsFn
@@ -98,13 +115,27 @@ const chain = (...cpsFns) => cpsFun => {
 	return cpsNew	
 }
 
-const protoObj = {
-	map: (...args) => map(...args)(cpsFn),
-	chain: (...args) => chain(...args)(cpsFn)
-}
+
+const apply2this = fn => 
+	function(...args) {return fn(...args)(this)}
+
+// apply function to all values of object
+const objMap = fn => obj => 
+	Object.keys(obj).reduce((acc, key) => {
+		acc[key] = fn(obj[key])
+		return acc
+	}, {})
+
+// Prototype methods
+const protoObj = objMap(apply2this)({
+	map, 
+	chain
+})
 
 const CPS = cpsFn => {
-	let cpsWrapped = Object.assign({}, cpsFn)
+	// clone the function
+	let cpsWrapped = (...args) => cpsFn(...args)
+	Object.setPrototypeOf(cpsWrapped, protoObj)
 	return cpsWrapped
 }
 

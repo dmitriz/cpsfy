@@ -4,10 +4,10 @@ const { CPS } = require('..')
 const cpsFun = cb => cb(42)
 const cpsWrapped = CPS(cpsFun)
 
-// test('provide map method on CPS functions', t => {
-// 	const cpsNew = cpsWrapped.map(y => y + 1)
-// 	cpsNew(t.cis(43))
-// })
+test('map method works correctly', t => {
+	const cpsNew = cpsWrapped.map(y => y + 1)
+	cpsNew(t.cis(43))
+})
 
 // test('map is provided on target as well', t => {
 // 	cpsWrapped
