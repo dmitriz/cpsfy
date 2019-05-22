@@ -27,12 +27,11 @@ const pipeline = (...args) => (...fns) => {
 
 
 /* ----- CPS operators ----- */
+
+// Ensure all methods are inherited via prototype
 const inheritState = (target, source) => {
 	Object.setPrototypeOf(
 		target, Object.getPrototypeOf(source)
-	)
-	Object.assign(
-		target, source
 	)
 }
 
