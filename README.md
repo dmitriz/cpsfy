@@ -1648,12 +1648,17 @@ const filter = (...pred) => pipeline(cpsFun)(
 
 ## CPS.scan
 The `scan` operator acts as "partial reduce" for each output.
-Important example include stream of states affected by stream of actions:
+Important example is the stream of states affected by stream of actions:
 ```js
 const cpsState = scan(f)(initState)(cpsAction)
 ```
 Here `f` is the reducing function accepting current `state` and
-the next `action` and returning the next state as `f(state, action)`.
+the next `action` and returning the next state as `f(state, action)`, 
+that is the signature is
+```js
+f :: (state, action) -> state
+```
+
 Similarly to `filter`, `scan` can also be derived from `chain`:
 ```js
 const scan = f => state => cpsAction => pipeline(cpsAction)(

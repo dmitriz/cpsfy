@@ -10,8 +10,8 @@
  * @name pipeline
  * @params {Tuple} (...args) tuple of arbitrary values
  * @curriedParams {Tuple of Functions} (...fns) tuple of functions that
- * @returns fn(...f2(f1(...args))...) 
- *		where (...fns) = (f1, f2, ..., fn)
+ * @returns {value} fn(...f2(f1(...args))...) 
+ *		where fns = [f1, f2, ..., fn]
  *
  * @example
  * pipeline(x,y)(f, g)
@@ -28,19 +28,22 @@ const pipeline = (...args) => (...fns) => {
 
 /* ----- CPS operators ----- */
 
-// Ensure all methods are inherited via prototype
+// Helper to inherit the prototype
 const inheritState = (target, source) => {
 	Object.setPrototypeOf(
 		target, Object.getPrototypeOf(source)
 	)
 }
 
+
 /**
  * Create CPS function with given tuple as immediate output
  *
  * @name CPS.of
  * @params {Tuple} (...args) tuple of arbitrary values
- * @returns {CPS Function} CPS.of(...args) that outputs (...args) inside its first callback
+ * @returns {CPS Function} CPS.of(...args) 
+ *		that outputs (...args) inside its first callback
+ *		no other output is passed to any other callback
  *
  * @example
  * CPS.of(x1, x2, x3)
@@ -60,7 +63,9 @@ const of = (...args) => cb => cb(...args)
  * @name CPS.map
  * @params {Tuple of Functions} (...fns)
  * @curriedParam {CPS Function} cpsFun
- * @returns {CPS Function} whose nth callback's output equals the nth callback's output of `cpsFun` transformed with nth function
+ * @returns {CPS Function} CPS.map(...fns)(cpsFun) 
+ *		whose nth callback's output equals 
+ *  	the nth callback's output of `cpsFun` transformed via function fns[n]
  *
  * @example
  * const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7)
@@ -84,12 +89,17 @@ const map = (...fns) => cpsFun => {
 
 
 /**
- * Chains outputs of a CPS function with arbitrary tuple of CPS functions
+ * Chains outputs of CPS function with arbitrary tuple of other CPS functions
  * 
  * @signature (...cpsFns) -> CPS -> CPS (curried)
+ *
+ * @name CPS.chain
  * @params {Tuple of CPS Functions} (...cpsFns)
  * @curriedParam {CPS Function} cpsFun
- * @returns {CPS Function} whose nth callback's output equals the nth callback's output of `cpsFun` transformed with nth function
+ * @returns {CPS Function} CPS.chain(...fns)(cpsFun)
+ * 		whose nth callback's output is gathered from
+ *  	the nth callbacks' outputs of each function fns[j]
+ *  	evaluated for each output of the jth callback of `cpsFun`
  *
  * @example
  * const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7, 9)
@@ -113,6 +123,32 @@ const chain = (...cpsFns) => cpsFun => {
 	inheritState(cpsNew, cpsFun)
 	return cpsNew	
 }
+
+
+/**
+ * Iterates
+ *
+ * @signature (...reducers) -> (...states) -> cpsAction -> cpsState
+ *
+ * @name CPS.scan
+ * @params {Tuple of functions} (...reducers)
+ *  => @signature of each reducer :: (state, ...actions) -> state
+ * @params {Tuple of values} (...states)
+ * @returns {CPS function} 
+ *
+ * `reducers` and `states` are matched together by index
+ */
+const scan = (...reducers) => (...states) => {
+  cpsAction => pipeline(cpsAction)(
+    // chaining with multiple reducers, one per state
+    chain(...states.map((state, idx) => cb => {
+      // accessing states and reducers by index
+      cb( states[idx] = reducers[idx](states[idx], ...action) )
+    })
+  ))
+}
+
+
 
 
 const apply2this = fn => 
