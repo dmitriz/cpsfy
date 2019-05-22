@@ -19,7 +19,8 @@ const inheritState = (target, source) => {
  * @returns {value} fn(...f2(f1(...args))...) 
  *		where fns = [f1, f2, ..., fn]
  *
- * @examples
+ * # Examples
+ *
  * pipeline(x)(f1, f2, f3)
  *		is equivalent to f3(f2(f1(x)))
  * pipeline(x,y)(f, g)
@@ -45,7 +46,8 @@ const pipeline = (...args) => (...fns) => {
  *		that outputs (...args) inside its first callback
  *		no other output is passed to any other callback
  *
- * @example
+ * # Example
+ *
  * 		CPS.of(x1, x2, x3)
  * 				is equivalent to the CPS function 
  * 		cb => cb(x1, x2, x3)
@@ -69,7 +71,8 @@ const of = (...args) => cb => cb(...args)
  *		whose nth callback's output equals 
  *  	the nth callback's output of `cpsFun` transformed via function fns[n]
  *
- * @examples
+ * # Examples
+ *
  * 		const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7)
  * 			2 callbacks receive corresponding outputs (2, 3) and (7)
  * 		CPS.map(f1, f2)(cpsFun)
@@ -113,7 +116,8 @@ const map = (...fns) => cpsFun => {
  *  	the nth callbacks' outputs of each function fns[j] for each j
  *  	evaluated for each output of the jth callback of `cpsFun`
  *
- * @example
+ * # Example
+ *
  * 		const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7, 9)
  *			2 callbacks receive outputs (2, 3) and (7, 9)
  * 		const cpsF1 = (x, y) => (cb1, cb2) => cb1(x + y) + cb2(x - y)
@@ -136,6 +140,17 @@ const chain = (...cpsFns) => cpsFun => {
 }
 
 
+// pass through only input truthy `pred`
+const cpsFilter = pred => (...input) => cb => {
+  if (pred(...input)) cb(...input)
+}
+
+// call `chain` with the list of arguments, one per each predicate
+const filter = (...pred) => 
+	chain(...pred.map(cpsFilter))
+
+
+
 /**
  * Iterates tuple of reducers over tuple of states
  * and outputs from CPS function regarded as actions.
@@ -156,7 +171,6 @@ const chain = (...cpsFns) => cpsFun => {
  */
 const scan = (...reducers) => (...initStates) => {
 	let states = initStates
-
 	// chain cpsAction with tuple of CPS function
   return cpsAction => pipeline(cpsAction)(
     // chaining outputs of cpsAction with multiple reducers, one per state
@@ -202,4 +216,4 @@ const CPS = cpsFn => {
 	return cpsWrapped
 }
 
-module.exports = { pipeline, of, map, chain, scan, CPS }
+module.exports = { pipeline, of, map, chain, filter, scan, CPS }
