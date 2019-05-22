@@ -1,6 +1,12 @@
 # tiny-cps
 Tiny goodies for Continuation-Passing-Style functions
 
+[![Build Status](https://travis-ci.org/dmitriz/tiny-cps.svg?branch=master)](https://travis-ci.org/dmitriz/tiny-cps)
+
+```sh
+npm install tiny-cps
+```
+
 > Simplicity is prerequisite for reliability. - [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
 
 > 
