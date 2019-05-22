@@ -141,14 +141,17 @@ const chain = (...cpsFns) => cpsFun => {
 
 
 // pass through only input truthy `pred`
-const cpsFilter = pred => (...input) => cb => {
-  if (pred(...input)) cb(...input)
-}
+// const cpsFilter = pred => (...input) => cb => {
+//   if (pred(...input)) cb(...input)
+// }
 
 // call `chain` with the list of arguments, one per each predicate
-const filter = (...pred) => 
-	chain(...pred.map(cpsFilter))
-
+const filter = (...preds) =>
+	chain(...preds.map((pred, idx) => 
+		(...input) => (...cbs) => {
+			if (pred(...input)) return cbs[idx](...input)
+		}
+	))
 
 
 /**
