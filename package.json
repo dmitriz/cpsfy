@@ -1,6 +1,6 @@
 {
-  "version": "0.6.0",
-  "name": "cps",
+  "version": "0.5.0",
+  "name": "tiny-cps",
   "main": "index.js",
   "files": [
     "index.js"
