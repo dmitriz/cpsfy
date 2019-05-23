@@ -53,7 +53,7 @@ const pipeline = (...args) => (...fns) => {
  * 		cb => cb(x1, x2, x3)
  *
  * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
- * see https://stackoverflow.com/a/41816326/1614973
+ * see {@link https://stackoverflow.com/a/41816326/1614973}
  */
 const of = (...args) => cb => cb(...args)
 
@@ -86,7 +86,7 @@ const of = (...args) => cb => cb(...args)
  *		cpsFromPromise(promise.then(f1).catch(f2))
  *
  * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
- * see https://stackoverflow.com/a/41816326/1614973
+ * see {@link https://stackoverflow.com/a/41816326/1614973}
  */
 const map = (...fns) => cpsFun => {
 	let cpsNew = (...cbs) => cpsFun(

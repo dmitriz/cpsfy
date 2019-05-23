@@ -1,7 +1,10 @@
 # tiny-cps
 Tiny goodies for Continuation-Passing-Style functions
 
+[![npm version](https://img.shields.io/npm/v/tiny-cps.svg)](http://npm.im/tiny-cps)
 [![Build Status](https://travis-ci.org/dmitriz/tiny-cps.svg?branch=master)](https://travis-ci.org/dmitriz/tiny-cps)
+[![Dependency Status](https://david-dm.org/dmitriz/tiny-cps.svg)](https://david-dm.org/dmitriz/tiny-cps) 
+[![MIT License](https://img.shields.io/npm/l/tiny-cps.svg?style=flat-square)](http://opensource.org/licenses/MIT) 
 
 ```sh
 npm install tiny-cps
