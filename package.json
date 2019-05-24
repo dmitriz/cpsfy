@@ -16,6 +16,7 @@
     "postversion": "npm publish",
     "postpublish": "git push origin --all; git push origin --tags",
     "test": "nyc ava test/*test.js",
+    "watch": "nyc ava test/*test.js -w",
     "tape": "tape test/*test.js",
     "tap": "tap test/*test.js",
     "cov": "nyc report --reporter=text-lcov | coveralls",

@@ -15,7 +15,7 @@ const protoObj = {a: 22}
 Object.setPrototypeOf(cpsFn, protoObj)
 
 const cpsFn1 = map(x => x*2)(cpsFn)
-const cpsFn2 = chain(x => cb => x*2)(cpsFn)
+const cpsFn2 = chain(x => cb => cb(x*2))(cpsFn)
 
 checkState('map: ', cpsFn, cpsFn1)
 checkState('chain: ', cpsFn, cpsFn2)

@@ -1,5 +1,5 @@
 const test = require('./config').test
-const { scan, pipeline } = require('..')
+const { scan } = require('..')
 
 test('scan over single callback output', t => {
 	const reducer = (acc, x) => acc + x

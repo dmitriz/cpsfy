@@ -23,7 +23,7 @@ test('filter multiple occurences', t => {
 test('filter tuples', t => {
 	const cpsFun = cb => cb(1,2) + cb(3,4)
 	t.plan(1)
-	const cpsNew = filter((a,b) => a > 1)(cpsFun)
+	const cpsNew = filter(a => a > 1)(cpsFun)
 	cpsNew(t.cis(3))
 })
 
