@@ -21,7 +21,7 @@ For maximum security, this package is intended not to have any dependencies ever
 > 
 > 3. The computing scientist’s main challenge is not to get confused by the complexities of his own making.
 > 
-> - - [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
+> --- [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
 
 > 
 ```js
