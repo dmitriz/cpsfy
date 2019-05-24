@@ -19,6 +19,7 @@
     "tape": "tape test/*test.js",
     "tap": "tap test/*test.js",
     "cov": "nyc report --reporter=text-lcov | coveralls",
+    "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "toc": "markdown-toc README.md > toc"
   },
   "keywords": [
@@ -35,6 +36,7 @@
   "license": "MIT",
   "devDependencies": {
     "ava": "^1.4.1",
+    "codecov": "^3.5.0",
     "coveralls": "^3.0.3",
     "markdown-toc": "^1.2.0",
     "nyc": "^14.1.1",

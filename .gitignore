@@ -9,6 +9,7 @@ node_modules/
 # Coverage
 .nyc_output
 .codecov
+coverage.lcov
 coverage/
 
 # Apple garbage
