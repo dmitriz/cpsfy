@@ -5,6 +5,7 @@
 [![Build Status](https://travis-ci.org/dmitriz/tiny-cps.svg?branch=master)](https://travis-ci.org/dmitriz/tiny-cps)
 [![coveralls](https://coveralls.io/repos/github/dmitriz/tiny-cps/badge.svg?branch=master)](https://coveralls.io/github/dmitriz/tiny-cps?branch=master)
 [![codecov](https://codecov.io/gh/dmitriz/tiny-cps/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/tiny-cps)
+[![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/tiny-cps/badge)](https://www.codefactor.io/repository/github/dmitriz/tiny-cps)
 [![dependencies](https://david-dm.org/dmitriz/tiny-cps.svg)](https://david-dm.org/dmitriz/tiny-cps) 
 [![devDependencies](https://badgen.now.sh/david/dev/dmitriz/tiny-cps)](https://david-dm.org/dmitriz/tiny-cps?type=dev)
 [![MIT License](https://img.shields.io/npm/l/tiny-cps.svg?style=flat-square)](http://opensource.org/licenses/MIT) 
