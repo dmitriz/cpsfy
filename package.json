@@ -36,13 +36,13 @@
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "devDependencies": {
-    "ava": "^1.4.1",
-    "codecov": "^3.5.0",
-    "coveralls": "^3.0.3",
-    "markdown-toc": "^1.2.0",
-    "nyc": "^14.1.1",
-    "tap": "^14.0.0",
-    "tape": "^4.10.1"
+    "ava": "1.4.1",
+    "codecov": "3.5.0",
+    "coveralls": "3.0.3",
+    "markdown-toc": "1.2.0",
+    "nyc": "14.1.1",
+    "tap": "14.0.0",
+    "tape": "4.10.1"
   },
   "dependencies": {}
 }
