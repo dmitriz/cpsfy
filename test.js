@@ -6,7 +6,7 @@ const test = require('ava')
 const fn = require('./')
 
 test('t.is works with callbacks', t => {
-	const api = (arg, cb) => cb(arg + 1)
+	const api = (arg, cb) => cb('error', arg + 1)
 	api(2, r => t.is(3, r))
 })
 
