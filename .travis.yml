@@ -1,6 +1,7 @@
 language: node_js
 node_js:
   - 'stable'
+script:
+  codecov
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  
