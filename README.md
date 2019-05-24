@@ -24,6 +24,10 @@ const getServerStuff = ajaxCall
 *--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
 
 
+#### No dependencies policy
+For maximum security, this package is intended not to have any dependencies ever.
+
+---
 - [CPS functions](#cps-functions)
   * [Why?](#why)
   * [Advanced composability](#advanced-composability)
