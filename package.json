@@ -1,5 +1,5 @@
 {
-  "version": "0.9.1",
+  "version": "1.0.0",
   "name": "tiny-cps",
   "main": "index.js",
   "files": [
