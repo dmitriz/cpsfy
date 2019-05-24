@@ -1,6 +1,10 @@
 language: node_js
 node_js:
   - 'stable'
+install:
+  - npm install -g codecov
+script:
+  codecov
 after_success: 
   npm run cov
   npx codecov --file=./coverage/lcov.info
