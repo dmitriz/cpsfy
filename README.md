@@ -1466,7 +1466,7 @@ promiseStyle
 
 
 
-## CPS.ap
+## CPS.ap (TODO)
 The `ap` operator plays an important role when
 *running functions in parallel* and combining their outputs.
 
@@ -1594,7 +1594,7 @@ The `ap` operator together with `of` conforms to the [Applicative interface](htt
 
 
 
-## CPS.merge
+## CPS.merge (TODO)
 The `merge` operator merges outputs events from multiple CPS functions,
 which occurs separately for each callback slot:
 ```js
