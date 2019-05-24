@@ -24,9 +24,11 @@
     "continuation",
     "functional",
     "monad",
+    "applicative",
     "functor",
     "stream",
-    "promise"
+    "promise",
+    "async"
   ],
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",

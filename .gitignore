@@ -8,6 +8,7 @@ node_modules/
 
 # Coverage
 .nyc_output
+.codecov
 
 # Apple garbage
 .DS_Store
