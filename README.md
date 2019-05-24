@@ -2,7 +2,8 @@
 
 [![npm version](https://img.shields.io/npm/v/tiny-cps.svg)](http://npm.im/tiny-cps)
 [![Build Status](https://travis-ci.org/dmitriz/tiny-cps.svg?branch=master)](https://travis-ci.org/dmitriz/tiny-cps)
-[![Dependency Status](https://david-dm.org/dmitriz/tiny-cps.svg)](https://david-dm.org/dmitriz/tiny-cps) 
+[![dependencies](https://david-dm.org/dmitriz/tiny-cps.svg)](https://david-dm.org/dmitriz/tiny-cps) 
+[![devDependencies](https://badgen.now.sh/david/dev/dmitriz/tiny-cps)](https://david-dm.org/dmitriz/tiny-cps?type=dev)
 [![MIT License](https://img.shields.io/npm/l/tiny-cps.svg?style=flat-square)](http://opensource.org/licenses/MIT) 
 [![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/tiny-cps.svg)](https://greenkeeper.io/) 
 
@@ -19,9 +20,16 @@ For maximum security, this package is intended not to have any dependencies ever
 > 
 > 2. Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it. And to make matters worse: complexity sells better.
 > 
-> 3. The computing scientist’s main challenge is not to get confused by the complexities of his own making.
+> 3. Elegance is not a dispensable luxury but a factor that decides between success and failure.
 > 
-> --- [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
+> 4. The computing scientist’s main challenge is not to get confused by the complexities of his own making.
+> 
+> 5. It is a mistake to think that programmers wares are programs. Programmers have to produce trustworthy solutions and present it in the form of cogent arguments. Programs source code is just the accompanying material to which these arguments are to be applied to.
+> 
+> 6. The effective exploitation of his powers of abstraction must be regarded as one of the most vital activities of a competent programmer.
+> 
+> 
+> --- [Edsger W. Dijkstra](https://www.azquotes.com/author/3969-Edsger_Dijkstra)
 
 > 
 ```js
