@@ -1,5 +1,4 @@
 # tiny-cps
-Tiny goodies for Continuation-Passing-Style functions
 
 [![npm version](https://img.shields.io/npm/v/tiny-cps.svg)](http://npm.im/tiny-cps)
 [![Build Status](https://travis-ci.org/dmitriz/tiny-cps.svg?branch=master)](https://travis-ci.org/dmitriz/tiny-cps)
@@ -7,10 +6,15 @@ Tiny goodies for Continuation-Passing-Style functions
 [![MIT License](https://img.shields.io/npm/l/tiny-cps.svg?style=flat-square)](http://opensource.org/licenses/MIT) 
 [![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/tiny-cps.svg)](https://greenkeeper.io/) 
 
+Tiny goodies for Continuation-Passing-Style functions
+
 ```sh
 npm install tiny-cps
 ```
+**No dependencies policy.**
+For maximum security, this package is intended not to have any dependencies ever.
 
+---
 > Simplicity is prerequisite for reliability. - [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
 
 > 
@@ -23,9 +27,6 @@ const getServerStuff = ajaxCall
 
 *--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
 
-
-#### No dependencies policy
-For maximum security, this package is intended not to have any dependencies ever.
 
 ---
 - [CPS functions](#cps-functions)
