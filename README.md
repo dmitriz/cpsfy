@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/tiny-cps.svg)](http://npm.im/tiny-cps)
 [![install size](https://packagephobia.now.sh/badge?p=tiny-cps)](https://packagephobia.now.sh/result?p=tiny-cps)
+[![bundlephobia](https://img.shields.io/bundlephobia/minzip/tiny-cps.svg)](https://bundlephobia.com/result?p=tiny-cps)
 [![Build Status](https://travis-ci.org/dmitriz/tiny-cps.svg?branch=master)](https://travis-ci.org/dmitriz/tiny-cps)
 [![coveralls](https://coveralls.io/repos/github/dmitriz/tiny-cps/badge.svg?branch=master)](https://coveralls.io/github/dmitriz/tiny-cps?branch=master)
 [![codecov](https://codecov.io/gh/dmitriz/tiny-cps/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/tiny-cps)
