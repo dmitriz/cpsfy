@@ -14,5 +14,8 @@
   },
   "keywords": [],
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^1.4.1"
+  }
 }
