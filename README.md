@@ -15,7 +15,13 @@ npm install tiny-cps
 For maximum security, this package is intended not to have any dependencies ever.
 
 ---
-> Simplicity is prerequisite for reliability. - [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
+> 1. Simplicity is prerequisite for reliability. 
+> 
+> 2. Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it. And to make matters worse: complexity sells better.
+> 
+> 3. The computing scientist’s main challenge is not to get confused by the complexities of his own making.
+> 
+> - - [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
 
 > 
 ```js
