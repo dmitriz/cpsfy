@@ -292,6 +292,13 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
+"@babel/runtime@^7.4.5":
+  version "7.4.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.5.tgz#582bb531f5f9dc67d2fcb682979894f75e253f12"
+  integrity sha512-TuI4qpWZP6lGOGIuGWtp9sPluqYICmbk8T/1vpSysqJxRPkudh/ofFWyqdcMsDf2s7KvDL4/YHgKyvcS3g9CJQ==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.1.0", "@babel/template@^7.4.0", "@babel/template@^7.4.4":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.4.4.tgz#f4b88d1225689a08f5bc3a17483545be9e4ed237"
@@ -2711,7 +2718,7 @@ is-symbol@^1.0.2:
   dependencies:
     has-symbols "^1.0.0"
 
-is-typedarray@~1.0.0:
+is-typedarray@^1.0.0, is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
   integrity sha1-5HnICFjfDBsR3dppQPlgEfzaSpo=
@@ -2821,10 +2828,10 @@ istanbul-reports@^2.2.4:
   dependencies:
     handlebars "^4.1.2"
 
-jackspeak@^1.3.8:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/jackspeak/-/jackspeak-1.3.8.tgz#09a418552ae4f25ea37757c1c578f49dd5de2d40"
-  integrity sha512-/Q7j4mWr5/XCnsR6IGA4FFZTylZCDbF5sNaLEVhfOYlau3DXcCSygTvXKnP3apwikzMirljf2QZq9fVuSZw6MA==
+jackspeak@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/jackspeak/-/jackspeak-1.4.0.tgz#4eb2c7935c5e6d28179b50829711d1372a1c9a2a"
+  integrity sha512-VDcSunT+wcccoG46FtzuBAyQKlzhHjli4q31e1fIHGOsRspqNUFjVzGb+7eIFDlTvqLygxapDHPHS0ouT2o/tw==
   dependencies:
     cliui "^4.1.0"
 
@@ -3494,7 +3501,7 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-nyc@14.1.1, nyc@^14.1.0:
+nyc@14.1.1, nyc@^14.1.1:
   version "14.1.1"
   resolved "https://registry.yarnpkg.com/nyc/-/nyc-14.1.1.tgz#151d64a6a9f9f5908a1b73233931e4a0a3075eeb"
   integrity sha512-OI0vm6ZGUnoGZv/tLdZ2esSVzDwUC88SNs+6JoSOMVxA+gKMB8Tk7jBwgemLx4O40lhhvZCVw1C+OYLOBOPXWw==
@@ -4699,10 +4706,10 @@ tap-parser@^9.3.2:
   dependencies:
     yaml "^1.5.0"
 
-tap@14.0.0:
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/tap/-/tap-14.0.0.tgz#ac8915ac9206d2c326738240ed268856e9f0b716"
-  integrity sha512-4690TGCbBTwyIhJWH918o/1zLoWUqc+8o0/zQtLjFLzQ76vlurNtMfVLkVS9dNztjuv01fgol+YhNJbzg/dfUA==
+tap@14.1.11:
+  version "14.1.11"
+  resolved "https://registry.yarnpkg.com/tap/-/tap-14.1.11.tgz#8449772236aa02e6b3e54c113c685c219c3a5ca2"
+  integrity sha512-lz/nGffbk4M7RfKfK14QrXBSy8cYNKTMZXAgPFSThyDDwsy46VGlp+sEX6jHydQa2xe1Q/Ea3IWCrMI04JM4+A==
   dependencies:
     async-hook-domain "^1.1.0"
     bind-obj-methods "^2.0.0"
@@ -4722,10 +4729,10 @@ tap@14.0.0:
     import-jsx "^2.0.0"
     isexe "^2.0.0"
     istanbul-lib-processinfo "^1.0.0"
-    jackspeak "^1.3.8"
+    jackspeak "^1.4.0"
     minipass "^2.3.5"
     mkdirp "^0.5.1"
-    nyc "^14.1.0"
+    nyc "^14.1.1"
     opener "^1.5.1"
     own-or "^1.0.0"
     own-or-env "^1.0.1"
@@ -4737,13 +4744,13 @@ tap@14.0.0:
     tap-parser "^9.3.2"
     tap-yaml "^1.0.0"
     tcompare "^2.3.0"
-    treport "^0.3.0"
+    treport "^0.4.0"
     trivial-deferred "^1.0.1"
     ts-node "^8.1.0"
     typescript "^3.4.5"
     which "^1.3.1"
-    write-file-atomic "^2.4.2"
-    yaml "^1.5.1"
+    write-file-atomic "^3.0.0"
+    yaml "^1.6.0"
     yapool "^1.0.0"
 
 tape@4.10.1:
@@ -4879,10 +4886,10 @@ tough-cookie@~2.4.3:
     psl "^1.1.24"
     punycode "^1.4.1"
 
-treport@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/treport/-/treport-0.3.0.tgz#023d7409ba236f0428d8b0acf3bb7678355d146f"
-  integrity sha512-THr7NS5iLJewcAiaBkxAuCVoakw84hAVY9n2kFNZqlFKHrZeGw8sNR4VhmT23JB1/JnCmPcIOmooTdYYVTI5hA==
+treport@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/treport/-/treport-0.4.0.tgz#23416de91294f08f0acb3774fa45ece31a348e0e"
+  integrity sha512-1/gjl3sCJAm60txV3uyz/bghxkzXidSvijM15dM+xgtBRXnZ/5Lwzb6SY1AvhRzTl+rOsukw9kDh2mjTtm6L9A==
   dependencies:
     cardinal "^2.1.1"
     chalk "^2.4.2"
@@ -4941,6 +4948,13 @@ type-fest@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.3.1.tgz#63d00d204e059474fe5e1b7c011112bbd1dc29e1"
   integrity sha512-cUGJnCdr4STbePCgqNFbpVNCepa+kAVohJs1sLhxzdH+gnEoOd8VhbYa7pD3zZYGiURWM2xzEII3fQcRizDkYQ==
+
+typedarray-to-buffer@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/typedarray-to-buffer/-/typedarray-to-buffer-3.1.5.tgz#a97ee7a9ff42691b9f783ff1bc5112fe3fca9080"
+  integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
+  dependencies:
+    is-typedarray "^1.0.0"
 
 typedarray@^0.0.6:
   version "0.0.6"
@@ -5204,6 +5218,16 @@ write-file-atomic@^2.0.0, write-file-atomic@^2.4.2:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.2"
 
+write-file-atomic@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-3.0.0.tgz#1b64dbbf77cb58fd09056963d63e62667ab4fb21"
+  integrity sha512-EIgkf60l2oWsffja2Sf2AL384dx328c0B+cIYPTQq5q2rOYuDV00/iPFBOUiDKKwKMOhkymH8AidPaRvzfxY+Q==
+  dependencies:
+    imurmurhash "^0.1.4"
+    is-typedarray "^1.0.0"
+    signal-exit "^3.0.2"
+    typedarray-to-buffer "^3.1.5"
+
 xdg-basedir@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"
@@ -5229,12 +5253,19 @@ yallist@^3.0.0, yallist@^3.0.2:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.3.tgz#b4b049e314be545e3ce802236d6cd22cd91c3de9"
   integrity sha512-S+Zk8DEWE6oKpV+vI3qWkaK+jSbIK86pCwe2IF/xwIpQ8jEuxpw9NyaGjmp9+BoJv5FV2piqCDcoCtStppiq2A==
 
-yaml@^1.5.0, yaml@^1.5.1:
+yaml@^1.5.0:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.5.1.tgz#e8201678064fbcfef6afe4122ef802573b6cade8"
   integrity sha512-btfJvMOgVthGZSgHBMrDkLuQu4YxOycw6kwuC67cUEOKJmmNozjIa02eKvuSq7usqqqpwwCvflGTF6JcDvSudw==
   dependencies:
     "@babel/runtime" "^7.4.4"
+
+yaml@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.6.0.tgz#d8a985cfb26086dd73f91c637f6e6bc909fddd3c"
+  integrity sha512-iZfse3lwrJRoSlfs/9KQ9iIXxs9++RvBFVzAqbbBiFT+giYtyanevreF9r61ZTbGMgWQBxAua3FzJiniiJXWWw==
+  dependencies:
+    "@babel/runtime" "^7.4.5"
 
 yapool@^1.0.0:
   version "1.0.0"
