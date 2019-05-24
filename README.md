@@ -1,6 +1,7 @@
 # tiny-cps
 
 [![npm version](https://img.shields.io/npm/v/tiny-cps.svg)](http://npm.im/tiny-cps)
+[![install size](https://packagephobia.now.sh/badge?p=tiny-cps)](https://packagephobia.now.sh/result?p=tiny-cps)
 [![Build Status](https://travis-ci.org/dmitriz/tiny-cps.svg?branch=master)](https://travis-ci.org/dmitriz/tiny-cps)
 [![Coverage Status](https://coveralls.io/repos/github/dmitriz/tiny-cps/badge.svg?branch=master)](https://coveralls.io/github/dmitriz/tiny-cps?branch=master)
 [![dependencies](https://david-dm.org/dmitriz/tiny-cps.svg)](https://david-dm.org/dmitriz/tiny-cps) 
