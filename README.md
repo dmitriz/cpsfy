@@ -18,33 +18,6 @@ npm install tiny-cps
 For maximum security, this package is intended not to have any dependencies ever.
 
 ---
-> 1. Simplicity is prerequisite for reliability. 
-> 
-> 2. Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it. And to make matters worse: complexity sells better.
-> 
-> 3. Elegance is not a dispensable luxury but a factor that decides between success and failure.
-> 
-> 4. The computing scientist’s main challenge is not to get confused by the complexities of his own making.
-> 
-> 5. It is a mistake to think that programmers wares are programs. Programmers have to produce trustworthy solutions and present it in the form of cogent arguments. Programs source code is just the accompanying material to which these arguments are to be applied to.
-> 
-> 6. The effective exploitation of his powers of abstraction must be regarded as one of the most vital activities of a competent programmer.
-> 
-> 
-> --- [Edsger W. Dijkstra](https://www.azquotes.com/author/3969-Edsger_Dijkstra)
-
-> 
-```js
-// ignorant
-const getServerStuff = callback => ajaxCall(json => callback(json))
-// enlightened
-const getServerStuff = ajaxCall
-```
-
-*--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
-
-
----
 - [CPS functions](#cps-functions)
   * [Why?](#why)
   * [Advanced composability](#advanced-composability)
@@ -109,6 +82,33 @@ const getServerStuff = ajaxCall
     + [Filtering over multiple functions](#filtering-over-multiple-functions)
     + [Implementation via `chain`](#implementation-via-chain)
   * [CPS.scan](#cpsscan)
+
+
+> 1. Simplicity is prerequisite for reliability. 
+> 
+> 2. Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it. And to make matters worse: complexity sells better.
+> 
+> 3. Elegance is not a dispensable luxury but a factor that decides between success and failure.
+> 
+> 4. The computing scientist’s main challenge is not to get confused by the complexities of his own making.
+> 
+> 5. It is a mistake to think that programmers wares are programs. Programmers have to produce trustworthy solutions and present it in the form of cogent arguments. Programs source code is just the accompanying material to which these arguments are to be applied to.
+> 
+> 6. The effective exploitation of his powers of abstraction must be regarded as one of the most vital activities of a competent programmer.
+> 
+> 
+> --- [Edsger W. Dijkstra](https://www.azquotes.com/author/3969-Edsger_Dijkstra)
+
+> 
+```js
+// ignorant
+const getServerStuff = callback => ajaxCall(json => callback(json))
+// enlightened
+const getServerStuff = ajaxCall
+```
+
+*--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
+
 
 
 # CPS functions
