@@ -19,9 +19,10 @@ npm install tiny-cps
 const getServerStuff = callback => ajaxCall(json => callback(json))
 // enlightened
 const getServerStuff = ajaxCall
-//
-// --- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).
 ```
+
+*--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
+
 
 - [CPS functions](#cps-functions)
   * [Why?](#why)
