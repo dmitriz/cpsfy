@@ -50,7 +50,7 @@ CPS(cpsFn).map(f)
 pipeline(cpsFn)(map(f))
 ```
 
-### map
+### map(...functions)(cpsFunction)
 ```js
 map(f1, f2, ...)(cpsFn)
 CPS(cpsFn).map(f1, f2, ...)
@@ -86,7 +86,7 @@ getCaps(
 ) // => file content is capitalized and printed to console
 ```
 
-### chain
+### chain(...functions)(cpsFunction)
 ```js
 chain(f1, f2, ...)(cpsFn)
 CPS(cpsFn).chain(f1, f2, ...)
@@ -94,7 +94,7 @@ pipeline(cpsFn)(chain(f1, f2, ...))
 ```
 where each `fn` is a curried function
 ```js
-// fn(x1, x2, ...) is another CPS function
+// fn(x1, x2, ...) is expected to return a CPS function
 const fn = (x1, x2, ...) => (cb1, cb2, ...) => { ... }
 ```
 The `chain` operator applies each `fn` to each output from the `n`th callback of `cpsFn`, however, the CPS *ouptup* of `fn` is passed ahead instead of the return value. The `chain` operator returns the new CPS function `newCpsFn` that calls `fn(x1, x2, ...)` whenever `cpsFn` passes output `(x1, x2, ...)` into its `n`th callback, and collects all outputs from all callbacks of all `fn`s. Then for each fixed `m`, outputs from the `m`th callbacks of all `fn`s are collected and passed into the `m`th callback `cbm` of `newCpsFn`:
@@ -128,7 +128,7 @@ copy(
 ) // => file content is capitalized and printed to console
 ```
 
-### filter
+### filter(...predicates)(cpsFunction)
 ```js
 filter(pred1, pred2, ...)(cpsFn)
 CPS(cpsFn).filter(pred1, pred2, ...)
@@ -146,7 +146,7 @@ const copyNotEmpty = CPS(readFile('source.txt', 'utf8'))
   .chain(text => writFile('target.txt', 'utf8', text))
 ```
 
-### scan
+### scan(...reducers)(...initialValues)(cpsFunction)
 Similar to [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), except that all partial accumulated values are passed into callback whenever there is new output.
 ```js
 scan(red1, red2, ...)(x1, x2, ...)(cpsFn)
