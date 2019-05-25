@@ -150,11 +150,11 @@ const copy = pipeline(readFile('source.txt', 'utf8'))(
   chain(text => writFile('target.txt', 'utf8', text))
 )
 
-// copy is a CPS function, so we just call it with any callback
+// copy is a CPS function, call it with any callback
 copy((err, data) => err 
   ? console.error(err) 
   : console.log(data)
-) // => file content is capitalized and printed to console
+) // => file content is capitalized and printed
 ```
 
 ### `filter(...predicates)(cpsFunction)`
@@ -178,7 +178,7 @@ const copyNotEmpty = CPS(readFile('source.txt', 'utf8'))
   .filter(text => text.length > 0)
   .chain(text => writFile('target.txt', 'utf8', text))
 
-// copyNotEmpty is CPS function, just call with any callback
+// copyNotEmpty is CPS function, call with any callback
 copyNotEmpty(err => console.error(err))
 ```
 
@@ -205,8 +205,12 @@ New CPS function whose output from the `n`the callback is the `n`th accumulated 
 // CPS function with 2 callbacks
 // each click on one of the buttons sends '1' into respective callback
 const getVotes = (onUpvote, onDownvote) => {
-  upvoteButton.addEventListener('click', ev => onUpvote(1))
-  downvoteButton.addEventListener('click', ev => onDownvote(1))  
+  upvoteButton.addEventListener('click', 
+    ev => onUpvote(1)
+  )
+  downvoteButton.addEventListener('click', 
+    ev => onDownvote(1)
+  )  
 }
 const add = (acc, x) => acc + x
 // count numbers of up- and downvotes and 
