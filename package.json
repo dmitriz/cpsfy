@@ -1,5 +1,5 @@
 {
-  "version": "1.7.7",
+  "version": "1.7.8",
   "name": "tiny-cps",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
