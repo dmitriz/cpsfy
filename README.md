@@ -103,10 +103,11 @@ const getCaps = pipeline(readFile('message.txt', 'utf8'))(
   map(str => str.toUpperCase())
 )
 
-// getCaps is CPS function, just call with any callback
-getCaps(
-  (err, data) => err ? console.error(err) : console.log(data)
-) // => file content is capitalized and printed to console
+// getCaps is CPS function, call with any callback
+getCaps((err, data) => err 
+  ? console.error(err) 
+  : console.log(data)
+) // => file content is capitalized and printed
 ```
 
 ### `chain(...functions)(cpsFunction)`
@@ -208,14 +209,16 @@ const getVotes = (onUpvote, onDownvote) => {
   downvoteButton.addEventListener('click', ev => onDownvote(1))  
 }
 const add = (acc, x) => acc + x
-// count numbers of up- and downvotes and pass into respective callbacks
+// count numbers of up- and downvotes and 
+// pass into respective callbacks
 const countVotes = scan(add, add)(0, 0)(getVotes) // or
 const countVotes = CPS(getVotes).scan(add, add)(0, 0)
 
-// countVotes is CPS function that we can call with any pair of callbacks
+// countVotes is CPS function that we can call 
+// with any pair of callbacks
 countVotes(
-  upvotes => console.log(upvotes, ' people voted for'),
-  downvotes => console.log(downvotes, ' people voted against'),
+  upvotes => console.log(upvotes, ' votes for'),
+  downvotes => console.log(downvotes, ' votes against'),
 )
 ```
 
