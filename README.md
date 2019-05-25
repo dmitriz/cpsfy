@@ -78,14 +78,14 @@ pipeline(cpsFn)(map(f1, f2, ...))
 ```
 For each `n`, apply `fn` to each output from the `n`th callback of `cpsFn`.
 
-#### result of applying `map`
+#### Result of applying `map`
 New CPS function that calls its `n`th callback `cbn` as
 ```js
 cbn(fn(x1, x2, ...))
 ```
 whenever `cpsFn` calls its `n`th callback.
 
-#### example of `map`
+#### Example of `map`
 ```js
 const fs = require('fs')
 const readFile = (file, encoding) =>
@@ -122,7 +122,7 @@ const fn = (x1, x2, ...) => (cb1, cb2, ...) => { ... }
 ```
 The `chain` operator applies each `fn` to each output from the `n`th callback of `cpsFn`, however, the CPS *ouptup* of `fn` is passed ahead instead of the return value. 
 
-#### result of applying `chain`
+#### Result of applying `chain`
 New CPS function `newCpsFn` that calls `fn(x1, x2, ...)` whenever `cpsFn` passes output `(x1, x2, ...)` into its `n`th callback, and collects all outputs from all callbacks of all `fn`s. Then for each fixed `m`, outputs from the `m`th callbacks of all `fn`s are collected and passed into the `m`th callback `cbm` of `newCpsFn`:
 ```js
 cbm(y1, y2, ...)  // is called whenever 
@@ -130,7 +130,7 @@ cbmFn(y1, y2, ...)  // is called where
 // cbmFn is the mth callback of fn
 ```
 
-#### example of `chain`
+#### Example of `chain`
 ```js
 const writeFile = (file, encoding, content) =>
   cb => fs.readFile(file, encoding, content, cb)   // CPS function
@@ -164,13 +164,13 @@ pipeline(cpsFn)(filter(pred1, pred2, ...))
 ```
 where each `predn` is the `n`th predicate function used to filter output from the `n`th callback of `cpsFn`. 
 
-#### result of applying `chain`
+#### Result of applying `chain`
 New CPS function that calls its `n`th callback `cbn(x1, x2, ...)` whenever `(x1, x2, ...)` is an output from the `n`th callback of `cpsFun` and
 ```js
 predn(x1, x2, ...) == true
 ```
 
-#### example of `filter`
+#### Example of `filter`
 ```js
 // only copy text if it is not empty
 const copyNotEmpty = CPS(readFile('source.txt', 'utf8'))
@@ -195,11 +195,11 @@ where each `redn` is a *reducer*
 const redn = (acc, y1, y2, ...) => ... 
 ```
 
-#### result of applying `scan`
+#### Result of applying `scan`
 New CPS function whose output from the `n`the callback is the `n`th accumulated value `accn`. Upon each output `(y1, y2, ...)`, the new acculated value `redn(accn, y1, y2, ...)` is computed and passed into the callback. The nth value `xn` serves in place of `acc` at the start, similar to `reduce`. Note that the initial values `(x1, x2, ...)` must be passed as curried arguments to avoid getting mixed with reducers.
 
 
-#### example of `scan`
+#### Example of `scan`
 ```js
 // CPS function with 2 callbacks
 // each click on one of the buttons sends '1' into respective callback
