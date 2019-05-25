@@ -61,7 +61,8 @@ cpsFn(f1, f2, ...)
 ```js
 // as methods
 CPS(cpsFn).map(f).chain(g).filter(h)
-// with single pipeline
+
+// of as functional pipeline
 pipeline(cpsFn)(
   map(f),
   chain(g),
@@ -69,7 +70,7 @@ pipeline(cpsFn)(
 )
 ```
 
-### `map(...functions)(cpsFunction)``
+### `map(...functions)(cpsFunction)`
 ```js
 map(f1, f2, ...)(cpsFn)
 CPS(cpsFn).map(f1, f2, ...)
@@ -108,7 +109,7 @@ getCaps(
 ) // => file content is capitalized and printed to console
 ```
 
-### `chain(...functions)(cpsFunction)``
+### `chain(...functions)(cpsFunction)`
 ```js
 chain(f1, f2, ...)(cpsFn)
 CPS(cpsFn).chain(f1, f2, ...)
@@ -155,7 +156,7 @@ copy((err, data) => err
 ) // => file content is capitalized and printed to console
 ```
 
-### filter(...predicates)(cpsFunction)
+### `filter(...predicates)(cpsFunction)`
 ```js
 filter(pred1, pred2, ...)(cpsFn)
 CPS(cpsFn).filter(pred1, pred2, ...)
@@ -180,7 +181,7 @@ const copyNotEmpty = CPS(readFile('source.txt', 'utf8'))
 copyNotEmpty(err => console.error(err))
 ```
 
-### `scan(...reducers)(...initialValues)(cpsFunction)``
+### `scan(...reducers)(...initialValues)(cpsFunction)`
 Similar to [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), except that all partial accumulated values are passed into callback whenever there is new output.
 ```js
 scan(red1, red2, ...)(x1, x2, ...)(cpsFn)
