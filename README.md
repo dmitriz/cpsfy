@@ -14,7 +14,7 @@
 [![MIT License](https://img.shields.io/npm/l/tiny-cps.svg?style=flat-square)](http://opensource.org/licenses/MIT) 
 [![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/tiny-cps.svg)](https://greenkeeper.io/) 
 
-Tiny goodies for Continuation-Passing-Style functions
+Tiny but powerful goodies for Continuation-Passing-Style functions
 
 ```sh
 npm install tiny-cps
