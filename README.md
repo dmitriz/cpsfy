@@ -175,7 +175,7 @@ const countVotes = CPS(getVotes).scan(add, add)(0, 0)
 // countVotes is CPS function that we can call with any pair of callbacks
 countVotes(
   upvotes => console.log(upvotes, ' people voted for'),
-  downvotes => console.log(downvotes, ' people voted against"),
+  downvotes => console.log(downvotes, ' people voted against'),
 )
 ```
 
