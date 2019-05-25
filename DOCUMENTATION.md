@@ -96,7 +96,7 @@ taking input data and producing output.
 However, viewing function's return value as the only output is often too limited.
 For instance, all asynchronous Node API methods rely on the output data 
 returned via callbacks rather than via functions' return values.
-The latter is of course the well-known 
+This patter is of course the well-known 
 [Continuation-Passing Style (CPS)](https://en.wikipedia.org/wiki/Continuation-passing_style)
 
 
@@ -818,7 +818,7 @@ that are expected and returned via the error callbacks calls.
 The absence of similar feature for Promises attracted [considerable criticisms](https://medium.com/@avaq/broken-promises-2ae92780f33).
 
 
-## Signatures
+## Functional signatures
 > Cleaner signatures: With callbacks, the parameters of a function are mixed; some are input for the function, others are responsible for delivering its output. With Promises, function signatures become cleaner; all parameters are input.
 
 The "curried nature" of the (parametrized) CPS functions 

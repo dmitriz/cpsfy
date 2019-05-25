@@ -22,4 +22,12 @@ npm install tiny-cps
 **No dependencies policy.**
 For maximum security, this package is intended not to have any dependencies ever.
 
+## CPS functions
+
+
+# Any details?
+This `README.md` file is kept minimal to reduce the package size. For more human introduction, motivation, use cases and other details, please see [DOCUMENTATION](DOCUMENTATION.md)
+
+
+
 
