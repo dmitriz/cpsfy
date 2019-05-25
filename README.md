@@ -134,7 +134,8 @@ cbmFn(y1, y2, ...)  // is called where
 #### Example of `chain`
 ```js
 const writeFile = (file, encoding, content) =>
-  cb => fs.readFile(file, encoding, content, cb)   // CPS function
+  // CPS function
+  cb => fs.readFile(file, encoding, content, cb)
 
 const copy = chain(
   // function that returns CPS function
@@ -202,8 +203,8 @@ New CPS function whose output from the `n`the callback is the `n`th accumulated 
 
 #### Example of `scan`
 ```js
-// CPS function with 2 callbacks
-// each click on one of the buttons sends '1' into respective callback
+// CPS function with 2 callbacks, a click 
+// on one of the buttons sends '1' into respective callback
 const getVotes = (onUpvote, onDownvote) => {
   upvoteButton.addEventListener('click', 
     ev => onUpvote(1)
