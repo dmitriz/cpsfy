@@ -1,15 +1,12 @@
 {
   "version": "1.7.6",
   "name": "tiny-cps",
+  "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
   "files": [
     "index.js"
   ],
-  "description": "Tiny goodies for Continuation-Passing-Style functions",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/dmitriz/tiny-cps"
-  },
+  "repository": "https://github.com/dmitriz/tiny-cps.git",
   "scripts": {
     "start": "npm version",
     "preversion": "npm test",
