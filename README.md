@@ -28,7 +28,7 @@ Any function
 //cb1, cb2, ... are called any number of times with any varying number of arguments
 const cpsFn = (cb1, cb2, ...) => { ... } 
 ```
-that expects to be called with zero or several functions (callbacks) as arguments. The number of callbacks may vary each time `cpsFn` is called. Once running, `cpsFn` may call any of the callbacks `cbn` any (including zero) number of times with any number `m` of arguments `(x1, ..., xm)`, where `m` may also vary from call to call. The `m`-tuple (vector) `(x1, ..., xm)` is regarded as the *output* of `cpsFn` passed to the `n`the callback:
+that expects to be called with several (possibly zero) functions (callbacks) as arguments. The number of callbacks may vary each time `cpsFn` is called. Once running, `cpsFn` may call any of the callbacks `cbn` any (including zero) number of times with any number `m` of arguments `(x1, ..., xm)`, where `m` may also vary from call to call. The `m`-tuple (vector) `(x1, ..., xm)` is regarded as the *output* of `cpsFn` passed to the `n`the callback:
 ```js
 // (x1, ..., xm) is an output from the `n`th callback
 cbn(x1, ..., xm)
