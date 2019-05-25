@@ -245,13 +245,13 @@ The proposed CPS desing API is minimal and focused on doing just one thing --
 
 
 ## Terminology
-A *Continuation-Passing-Style (CPS) function* is any JavaScript function
+A *Continuation-Passing-Style (CPS) function* is any function
 ```js
 const cps = (f1, f2, ...) => { 
   /* f1, f2, ... are called arbitrarily often with any number of arguments */ 
 }
 ```
-that expects to be called with zero or several functions as its arguments.
+that expects to be called with zero or several functions as arguments.
 By *expects* we mean that this library and the following discussion 
 only applies when functions are passed.
 In a strictly typed language that would mean those arguments are required to be functions.
