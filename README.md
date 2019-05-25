@@ -25,22 +25,22 @@ For maximum security, this package is intended not to have any dependencies ever
 ## CPS function
 Any function
 ```js
-//cb1, cb2, ... are called any number of times with any varying number of arguments
+//cb1, cb2, ... are called any number of times with any (possibly varying each time) number of arguments
 const cpsFn = (cb1, cb2, ...) => { ... } 
 ```
-that expects to be called with several (possibly zero) functions (callbacks) as arguments. The number of callbacks may vary each time `cpsFn` is called. Once running, `cpsFn` may call any of the callbacks `cbn` any (including zero) number of times with any number `m` of arguments `(x1, ..., xm)`, where `m` may also vary from call to call. The `m`-tuple (vector) `(x1, ..., xm)` is regarded as the *output* of `cpsFn` passed to the `n`the callback:
+that expects to be called with several (possibly zero) functions (callbacks) as arguments. The number of callbacks may vary each time `cpsFn` is called. Once called and running, `cpsFn` may call any of the callbacks `cbn` any (possibly zero) number of times with any number `m` of arguments `(x1, ..., xm)`, where `m` may also vary from call to call. The `m`-tuple (vector) `(x1, ..., xm)` is regarded as the *output* of `cpsFn` passed to the `n`the callback:
 ```js
-// (x1, ..., xm) is an output from the `n`th callback
-cbn(x1, ..., xm)
+// (x1, ..., xm) becomes an output from the `n`th callback whenever
+cbn(x1, ..., xm)  // is called
 ```
-In other words, a CPS function recieves any number of callbacks that it may call in any order any number of times with any arguments.
+In other words, a CPS function receives any number of callbacks that it may call in any order any number of times at any moments immediately or in the future with any number of arguments.
 
 
-## API - brief description
+## API in brief
 ```js
-const { map, chain, CPS, pipeline } = require('tiny-cps')
+const { map, chain, filter, scan, CPS, pipeline } = require('tiny-cps')
 ```
-Each CPS operator can be used in 3 ways:
+Each of the `map`, `chain`, `filter`, `scan` operators can be used in 3 ways:
 ```js
 // 'map' as curried function
 map(f)(cpsFn)
