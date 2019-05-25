@@ -20,17 +20,18 @@ Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions
 npm install tiny-cps
 ```
 *No dependency policy.*
-For maximum security, this package is intended not to have any dependencies ever.
+For maximum security, this package is intended not to have dependencies ever.
 
 ## CPS function
 Any function
 ```js
-//cb1, cb2, ... are called any number of times with any (possibly varying each time) number of arguments
+//cb1, cb2, ... are called any number of times with any 
+// (possibly varying each time) number of arguments
 const cpsFn = (cb1, cb2, ...) => { ... } 
 ```
 that expects to be called with several (possibly zero) functions (callbacks) as arguments. The number of callbacks may vary each time `cpsFn` is called. Once called and running, `cpsFn` may call any of the callbacks `cbn` any (possibly zero) number of times with any number `m` of arguments `(x1, ..., xm)`, where `m` may also vary from call to call. The `m`-tuple (vector) `(x1, ..., xm)` is regarded as the *output* of `cpsFn` passed to the `n`the callback:
 ```js
-// (x1, ..., xm) becomes an output from the `n`th callback whenever
+// (x1, ..., xm) is output from nth callback whenever
 cbn(x1, ..., xm)  // is called
 ```
 In other words, a CPS function receives any number of callbacks that it may call in any order any number of times at any moments immediately or in the future with any number of arguments.
@@ -38,7 +39,8 @@ In other words, a CPS function receives any number of callbacks that it may call
 
 ## API in brief
 ```js
-const { map, chain, filter, scan, CPS, pipeline } = require('tiny-cps')
+const { map, chain, filter, scan, CPS, pipeline } 
+  = require('tiny-cps')
 ```
 Each of the `map`, `chain`, `filter`, `scan` operators can be used in 3 ways:
 ```js
@@ -46,23 +48,43 @@ Each of the `map`, `chain`, `filter`, `scan` operators can be used in 3 ways:
 map(f)(cpsFn)
 // 'map' method provided by the 'CPS' wrapper
 CPS(cpsFn).map(f)
-// 'cpsFn' is passed as value ("piped") into 'map(f)' via 'pipeline' operator
+// 'cpsFn' is piped into 'map(f)' via 'pipeline' operator
 pipeline(cpsFn)(map(f))
 ```
+The wrapped CPS function `CPS(cpsFn)` has all operators available as methods, while it remains plain CPS function, i.e. can be called with the same callbacks:
+```js
+CPS(cpsFn)(f1, f2, ...) // is equivalent to
+cpsFn(f1, f2, ...)
+```
 
-### map(...functions)(cpsFunction)
+#### chaining
+```js
+// as methods
+CPS(cpsFn).map(f).chain(g).filter(h)
+// with single pipeline
+pipeline(cpsFn)(
+  map(f),
+  chain(g),
+  filter(h)
+)
+```
+
+### `map(...functions)(cpsFunction)``
 ```js
 map(f1, f2, ...)(cpsFn)
 CPS(cpsFn).map(f1, f2, ...)
 pipeline(cpsFn)(map(f1, f2, ...))
 ```
 For each `n`, apply `fn` to each output from the `n`th callback of `cpsFn`.
-The result is the new CPS function that calls its `n`th callback `cbn` as
+
+#### result of applying `map`
+New CPS function that calls its `n`th callback `cbn` as
 ```js
 cbn(fn(x1, x2, ...))
 ```
 whenever `cpsFn` calls its `n`th callback.
 
+#### example of `map`
 ```js
 const fs = require('fs')
 const readFile = (file, encoding) =>
@@ -80,13 +102,13 @@ const getCaps = pipeline(readFile('message.txt', 'utf8'))(
   map(str => str.toUpperCase())
 )
 
-// getCaps is a CPS function, so we just call it with any callback
+// getCaps is CPS function, just call with any callback
 getCaps(
   (err, data) => err ? console.error(err) : console.log(data)
 ) // => file content is capitalized and printed to console
 ```
 
-### chain(...functions)(cpsFunction)
+### `chain(...functions)(cpsFunction)``
 ```js
 chain(f1, f2, ...)(cpsFn)
 CPS(cpsFn).chain(f1, f2, ...)
@@ -97,13 +119,17 @@ where each `fn` is a curried function
 // fn(x1, x2, ...) is expected to return a CPS function
 const fn = (x1, x2, ...) => (cb1, cb2, ...) => { ... }
 ```
-The `chain` operator applies each `fn` to each output from the `n`th callback of `cpsFn`, however, the CPS *ouptup* of `fn` is passed ahead instead of the return value. The `chain` operator returns the new CPS function `newCpsFn` that calls `fn(x1, x2, ...)` whenever `cpsFn` passes output `(x1, x2, ...)` into its `n`th callback, and collects all outputs from all callbacks of all `fn`s. Then for each fixed `m`, outputs from the `m`th callbacks of all `fn`s are collected and passed into the `m`th callback `cbm` of `newCpsFn`:
+The `chain` operator applies each `fn` to each output from the `n`th callback of `cpsFn`, however, the CPS *ouptup* of `fn` is passed ahead instead of the return value. 
+
+#### result of applying `chain`
+New CPS function `newCpsFn` that calls `fn(x1, x2, ...)` whenever `cpsFn` passes output `(x1, x2, ...)` into its `n`th callback, and collects all outputs from all callbacks of all `fn`s. Then for each fixed `m`, outputs from the `m`th callbacks of all `fn`s are collected and passed into the `m`th callback `cbm` of `newCpsFn`:
 ```js
 cbm(y1, y2, ...)  // is called whenever 
 cbmFn(y1, y2, ...)  // is called where
 // cbmFn is the mth callback of fn
 ```
 
+#### example of `chain`
 ```js
 const writeFile = (file, encoding, content) =>
   cb => fs.readFile(file, encoding, content, cb)   // CPS function
@@ -123,8 +149,9 @@ const copy = pipeline(readFile('source.txt', 'utf8'))(
 )
 
 // copy is a CPS function, so we just call it with any callback
-copy(
-  (err, data) => err ? console.error(err) : console.log(data)
+copy((err, data) => err 
+  ? console.error(err) 
+  : console.log(data)
 ) // => file content is capitalized and printed to console
 ```
 
@@ -134,19 +161,26 @@ filter(pred1, pred2, ...)(cpsFn)
 CPS(cpsFn).filter(pred1, pred2, ...)
 pipeline(cpsFn)(filter(pred1, pred2, ...))
 ```
-where each `predn` is the `n`th predicate function used to filter output from the `n`th callback of `cpsFn`. The result is the new CPS function that calls its `n`th callback `cbn(x1, x2, ...)` whenever `(x1, x2, ...)` is an output from the `n`th callback of `cpsFun` and
+where each `predn` is the `n`th predicate function used to filter output from the `n`th callback of `cpsFn`. 
+
+#### result of applying `chain`
+New CPS function that calls its `n`th callback `cbn(x1, x2, ...)` whenever `(x1, x2, ...)` is an output from the `n`th callback of `cpsFun` and
 ```js
 predn(x1, x2, ...) == true
 ```
 
+#### example of `filter`
 ```js
-// only copy if text is not empty
+// only copy text if it is not empty
 const copyNotEmpty = CPS(readFile('source.txt', 'utf8'))
   .filter(text => text.length > 0)
   .chain(text => writFile('target.txt', 'utf8', text))
+
+// copyNotEmpty is CPS function, just call with any callback
+copyNotEmpty(err => console.error(err))
 ```
 
-### scan(...reducers)(...initialValues)(cpsFunction)
+### `scan(...reducers)(...initialValues)(cpsFunction)``
 Similar to [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), except that all partial accumulated values are passed into callback whenever there is new output.
 ```js
 scan(red1, red2, ...)(x1, x2, ...)(cpsFn)
@@ -155,11 +189,14 @@ pipeline(cpsFn)(scan(red1, red2, ...)(x1, x2, ...))
 ```
 where each `redn` is a *reducer*
 ```
-// take accumulated value 'acc' and input (y1, y2, ...) and return new acc. value
+// compute new accumulator value from the old one 
+// and the tuple of current values (y1, y2, ...)
 const redn = (acc, y1, y2, ...) => ... 
 ```
-The result is the new CPS function whose output from the `n`the callback is the `n`th accumulated value `accn`. Upon each output `(y1, y2, ...)`, the new acculated value `redn(accn, y1, y2, ...)` is computed and passed into the callback. The nth value `xn` serves in place of `acc` at the start, similar to `reduce`. Note that the initial values `(x1, x2, ...)` must be passed as curried arguments to avoid getting mixed with reducers.
+The result of `scan` is the new CPS function whose output from the `n`the callback is the `n`th accumulated value `accn`. Upon each output `(y1, y2, ...)`, the new acculated value `redn(accn, y1, y2, ...)` is computed and passed into the callback. The nth value `xn` serves in place of `acc` at the start, similar to `reduce`. Note that the initial values `(x1, x2, ...)` must be passed as curried arguments to avoid getting mixed with reducers.
 
+
+#### example of `scan`
 ```js
 // CPS function with 2 callbacks
 // each click on one of the buttons sends '1' into respective callback
