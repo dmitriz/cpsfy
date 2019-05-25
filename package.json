@@ -3,10 +3,10 @@
   "name": "tiny-cps",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
-  "files": [
-    "index.js"
-  ],
+  "files": "index.js",
   "repository": "https://github.com/dmitriz/tiny-cps.git",
+  "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
+  "license": "MIT",
   "scripts": {
     "start": "npm version",
     "preversion": "npm test",
@@ -30,8 +30,6 @@
     "promise",
     "async"
   ],
-  "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
-  "license": "MIT",
   "devDependencies": {
     "ava": "1.4.1",
     "codecov": "3.5.0",
