@@ -1,11 +1,3 @@
-// Helper to inherit the prototype
-const inheritState = (target, source) => {
-	Object.setPrototypeOf(
-		target, Object.getPrototypeOf(source)
-	)
-}
-
-
 /* ----- General purpose operators ----- */
 
 /**
@@ -33,6 +25,16 @@ const pipeline = (...args) => (...fns) => {
 		f1(...args)
 	)
 }
+
+
+
+// Helper to inherit the prototype
+const inheritState = (target, source) =>
+ 	pipeline(source)(
+		Object.getPrototypeOf,
+		prototype => Object.setPrototypeOf(target, prototype)
+)
+
 
 
 /* ----- CPS operators ----- */
@@ -219,4 +221,6 @@ const CPS = cpsFn => {
 	return cpsWrapped
 }
 
-module.exports = { pipeline, of, map, chain, filter, scan, CPS }
+module.exports = { 
+	pipeline, of, map, chain, filter, scan, CPS 
+}
