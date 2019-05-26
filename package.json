@@ -11,11 +11,12 @@
     "start": "npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
-    "postpublish": "git push origin --all; git push origin --tags",
+    "postpublish": "git pull --rebase && git push origin --all; git push origin --tags",
     "test": "nyc ava test/*test.js",
     "watch": "nyc ava test/*test.js -w",
     "tape": "tape test/*test.js",
     "tap": "tap test/*test.js",
+    "sync": "git ac && git pull --rebase && git push",
     "cov": "nyc report --reporter=text-lcov | coveralls",
     "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "toc": "markdown-toc README.md > toc"
