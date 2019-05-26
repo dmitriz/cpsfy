@@ -149,7 +149,7 @@ const chain = (...cpsFns) => cpsFun => {
 const filter = (...preds) =>
 	chain(...preds.map((pred, idx) => 
 		(...input) => (...cbs) => {
-			if (pred(...input)) return cbs[idx](...input)
+			if (pred(...input)) cbs[idx](...input)
 		}
 	))
 
