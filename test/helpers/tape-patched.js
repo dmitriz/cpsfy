@@ -1,5 +1,4 @@
 const test = require('tape')
-// const test = require('tap').test
 
 /*
 Curried version of the `.is` assertion: patching test object with `.cis` prop to delegate to its `.is` prop
