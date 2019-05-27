@@ -10,8 +10,11 @@
 (https://david-dm.org/dmitriz/cpsfy) 
 [![devDependencies](https://badgen.now.sh/david/dev/dmitriz/tiny-cps)]
 (https://david-dm.org/dmitriz/tiny-cps?type=dev)
-[![MIT License](https://img.shields.io/npm/l/tiny-cps.svg?style=flat-square)](http://opensource.org/licenses/MIT) 
-
+[![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/tiny-cps/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dmitriz/tiny-cps?targetFile=package.json)
+[![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/tiny-cps.svg)]
+(https://greenkeeper.io/) 
+[![MIT License](https://img.shields.io/npm/l/tiny-cps.svg?style=flat-square)]
+(http://opensource.org/licenses/MIT) 
 [![Build Status](https://travis-ci.org/dmitriz/cpsfy.svg?branch=master)]
 (https://travis-ci.org/dmitriz/cpsfy)
 [![Coverage Status](https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg?branch=v2.0.10)]
@@ -22,9 +25,6 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/tiny-cps/badge)](https://www.codefactor.io/repository/github/dmitriz/tiny-cps)
 [![codebeat badge](https://codebeat.co/badges/8cd1b450-262f-4aa1-be1a-d44596f2777e)](https://codebeat.co/projects/github-com-dmitriz-tiny-cps-master)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dmitriz/tiny-cps.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/dmitriz/tiny-cps/context:javascript)
-
-[![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/tiny-cps/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dmitriz/tiny-cps?targetFile=package.json)
-[![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/tiny-cps.svg)](https://greenkeeper.io/) 
 
 Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions
 
