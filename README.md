@@ -26,8 +26,6 @@ For maximum security, this package is intended not to have dependencies ever.
 ## CPS function
 Any function
 ```js
-//cb1, cb2, ... are called any number of times with any 
-// (possibly varying each time) number of arguments
 const cpsFn = (cb1, cb2, ...) => { ... } 
 ```
 that expects to be called with several (possibly zero) functions (callbacks) as arguments. The number of callbacks may vary each time `cpsFn` is called. Once called and running, `cpsFn` may call any of the callbacks `cbn` any (possibly zero) number of times with any number `m` of arguments `(x1, ..., xm)`, where `m` may also vary from call to call. The `m`-tuple (vector) `(x1, ..., xm)` is regarded as the *output* of `cpsFn` passed to the `n`the callback:
