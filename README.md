@@ -7,7 +7,9 @@
 [![Coverage Status]
 (https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg?branch=v2.0.10)]
 (https://coveralls.io/github/dmitriz/cpsfy?branch=v2.0.10)
-[![codecov](https://codecov.io/gh/dmitriz/tiny-cps/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/tiny-cps)
+[![codecov]
+(https://codecov.io/gh/dmitriz/cpsfy/branch/master/graph/badge.svg)]
+(https://codecov.io/gh/dmitriz/cpsfy)
 [![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/tiny-cps/badge)](https://www.codefactor.io/repository/github/dmitriz/tiny-cps)
 [![codebeat badge](https://codebeat.co/badges/8cd1b450-262f-4aa1-be1a-d44596f2777e)](https://codebeat.co/projects/github-com-dmitriz-tiny-cps-master)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dmitriz/tiny-cps.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/dmitriz/tiny-cps/context:javascript)
