@@ -19,8 +19,6 @@
     "tape": "tape test/*test.js",
     "tap": "tap test/*test.js",
     "sync": "git ac && git pull --rebase && git push",
-    "cov": "nyc report --reporter=text-lcov | coveralls",
-    "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "toc": "markdown-toc README.md > toc"
   },
   "keywords": [
@@ -35,7 +33,6 @@
   ],
   "devDependencies": {
     "ava": "1.4.1",
-    "codecov": "3.5.0",
     "markdown-toc": "1.2.0",
     "nyc": "14.1.1",
     "tape": "4.10.2"
