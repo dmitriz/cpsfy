@@ -1,6 +1,6 @@
 # cpsfy
 
-[![npm version](https://img.shields.io/npm/v/tiny-cps.svg)](http://npm.im/tiny-cps)
+[![npm version](https://img.shields.io/npm/v/cpsfy.svg)](http://npm.im/cpsfy)
 [![install size](https://packagephobia.now.sh/badge?p=tiny-cps)](https://packagephobia.now.sh/result?p=tiny-cps)
 [![bundlephobia](https://img.shields.io/bundlephobia/minzip/tiny-cps.svg)](https://bundlephobia.com/result?p=tiny-cps)
 [![Build Status](https://travis-ci.org/dmitriz/tiny-cps.svg?branch=master)](https://travis-ci.org/dmitriz/tiny-cps)
