@@ -5,7 +5,7 @@
 [![bundlephobia](https://img.shields.io/bundlephobia/minzip/cpsfy.svg)](https://bundlephobia.com/result?p=cpsfy)
 [![dependencies](https://david-dm.org/dmitriz/cpsfy.svg)](https://david-dm.org/dmitriz/cpsfy) 
 [![devDependencies](https://badgen.now.sh/david/dev/dmitriz/cpsfy)](https://david-dm.org/dmitriz/cpsfy?type=dev)
-[![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/tiny-cps/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dmitriz/tiny-cps?targetFile=package.json)
+[![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/cpsfy/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dmitriz/cpsfy?targetFile=package.json)
 [![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/tiny-cps.svg)](https://greenkeeper.io/) 
 [![MIT License](https://img.shields.io/npm/l/tiny-cps.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
