@@ -87,12 +87,16 @@ const of = (...args) => cb => cb(...args)
  * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
  * see {@link https://stackoverflow.com/a/41816326/1614973}
  */
+
+// precompose every callback with fn from array matched by index 
+// if no function provided, default to the identity
+const transformCallbackArgs = (fn, cb) => (...args) => 
+		fn ? cb(fn(...args)) : cb(...args)
+
+const passToCPS = fns => (cb, idx) => transformCallbackArgs(fns[idx], cb)
+
 const map = (...fns) => cpsFun => {
-	let passToCPS = (cb, idx) => (...args) => 
-		fns[idx] ? cb(fns[idx](...args)) : cb(...args)
-	// precompose every callback with fn matched by index or pass directly the args
-	// collect functions in array and pass as callbacks to cpsFun
-	let cpsNew = (...cbs) => cpsFun(...cbs.map(passToCPS))
+	let cpsNew = (...cbs) => cpsFun(...cbs.map(passToCPS(fns)))
 	inheritState(cpsNew, cpsFun)
 	return cpsNew
 }
