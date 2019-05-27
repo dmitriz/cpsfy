@@ -8,7 +8,6 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/cpsfy/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dmitriz/cpsfy?targetFile=package.json)
 [![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/cpsfy.svg)](https://greenkeeper.io/) 
 [![MIT License](https://img.shields.io/npm/l/cpsfy.svg?style=flat-square)](http://opensource.org/licenses/MIT)
-
 [![Build Status](https://travis-ci.org/dmitriz/cpsfy.svg?branch=master)](https://travis-ci.org/dmitriz/cpsfy)
 [![Coverage Status](https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg?branch=v2.0.10)](https://coveralls.io/github/dmitriz/cpsfy?branch=v2.0.10)
 [![codecov](https://codecov.io/gh/dmitriz/cpsfy/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/cpsfy)
