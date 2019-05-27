@@ -146,8 +146,7 @@ const chain = (...cpsFns) => cpsFun => {
 const filter = (...preds) =>
 	// call `chain` with the list of arguments, one per each predicate
 	chain(...preds.map((pred, idx) => 
-		(...input) => (...cbs) =>
-			(pred(...input)) && cbs[idx](...input)
+		(...input) => (...cbs) => (pred(...input)) && cbs[idx](...input)
 	))
 
 
