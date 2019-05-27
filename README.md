@@ -16,6 +16,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/cpsfy/badge)](https://www.codefactor.io/repository/github/dmitriz/cpsfy)
 [![codebeat badge](https://codebeat.co/badges/2480c750-f9ea-46c0-a574-5e72dad17a4f)](https://codebeat.co/projects/github-com-dmitriz-cpsfy-master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a55f3fd9a13396325671/maintainability)](https://codeclimate.com/github/dmitriz/cpsfy/maintainability)
+[![HitCount](http://hits.dwyl.io/dmitriz/cpsfy.svg)](http://hits.dwyl.io/dmitriz/cpsfy)
 
 
 Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions
