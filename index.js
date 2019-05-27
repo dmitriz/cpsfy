@@ -174,23 +174,18 @@ const filter = (...preds) =>
  *		over reducers[n] starting from with initStates[n]
  *
  */
-const scan = (...reducers) => (...initStates) => {
-	let states = initStates
-	// chain cpsAction with tuple of CPS function
-  return cpsAction => 
-    // chaining outputs of cpsAction with multiple reducers, one per state
-    chain(
-    	// chain receives tuple of functions, one per reducer
-    	...reducers.map((reducer, idx) =>
-    		// nth CPS function inside chain receives nth callback output of cpsAction
-    		(...action) => (...cbs) => {
-	      // accessing states and reducers by index
-	      // (undefined === states[idx]) && (states[idx] = initStates[idx])
-	      states[idx] = reducer(states[idx], ...action)
-	      cbs[idx]( states[idx] )    		
-    	}
-    ))(cpsAction)
-}
+const scan = (...reducers) => (...states) => cpsAction => 
+  // chaining outputs of cpsAction with multiple reducers, one per state
+  chain(
+  	// chain receives tuple of functions, one per reducer
+  	...reducers.map((reducer, idx) =>
+  		// nth CPS function inside chain receives nth callback output of cpsAction
+  		(...action) => (...cbs) => {
+      // accessing states and reducers by index
+      states[idx] = reducer(states[idx], ...action)
+      cbs[idx]( states[idx] )    		
+  	}
+  ))(cpsAction)
 
 
 
