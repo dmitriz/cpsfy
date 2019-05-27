@@ -1,6 +1,6 @@
 {
   "version": "1.8.1",
-  "name": "tiny-cps",
+  "name": "cpsfy",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
   "files": [
