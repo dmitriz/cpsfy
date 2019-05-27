@@ -136,11 +136,12 @@ const chain = (...cpsFns) => cpsFun => {
 
 
 // pass through only input truthy `pred`
-const filter = (...preds) =>
-	// call `chain` with the list of arguments, one per each predicate
-	chain(...preds.map((pred, idx) => 
-		(...input) => (...cbs) => (pred(...input)) && cbs[idx](...input)
-	))
+const filter = (...preds) => {
+	// call `chain` with the list of functions, one per each predicate
+	let transformer = (pred, idx) => (...inputs) => 
+		(...cbs) => (pred(...inputs)) && cbs[idx](...inputs)
+	return chain(...preds.map(transformer))
+}
 
 
 /**
