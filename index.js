@@ -168,10 +168,10 @@ const filter = (...preds) =>
  *  	where @signature of each reducer is (state, ...actions) -> state
  * @params {Tuple of values} (...states)
  * @param {CPS function} cpsAction
- * @returns {CPS function} CPS.scan(...reducers)(...initStates)(cpsAction)
+ * @returns {CPS function} CPS.scan(...reducers)(...states)(cpsAction)
  * 		whose nth callback receives the outputs obtained by iterating 
  *		the stream of outputs from the nth callback of cpsAction 
- *		over reducers[n] starting from with initStates[n]
+ *		over reducers[n] starting from with states[n]
  *
  */
 const scan = (...reducers) => (...states) => cpsAction => 
