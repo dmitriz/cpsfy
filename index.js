@@ -18,13 +18,10 @@
  * pipeline(x,y)(f, g)
  *		is equivalent to g(f(x, y))
  */
-const pipeline = (...args) => (...fns) => {
-	const f1 = fns[0]
-	return fns.slice(1).reduce(
-		(acc, fn) => fn(acc),
-		f1(...args)
-	)
-}
+const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
+	(acc, fn) => fn(acc),
+	fns[0](...args)
+)
 
 
 
