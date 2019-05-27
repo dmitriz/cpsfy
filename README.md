@@ -1,4 +1,4 @@
-# tiny-cps
+# cpsfy
 
 [![npm version](https://img.shields.io/npm/v/tiny-cps.svg)](http://npm.im/tiny-cps)
 [![install size](https://packagephobia.now.sh/badge?p=tiny-cps)](https://packagephobia.now.sh/result?p=tiny-cps)
@@ -18,7 +18,7 @@
 Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions
 
 ```sh
-npm install tiny-cps
+npm install cpsfy
 ```
 *No dependency policy.*
 For maximum security, this package is intended not to have dependencies ever.
@@ -41,7 +41,7 @@ In other words, a CPS function receives any number of callbacks that it may call
 ## API in brief
 ```js
 const { map, chain, filter, scan, CPS, pipeline } 
-  = require('tiny-cps')
+  = require('cpsfy')
 ```
 Each of the `map`, `chain`, `filter`, `scan` operators can be used in 3 ways:
 ```js

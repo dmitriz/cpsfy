@@ -10,7 +10,7 @@
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "scripts": {
-    "start": "npm version",
+    "start": "git ac && npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "git pull --rebase && git push origin --all; git push origin --tags",

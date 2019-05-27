@@ -1,4 +1,4 @@
-# Tiny-Cps
+# cpsfy
 Tiny but powerful goodies for Continuation-Passing-Style functions
 
 > Simplicity is prerequisite for reliability. 
