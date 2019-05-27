@@ -177,7 +177,7 @@ const filter = (...preds) =>
 const scan = (...reducers) => (...initStates) => {
 	let states = initStates
 	// chain cpsAction with tuple of CPS function
-  return cpsAction => pipeline(cpsAction)(
+  return cpsAction => 
     // chaining outputs of cpsAction with multiple reducers, one per state
     chain(
     	// chain receives tuple of functions, one per reducer
@@ -189,8 +189,7 @@ const scan = (...reducers) => (...initStates) => {
 	      states[idx] = reducer(states[idx], ...action)
 	      cbs[idx]( states[idx] )    		
     	}
-    )
-  ))
+    ))(cpsAction)
 }
 
 
