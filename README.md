@@ -4,7 +4,7 @@
 [![install size](https://packagephobia.now.sh/badge?p=cpsfy)](https://packagephobia.now.sh/result?p=cpsfy)
 [![bundlephobia](https://img.shields.io/bundlephobia/minzip/cpsfy.svg)](https://bundlephobia.com/result?p=cpsfy)
 [![Build Status](https://travis-ci.org/dmitriz/cpsfy.svg?branch=master)](https://travis-ci.org/dmitriz/cpsfy)
-[![coveralls](https://coveralls.io/repos/github/dmitriz/tiny-cps/badge.svg?branch=master)](https://coveralls.io/github/dmitriz/tiny-cps?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg?branch=v2.0.10)](https://coveralls.io/github/dmitriz/cpsfy?branch=v2.0.10)
 [![codecov](https://codecov.io/gh/dmitriz/tiny-cps/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/tiny-cps)
 [![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/tiny-cps/badge)](https://www.codefactor.io/repository/github/dmitriz/tiny-cps)
 [![codebeat badge](https://codebeat.co/badges/8cd1b450-262f-4aa1-be1a-d44596f2777e)](https://codebeat.co/projects/github-com-dmitriz-tiny-cps-master)
