@@ -88,13 +88,11 @@ const of = (...args) => cb => cb(...args)
  * see {@link https://stackoverflow.com/a/41816326/1614973}
  */
 const map = (...fns) => cpsFun => {
-	let cpsNew = (...cbs) => cpsFun(
-		// precompose every callback with fn matched by index or pass directly the args
-		// collect functions in array and pass as callbacks to cpsFun
-		...cbs.map(
-			(cb, idx) => (...args) => fns[idx] ? cb(fns[idx](...args)) : cb(...args)
-		)
-	)
+	let passToCPS = (cb, idx) => (...args) => 
+		fns[idx] ? cb(fns[idx](...args)) : cb(...args)
+	// precompose every callback with fn matched by index or pass directly the args
+	// collect functions in array and pass as callbacks to cpsFun
+	let cpsNew = (...cbs) => cpsFun(...cbs.map(passToCPS))
 	inheritState(cpsNew, cpsFun)
 	return cpsNew
 }
