@@ -132,9 +132,9 @@ const chain = (...cpsFns) => cpsFun => {
 	let cpsNew = (...cbs) => cpsFun(
 		// precompose every callback with fn matched by index or pass directly the args,
 		// collect functions in array and pass as callbacks to cpsFun
-		...cpsFns.map(
+		...cpsFns.map(cpsFn =>
 			// all callbacks from the chain get passed to each cpsFn
-			cpsFn => (...args) => cpsFn(...args)(...cbs)
+			(...args) => cpsFn(...args)(...cbs)
 		)
 	)
 	inheritState(cpsNew, cpsFun)
@@ -143,16 +143,11 @@ const chain = (...cpsFns) => cpsFun => {
 
 
 // pass through only input truthy `pred`
-// const cpsFilter = pred => (...input) => cb => {
-//   if (pred(...input)) cb(...input)
-// }
-
-// call `chain` with the list of arguments, one per each predicate
 const filter = (...preds) =>
+	// call `chain` with the list of arguments, one per each predicate
 	chain(...preds.map((pred, idx) => 
-		(...input) => (...cbs) => {
-			if (pred(...input)) cbs[idx](...input)
-		}
+		(...input) => (...cbs) =>
+			(pred(...input)) && cbs[idx](...input)
 	))
 
 
