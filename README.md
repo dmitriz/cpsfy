@@ -12,9 +12,9 @@
 [![Build Status](https://travis-ci.org/dmitriz/cpsfy.svg?branch=master)](https://travis-ci.org/dmitriz/cpsfy)
 [![Coverage Status](https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg?branch=v2.0.10)](https://coveralls.io/github/dmitriz/cpsfy?branch=v2.0.10)
 [![codecov](https://codecov.io/gh/dmitriz/cpsfy/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/cpsfy)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dmitriz/tiny-cps.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/dmitriz/tiny-cps/context:javascript)
-[![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/tiny-cps/badge)](https://www.codefactor.io/repository/github/dmitriz/tiny-cps)
-[![codebeat badge](https://codebeat.co/badges/8cd1b450-262f-4aa1-be1a-d44596f2777e)](https://codebeat.co/projects/github-com-dmitriz-tiny-cps-master)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dmitriz/cpsfy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/dmitriz/cpsfy/context:javascript)
+[![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/cpsfy/badge)](https://www.codefactor.io/repository/github/dmitriz/cpsfy)
+[![codebeat badge](https://codebeat.co/badges/2480c750-f9ea-46c0-a574-5e72dad17a4f)](https://codebeat.co/projects/github-com-dmitriz-cpsfy-master)
 
 Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions
 
