@@ -17,21 +17,16 @@ test('map method works correctly', t => {
 })
 
 test('map is provided on target as well', t => {
-	cpsWrapped
-		.map(z => z + 2)
-		.map(z => z - 1)
-		(t.cis(43))
+	cpsWrapped.map(z => z + 2).map(z => z - 1)(t.cis(43))
 })
 
 test('provide chain method on CPS functions', t => {
-	CPS(cpsFun).chain(y => cb => cb(y + 1))
-		(t.cis(43))
+	CPS(cpsFun).chain(y => cb => cb(y + 1))(t.cis(43))
 })
 test('chain is provided on target as well', t => {
 	cpsWrapped
 		.chain(z => cb => cb(z + 2))
-		.chain(z => cb => cb(z - 1))
-		(t.cis(43))
+		.chain(z => cb => cb(z - 1))(t.cis(43))
 })
 
 test('function on CPS(fn) is delegated to fn', t => {
