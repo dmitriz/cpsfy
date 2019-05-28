@@ -5,15 +5,14 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
 > Elegance is not a dispensable luxury but a factor that decides between success and failure.
 > 
 > --- [Edsger W. Dijkstra](https://www.azquotes.com/author/3969-Edsger_Dijkstra)
-
-> 
-```js
-// ignorant
-const getServerStuff = callback => ajaxCall(json => callback(json))
-// enlightened
-const getServerStuff = ajaxCall
-```
-*--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
+ 
+>```js
+>// ignorant
+>const getServerStuff = callback => ajaxCall(json => callback(json))
+>// enlightened
+>const getServerStuff = ajaxCall
+>```
+>*--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
 
 
 - [CPS functions](#cps-functions)
