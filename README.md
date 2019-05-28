@@ -17,7 +17,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a55f3fd9a13396325671/maintainability)](https://codeclimate.com/github/dmitriz/cpsfy/maintainability)
 
 
-Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions
+Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions with functional composability backed by category theory.
 
 ```sh
 npm install cpsfy
@@ -244,7 +244,6 @@ See [`CPS.merge`](DOCUMENTATION.md#cpsmerge-todo).
 Merge outputs from multiple CPS functions, separately in each callback.
 E.g. separately merge results and errors from multiple promises
 running in parallel.
-Conforms to the commutative monoid interface.
 
 ## More details?
 This `README.md` is kept minimal to reduce the package size. For more human introduction, motivation, use cases and other details, please see [DOCUMENTATION](DOCUMENTATION.md).
