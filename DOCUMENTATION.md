@@ -68,7 +68,7 @@ const getServerStuff = ajaxCall
   * [Application of `chain`: Turn Node API into Promise style callbacks](#application-of-chain-turn-node-api-into-promise-style-callbacks)
   * [CPS.ap](#cpsap)
     + [Running CPS functions in parallel](#running-cps-functions-in-parallel)
-    + [Lifting functions of multiple parameters](#lifting-functions-of-multiple-parameters)
+    + [Lifting functions of multiple arguments](#lifting-functions-of-multiple-arguments)
       - [Promise.all](#promiseall)
       - [Usage notes](#usage-notes)
     + [Applying multiple functions inside `ap`](#applying-multiple-functions-inside-ap)
@@ -1474,7 +1474,7 @@ It would be more efficient to run both functions in parallel and then combine th
 which is precisely what the `ap` operator does.
 
 
-### Lifting functions of multiple parameters
+### Lifting functions of multiple arguments
 Perhaps the most important use of the `ap` operator is lifting plain functions
 to act on results of CPS functional computations.
 That way simple plain functions can be created and re-used

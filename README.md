@@ -23,7 +23,7 @@ Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions
 npm install cpsfy
 ```
 *No dependency policy.*
-For maximum security, this package is intended not to have dependencies ever.
+For maximum security, this package is intended to be kept minimal and transparent with no dependencies ever.
 
 ## CPS function
 Any function
@@ -228,6 +228,23 @@ countVotes(
 )
 ```
 
+
+### `ap(...cpsFunctions)(cpsFunction)` (TODO)
+See [running CPS functions in parallel](DOCUMENTATION.md#running-cps-functions-in-parallel).
+Inspired by the Applicative Functor interface, see e.g. https://funkia.github.io/jabz/#ap
+
+### `lift(...functions)(cpsFunction)` (TODO)
+See [lifting functions of multiple arguments](DOCUMENTATION.md#lifting-functions-of-multiple-parameters)
+The "sister" of `ap`, apply functions with multiple arguments to
+outputs of CPS functions running in parallel, derived from `ap`,
+see e.g. https://funkia.github.io/jabz/#lift
+
+### `merge(...cpsFunctions)` (TODO)
+See [`CPS.merge`](DOCUMENTATION.md#cpsmerge-todo).
+Merge outputs from multiple CPS functions, separately in each callback.
+E.g. separately merge results and errors from multiple promises
+running in parallel.
+Conforms to the commutative monoid interface.
 
 ## More details?
 This `README.md` is kept minimal to reduce the package size. For more human introduction, motivation, use cases and other details, please see [DOCUMENTATION](DOCUMENTATION.md).
