@@ -63,7 +63,7 @@ cpsFn(f1, f2, ...)
 // as methods
 CPS(cpsFn).map(f).chain(g).filter(h)
 
-// of as functional pipeline
+// or equivalently with 'pipeline' operator
 pipeline(cpsFn)(
   map(f),
   chain(g),
