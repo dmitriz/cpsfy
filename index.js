@@ -9,27 +9,27 @@
  * @params {Tuple} (...args) tuple of arbitrary values
  * @curriedParams {Tuple of Functions} (...fns) tuple of functions that
  * @returns {value} fn(...f2(f1(...args))...) 
- *		where fns = [f1, f2, ..., fn]
+ *    where fns = [f1, f2, ..., fn]
  *
  * # Examples
  *
  * pipeline(x)(f1, f2, f3)
- *		is equivalent to f3(f2(f1(x)))
+ *    is equivalent to f3(f2(f1(x)))
  * pipeline(x,y)(f, g)
- *		is equivalent to g(f(x, y))
+ *    is equivalent to g(f(x, y))
  */
 const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
-	(acc, fn) => fn(acc),
-	fns[0](...args)
+  (acc, fn) => fn(acc),
+  fns[0](...args)
 )
 
 
 
 // Helper to inherit the prototype
 const inheritState = (target, source) =>
- 	pipeline(source)(
-		Object.getPrototypeOf,
-		prototype => Object.setPrototypeOf(target, prototype)
+  pipeline(source)(
+    Object.getPrototypeOf,
+    prototype => Object.setPrototypeOf(target, prototype)
 )
 
 
@@ -42,14 +42,14 @@ const inheritState = (target, source) =>
  * @name CPS.of
  * @params {Tuple} (...args) tuple of arbitrary values
  * @returns {CPS Function} CPS.of(...args) 
- *		that outputs (...args) inside its first callback
- *		no other output is passed to any other callback
+ *    that outputs (...args) inside its first callback
+ *    no other output is passed to any other callback
  *
  * # Example
  *
- * 		CPS.of(x1, x2, x3)
- * 				is equivalent to the CPS function 
- * 		cb => cb(x1, x2, x3)
+ *    CPS.of(x1, x2, x3)
+ *        is equivalent to the CPS function 
+ *    cb => cb(x1, x2, x3)
  *
  * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
  * see {@link https://stackoverflow.com/a/41816326/1614973}
@@ -67,22 +67,22 @@ const of = (...args) => cb => cb(...args)
  * @params {Tuple of Functions} (...fns)
  * @curriedParam {CPS Function} cpsFun
  * @returns {CPS Function} CPS.map(...fns)(cpsFun) 
- *		whose nth callback's output equals 
- *  	the nth callback's output of `cpsFun` transformed via function fns[n]
+ *    whose nth callback's output equals 
+ *    the nth callback's output of `cpsFun` transformed via function fns[n]
  *
  * # Examples
  *
- * 		const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7)
- * 			2 callbacks receive corresponding outputs (2, 3) and (7)
- * 		CPS.map(f1, f2)(cpsFun)
- * 			is equivalent to the CPS function
- * 		(cb1, cb2) => cb1(f1(2, 3)) + cb2(f2(7))
- * 			where f1 and f2 transform respective outputs
+ *    const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7)
+ *      2 callbacks receive corresponding outputs (2, 3) and (7)
+ *    CPS.map(f1, f2)(cpsFun)
+ *      is equivalent to the CPS function
+ *    (cb1, cb2) => cb1(f1(2, 3)) + cb2(f2(7))
+ *      where f1 and f2 transform respective outputs
  *
- *		const cpsFromPromise = promise => (onRes, onErr) => promise.then(onRes, onErr)
- *		CPS.map(f1, f2)(cpsFromPromise(promise))
- *			is equivalent to
- *		cpsFromPromise(promise.then(f1).catch(f2))
+ *    const cpsFromPromise = promise => (onRes, onErr) => promise.then(onRes, onErr)
+ *    CPS.map(f1, f2)(cpsFromPromise(promise))
+ *      is equivalent to
+ *    cpsFromPromise(promise.then(f1).catch(f2))
  *
  * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
  * see {@link https://stackoverflow.com/a/41816326/1614973}
@@ -91,14 +91,14 @@ const of = (...args) => cb => cb(...args)
 // precompose every callback with fn from array matched by index 
 // if no function provided, default to the identity
 const transformCallbackArgs = (fn, cb) => (...args) => 
-		fn ? cb(fn(...args)) : cb(...args)
+  fn ? cb(fn(...args)) : cb(...args)
 
 const passToCPS = fns => (cb, idx) => transformCallbackArgs(fns[idx], cb)
 
 const map = (...fns) => cpsFun => {
-	let cpsNew = (...cbs) => cpsFun(...cbs.map(passToCPS(fns)))
-	inheritState(cpsNew, cpsFun)
-	return cpsNew
+  let cpsNew = (...cbs) => cpsFun(...cbs.map(passToCPS(fns)))
+  inheritState(cpsNew, cpsFun)
+  return cpsNew
 }
 
 
@@ -113,38 +113,38 @@ const map = (...fns) => cpsFun => {
  * @params {Tuple of CPS Functions} (...cpsFns)
  * @curriedParam {CPS Function} cpsFun
  * @returns {CPS Function} CPS.chain(...fns)(cpsFun)
- * 		whose nth callback's output is gathered from
- *  	the nth callbacks' outputs of each function fns[j] for each j
- *  	evaluated for each output of the jth callback of `cpsFun`
+ *    whose nth callback's output is gathered from
+ *    the nth callbacks' outputs of each function fns[j] for each j
+ *    evaluated for each output of the jth callback of `cpsFun`
  *
  * # Example
  *
- * 		const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7, 9)
- *			2 callbacks receive outputs (2, 3) and (7, 9)
- * 		const cpsF1 = (x, y) => (cb1, cb2) => cb1(x + y) + cb2(x - y)
- * 		const cpsF2 = (x, y) => cb => cb(x, -y)
- * 		CPS.chain(cpsF1, cpsF2)(cpsFun)
- *			is equivalent to the CPS function
- * 		(cb1, cb2) => cb1(5) + cb2(7, -9)
+ *    const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7, 9)
+ *      2 callbacks receive outputs (2, 3) and (7, 9)
+ *    const cpsF1 = (x, y) => (cb1, cb2) => cb1(x + y) + cb2(x - y)
+ *    const cpsF2 = (x, y) => cb => cb(x, -y)
+ *    CPS.chain(cpsF1, cpsF2)(cpsFun)
+ *      is equivalent to the CPS function
+ *    (cb1, cb2) => cb1(5) + cb2(7, -9)
  */
 const chain = (...cpsFns) => cpsFun => {
-	let passCb = (...cbs) => cpsFn =>
-			// all callbacks from the chain get passed to each cpsFn
-			(...args) => cpsFn(...args)(...cbs)
-	// precompose every callback with fn matched by index or pass directly the args,
-	// collect functions in array and pass as callbacks to cpsFun
-	let cpsNew = (...cbs) => cpsFun(...cpsFns.map(passCb(...cbs)))
-	inheritState(cpsNew, cpsFun)
-	return cpsNew	
+  let passCb = (...cbs) => cpsFn =>
+      // all callbacks from the chain get passed to each cpsFn
+      (...args) => cpsFn(...args)(...cbs)
+  // precompose every callback with fn matched by index or pass directly the args,
+  // collect functions in array and pass as callbacks to cpsFun
+  let cpsNew = (...cbs) => cpsFun(...cpsFns.map(passCb(...cbs)))
+  inheritState(cpsNew, cpsFun)
+  return cpsNew 
 }
 
 
 // pass through only input truthy `pred`
 const filter = (...preds) => {
-	// call `chain` with the list of functions, one per each predicate
-	let transformer = (pred, idx) => (...inputs) => 
-		(...cbs) => (pred(...inputs)) && cbs[idx](...inputs)
-	return chain(...preds.map(transformer))
+  // call `chain` with the list of functions, one per each predicate
+  let transformer = (pred, idx) => (...inputs) => 
+    (...cbs) => (pred(...inputs)) && cbs[idx](...inputs)
+  return chain(...preds.map(transformer))
 }
 
 
@@ -157,19 +157,19 @@ const filter = (...preds) => {
  *
  * @name CPS.scan
  * @params {Tuple of functions} (...reducers)
- *  	where @signature of each reducer is (state, ...actions) -> state
+ *    where @signature of each reducer is (state, ...actions) -> state
  * @params {Tuple of values} (...states)
  * @param {CPS function} cpsAction
  * @returns {CPS function} CPS.scan(...reducers)(...states)(cpsAction)
- * 		whose nth callback receives the outputs obtained by iterating 
- *		the stream of outputs from the nth callback of cpsAction 
- *		over reducers[n] starting from with states[n]
+ *    whose nth callback receives the outputs obtained by iterating 
+ *    the stream of outputs from the nth callback of cpsAction 
+ *    over reducers[n] starting from with states[n]
  *
  */
 const scan = (...reducers) => (...states) => cpsAction => {
-	// chain receives tuple of functions, one per reducer
-	// nth CPS function inside chain receives nth callback output of cpsAction
-	let cpsTrasformer = (reducer, idx) => (...action) => (...cbs) => {
+  // chain receives tuple of functions, one per reducer
+  // nth CPS function inside chain receives nth callback output of cpsAction
+  let cpsTrasformer = (reducer, idx) => (...action) => (...cbs) => {
       // accessing states and reducers by index
       states[idx] = reducer(states[idx], ...action)
       cbs[idx](states[idx])  
@@ -183,28 +183,28 @@ const scan = (...reducers) => (...states) => cpsAction => {
 /* ----- CPS methods ----- */
 
 const apply2this = fn => 
-	function(...args) {return fn(...args)(this)}
+  function(...args) {return fn(...args)(this)}
 
 // apply function to all values of object
 const objMap = fn => obj => 
-	Object.keys(obj).reduce((acc, key) => {
-		acc[key] = fn(obj[key])
-		return acc
-	}, {})
+  Object.keys(obj).reduce((acc, key) => {
+    acc[key] = fn(obj[key])
+    return acc
+  }, {})
 
 // Prototype methods
 const protoObj = objMap(apply2this)({
-	map, 
-	chain
+  map, 
+  chain
 })
 
 const CPS = cpsFn => {
-	// clone the function
-	let cpsWrapped = (...args) => cpsFn(...args)
-	Object.setPrototypeOf(cpsWrapped, protoObj)
-	return cpsWrapped
+  // clone the function
+  let cpsWrapped = (...args) => cpsFn(...args)
+  Object.setPrototypeOf(cpsWrapped, protoObj)
+  return cpsWrapped
 }
 
 module.exports = { 
-	pipeline, of, map, chain, filter, scan, CPS 
+  pipeline, of, map, chain, filter, scan, CPS 
 }

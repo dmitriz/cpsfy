@@ -13,6 +13,6 @@ test('create CPS with multi-arg output', t => {
 
 test('no output is passed to the 2nd and following callbacks', t => {
 	t.plan(0) //no test will be run
-	of(55)(x=>x, t.cis(42))
-	of(3,2,1)(x=>x, t.cis(42))
+	of(55)(x => x, t.cis(42))
+	of(3,2,1)(x => x, t.cis(42))
 })

@@ -192,7 +192,7 @@ scan(red1, red2, ...)(x1, x2, ...)(cpsFn)
 pipeline(cpsFn)(scan(red1, red2, ...)(x1, x2, ...))
 ```
 where each `redn` is a *reducer*
-```
+```js
 // compute new accumulator value from the old one 
 // and the tuple of current values (y1, y2, ...)
 const redn = (acc, y1, y2, ...) => ... 

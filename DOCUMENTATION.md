@@ -778,14 +778,14 @@ the following paragraph in here http://exploringjs.com/es6/ch_promises.html#_cha
 seems relevant:
 
 > There can be one or more then() method calls that don’t have error handlers. Then the error is passed on until there is an error handler.
-```js
-asyncFunc1()
-.then(asyncFunc2)
-.then(asyncFunc3)
-.catch(function (reason) {
+>```js
+>asyncFunc1()
+>.then(asyncFunc2)
+>.then(asyncFunc3)
+>.catch(function (reason) {
     // Something went wrong above
-});
-```
+>});
+>```
 
 And here is the same example with CPS functions:
 ```js
@@ -840,7 +840,12 @@ with each call.
 
 
 ## Standardization
-> Standardized: Prior to Promises, there were several incompatible ways of handling asynchronous results (Node.js callbacks, XMLHttpRequest, IndexedDB, etc.). With Promises, there is a clearly defined standard: ECMAScript 6. ES6 follows the standard Promises/A+ [1]. Since ES6, an increasing number of APIs is based on Promises.
+> Standardized: Prior to Promises, there were several incompatible ways 
+> of handling asynchronous results 
+> (Node.js callbacks, XMLHttpRequest, IndexedDB, etc.). 
+> With Promises, there is a clearly defined standard: 
+> ECMAScript 6. ES6 follows the standard Promises/A+. 
+> Since ES6, an increasing number of APIs is based on Promises.
 
 The CPS functions build directly on the standard already established for JavaScript functions.
 The provided methods such as `of` (aka `pure`, `return`), `map` (aka `fmap`), `chain` (aka `flatMap`, `bind`) strictly follow the general standards for algebraic data types established by Functional Programming languages and Category Theory.

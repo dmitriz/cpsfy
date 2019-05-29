@@ -18,7 +18,7 @@ test('map over single function with no arguments', t => {
 
 test('further callbacks are unaffected when map over single function', t => {
 	const cpsFun = (cb1, cb2) => {cb1(42); cb2(23)}
-	map(x => x*2)(cpsFun)(x=>x, t.cis(23))	
+	map(x => x*2)(cpsFun)(x => x, t.cis(23))	
 })
 
 test('map over multiple functions', t => {
