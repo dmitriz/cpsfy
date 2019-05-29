@@ -12,7 +12,7 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
 >// enlightened
 >const getServerStuff = ajaxCall
 >```
->*--- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).*
+> --- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).
 
 
 - [CPS functions](#cps-functions)
@@ -466,7 +466,7 @@ as one typically passed to the [Promise constructor](https://developer.mozilla.o
 
 The constructed promise `new Promise(producer)` only keeps the very first call of either of the callbacks,
 whereas the producer function itself may call its callbacks multiple times,
-each of which would be fully retained as output when CPS functions are used instead of promises.
+each of which would be fully retained as output when CPS functions are used instead of Promises.
 
 ## Promises
 Any JavaScript Promise generates a CPS function via its `.then` method
