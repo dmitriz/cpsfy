@@ -673,54 +673,66 @@ remains accessible via single CPS function.
 # Comparison with Promises and Callbacks
 
 Our main motivation for dealing with CPS functions is to enhance
-the power of common coding patterns into a single unified abstraction,
-which can capture the advantages typically regarded as ones of Promises over callbacks.
+the power of common coding patterns of 
+callback functions, promises, streams etc. into a *single unified abstraction*,
+which can capture the advantages typically regarded as ones of promises over callbacks.
 
-In the [introductory section on Promises](http://exploringjs.com/es6/ch_promises.html#sec_introduction-promises) of his wonderful book [Exploring ES6](http://exploringjs.com/es6/),
+In the [introductory section on promises](http://exploringjs.com/es6/ch_promises.html#sec_introduction-promises) of his wonderful book
+[Exploring ES6](http://exploringjs.com/es6/),
 [Dr. Axel Rauschmayer](http://dr-axel.de/) collected a list of 
-advantages of Promises over callbacks,
-that we would like to consider here in the light of the CPS functions
-and explain how, in our view, the latters can enjoy the same advantages.
+advantages of promises over callbacks,
+that we would like to consider here in the light of CPS functions
+and explain how, in our view, the latters enjoy the same advantages,
+while allowing for more power and flexibility.
+
 
 ## Returning results
-> No inversion of control: similarly to synchronous code, Promise-based functions return results, they don’t (directly) continue – and control – execution via callbacks. That is, the caller stays in control.
+> No inversion of control: 
+> similarly to synchronous code, Promise-based functions return results, 
+> they don’t (directly) continue – and control – execution via callbacks. 
+> That is, the caller stays in control.
 
-We regard the CPS functions returning their output in similar fashion as promises, 
-via the arguments inside each callback call.
-Recall that a result inside promise can only be extracted via a callback,
-which is essentially the same as passing the callback to a CPS function:
+We regard CPS functions returning their output in similar fashion as promises, 
+via the arguments passed to each callback call, while CPS functions allow for any number of arguments rather than only one like with promises.
+Recall that the result inside a promise can only be extracted via callback,
+which is essentially the same as passing callback to a CPS function:
 ```js
 // pass callbacks to promise
 const promise.then(cb1, cb2) 
 // => result is delivered via cb1(result)
 ```
+as compared to simpler CPS syntax without `.then`:
 ```js
 // pass callbacks to CPS function
 const cps(f1, f2)
 // => a tuple (vector) of results is deliverd via f1(res1, res2, ...)
 ```
-Thus, CPS functions can be regarded as generalization of promises,
-where callbacks are allowed to be called multiple times with several arguments each time,
-rather than with a single value.
-Note that syntax for CPS function is even shorter - there is no `.then` method needed.
+Also, comparing to promises, CPS functions are allowed to have multiple outputs by calling their callbacks with multiple values multiple times, rather than with single value single time.
+As no `.then` method is needed, the CPS function syntax is shorter being
+a plain function call (with no "magic" running upon evaluation such as 
+unwrapping theneables).
 
 
 ## Chaining
-> Chaining is simpler: If the callback of `then()` returns a Promise (e.g. the result of calling another Promise-based function) then `then()` returns that Promise (how this really works is more complicated and explained later). As a consequence, you can chain then() method calls: 
+> Chaining is simpler: 
+> If the callback of `then()` returns a Promise 
+> (e.g. the result of calling another Promise-based function) 
+> then `then()` returns that Promise 
+> (how this really works is more complicated and explained later). 
+> As a consequence, you can chain then() method calls: 
+>```js
+>asyncFunction1(a, b)
+>  .then(result1 => {
+>      console.log(result1);
+>      return asyncFunction2(x, y);
+>  })
+>  .then(result2 => {
+>      console.log(result2);
+>  });
+>```
 
-```js
-asyncFunction1(a, b)
-  .then(result1 => {
-      console.log(result1);
-      return asyncFunction2(x, y);
-  })
-  .then(result2 => {
-      console.log(result2);
-  });
-```
-
-In our view, the complexity of chaing for the callbacks is merely due to lacking convenience methods for doing it.
-On a basic level, a Promise wraps a CPS function into an object providing such methods.
+In our view, the complexity of chaing for the callbacks is merely due to the lacking convenience methods for doing it.
+On a basic level, promise wraps its CPS function `f(onFulfilled, onError)` into an object providing such methods.
 However, the Promise constructor also adds limitations on the functionality and generally does a lot more, sometimes at the cost of performance.
 On the other hand, to have similar chaining methods, much less powerful methods are needed,
 that can be uniformly provided for general CPS functions. 
@@ -738,27 +750,34 @@ CPS(cpsFunction1(a, b))
       console.log(result2);
   });
 ```
-Here `CPS(...)` is a lightweight object wrapper providing the `map` and `chain` methods among others,
-such that `CPS.of` and `map` conform to the [Pointed Functor](https://stackoverflow.com/questions/39179830/how-to-use-pointed-functor-properly/41816326#41816326) and `CPS.of` with `CPS.chain` to the [Monadic](https://github.com/rpominov/static-land/blob/master/docs/spec.md#monad) [interface](https://github.com/fantasyland/fantasy-land#monad).
-At the same time, the full functional structure is preserved allowing for drop in replacement
-`cpsFun` with `CPS(cpsFun)`, see below.
+Here `CPS(...)` is a lightweight object wrapper 
+providing the `.map` and `.chain` methods among others,
+where `CPS.of` and `map` together conform to the [Pointed Functor](https://stackoverflow.com/questions/39179830/how-to-use-pointed-functor-properly/41816326#41816326) and `CPS.of` together
+with `CPS.chain` to the [Monadic](https://github.com/rpominov/static-land/blob/master/docs/spec.md#monad) [interface](https://github.com/fantasyland/fantasy-land#monad).
+At the same time, the full functional structure is preserved allowing 
+for drop-in replacement
+`cpsFun` with `CPS(cpsFun)`,
+because as function `CPS(cpsFun)` delegates to `cpsFun`,
+e.g. `CPS(cpsFun)(callback)` is equivalent to `cpsFun(callback)`.
 
 
 ## Asynchronous composition
-> Composing asynchronous calls (loops, mapping, etc.): is a little easier, because you have data (Promise objects) you can work with.
+> Composing asynchronous calls (loops, mapping, etc.): 
+> is a little easier, because you have data 
+> (Promise objects) you can work with.
 
 Similar to promises wrapping their data, 
-we regard the CPS functions as wrapping the outputs of their callbacks.
-Whenever methods are needed, a CPS function can be explicitly wrapped into 
-its CPS object via the `CPS`, 
+we regard CPS functions as wrapping the outputs of their callbacks
+(plus multiple outputs are allowed).
+Whenever methods are needed, CPS functions can be explicitly wrapped into 
+its CPS object via the `CPS` factory, 
 similar to how the `Promise` constructor wraps its producer function,
 except that `CPS` does nothing else.
-There is no recursive unwrapping of "thenables" nor other promises as with
-the Promise constructor.
+There is no recursive unwrapping of "thenables" inside `CPS` factory as in the Promise constructor.
 
 In addition, the CPS object `CPS(cpsFunction)` retains the same information
-by delivering the same functionality via direct funtion calls with the same callbacks!
-That is, the following calls are identical: 
+by delivering the same functionality via direct function calls with the same callbacks!
+That is, the following calls are equivalent: 
 ```js
 cpsFunction(cb1, cb2, ...)
 CPS(cpsFunction)(cb1, cb2, ...)
@@ -766,18 +785,23 @@ CPS(cpsFunction)(cb1, cb2, ...)
 That means, the wrapped CPS function can be dropped directly into the same code
 preserving all the functionality with no change!
 
-In regard of composing asynchronous calls, with CPS functions it can be as simple as in
-the above example.
+In regard of composing asynchronous calls, 
+with CPS functions it can be as simple as in the above example.
 
 
 ## Error handling
-> Error handling: As we shall see later, error handling is simpler with Promises, because, once again, there isn’t an inversion of control. Furthermore, both exceptions and asynchronous errors are managed the same way.
+> Error handling: As we shall see later, 
+> error handling is simpler with Promises, because, once again, 
+> there isn’t an inversion of control. 
+> Furthermore, both exceptions and asynchronous errors 
+> are managed the same way.
 
 In regards of error handling, 
 the following paragraph in here http://exploringjs.com/es6/ch_promises.html#_chaining-and-errors
 seems relevant:
 
-> There can be one or more then() method calls that don’t have error handlers. Then the error is passed on until there is an error handler.
+> There can be one or more then() method calls that don’t have error handlers.
+> Then the error is passed on until there is an error handler.
 >```js
 >asyncFunc1()
 >.then(asyncFunc2)
