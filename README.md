@@ -249,6 +249,8 @@ running in parallel.
 This `README.md` is kept minimal to reduce the package size. For more human introduction, motivation, use cases and other details, please see [DOCUMENTATION](DOCUMENTATION.md).
 
 
+## License
+MIT © [Dmitri Zaitsev](https://github.com/dmitriz)
 
 
 
