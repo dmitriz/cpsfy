@@ -16,8 +16,9 @@
     "postpublish": "git pull --rebase && git push origin --all; git push origin --tags",
     "test": "npm run tape",
     "ava": "TEST=ava nyc ava test/*test.js",
-    "watch": "nyc ava test/*test.js -w",
+    "ava-w": "nyc ava test/*test.js -w",
     "tape": "nyc tape test/*test.js",
+    "tape-w": "nyc tape-watch test/*test.js",
     "tap": "tap test/*test.js",
     "sync": "git ac && git pull --rebase && git push",
     "toc": "markdown-toc README.md > toc"
