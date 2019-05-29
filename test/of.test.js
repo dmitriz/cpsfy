@@ -1,4 +1,4 @@
-const test = require('./config').test
+const test = require('./config')
 const { of } = require('..')
 
 test('create CPS functions with single output', t => {

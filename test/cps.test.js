@@ -1,4 +1,4 @@
-const test = require('./config').test
+const test = require('./config')
 const { CPS } = require('..')
 
 const cpsFun = cb => cb(42)

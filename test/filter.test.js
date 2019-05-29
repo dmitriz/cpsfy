@@ -1,4 +1,4 @@
-const test = require('./config').test
+const test = require('./config')
 const { filter } = require('..')
 
 test('filter single output', t => {

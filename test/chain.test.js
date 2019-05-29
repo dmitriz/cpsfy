@@ -1,4 +1,4 @@
-const test = require('./config').test
+const test = require('./config')
 const { chain } = require('..')
 
 test('chain over single CPS function', t => {

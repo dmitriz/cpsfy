@@ -1,4 +1,4 @@
-const test = require('./config').test
+const test = require('./config')
 const { scan } = require('..')
 
 test('scan over single callback output', t => {

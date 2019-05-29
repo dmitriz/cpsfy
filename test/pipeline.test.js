@@ -1,4 +1,4 @@
-const test = require('./config').test
+const test = require('./config')
 const { pipeline } = require('..')
 
 test('pass single argument to function', t => {
