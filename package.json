@@ -14,9 +14,10 @@
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "git pull --rebase && git push origin --all; git push origin --tags",
-    "test": "nyc ava test/*test.js",
+    "test": "npm run tape",
+    "ava": "TEST=ava nyc ava test/*test.js",
     "watch": "nyc ava test/*test.js -w",
-    "tape": "tape test/*test.js",
+    "tape": "nyc tape test/*test.js",
     "tap": "tap test/*test.js",
     "sync": "git ac && git pull --rebase && git push",
     "toc": "markdown-toc README.md > toc"
