@@ -807,7 +807,7 @@ seems relevant:
 >.then(asyncFunc2)
 >.then(asyncFunc3)
 >.catch(function (reason) {
-    // Something went wrong above
+>   // Something went wrong above
 >});
 >```
 
