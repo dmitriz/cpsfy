@@ -167,7 +167,7 @@ pipeline(cpsFn)(filter(pred1, pred2, ...))
 ```
 where each `predn` is the `n`th predicate function used to filter output from the `n`th callback of `cpsFn`. 
 
-#### Result of applying `chain`
+#### Result of applying `filter`
 New CPS function that calls its `n`th callback `cbn(x1, x2, ...)` whenever `(x1, x2, ...)` is an output from the `n`th callback of `cpsFun` and
 ```js
 predn(x1, x2, ...) == true
