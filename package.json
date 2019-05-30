@@ -10,7 +10,7 @@
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "scripts": {
-    "start": "git ac; npm version",
+    "start": "git add . && git commit; npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "git pull --rebase && git push origin --all; git push origin --tags",
@@ -20,7 +20,7 @@
     "tape": "nyc tape test/*test.js",
     "tapew": "nyc tape-watch test/*test.js",
     "tap": "tap test/*test.js",
-    "sync": "git ac; git pull && git push",
+    "sync": "git add . && git commit; git pull && git push",
     "toc": "npx markdown-toc README.md > toc"
   },
   "keywords": [
