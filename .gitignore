@@ -12,5 +12,8 @@ node_modules/
 coverage.lcov
 coverage/
 
+# Generated files
+toc
+
 # Apple garbage
 .DS_Store

@@ -21,7 +21,7 @@
     "tape-w": "nyc tape-watch test/*test.js",
     "tap": "tap test/*test.js",
     "sync": "git ac && git pull && git push",
-    "toc": "markdown-toc README.md > toc"
+    "toc": "npx markdown-toc README.md > toc"
   },
   "keywords": [
     "continuation",
@@ -35,7 +35,6 @@
   ],
   "devDependencies": {
     "ava": "2.0.0-rc.1",
-    "markdown-toc": "^1.2.0",
     "nyc": "14.1.1",
     "tape": "4.10.2"
   },
