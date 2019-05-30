@@ -20,7 +20,7 @@
     "tape": "nyc tape test/*test.js",
     "tape-w": "nyc tape-watch test/*test.js",
     "tap": "tap test/*test.js",
-    "sync": "git ac && git pull --rebase && git push",
+    "sync": "git ac && git pull && git push",
     "toc": "markdown-toc README.md > toc"
   },
   "keywords": [
