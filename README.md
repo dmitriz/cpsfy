@@ -1,3 +1,13 @@
+```
+                                //  ) )     
+    ___      ___      ___   __//__         
+  //   ) ) //   ) ) ((   ) ) //   //   / / 
+ //       //___/ /   \ \    //   ((___/ /  
+((____   //       //   ) ) //        / /   
+
+```
+(Credit. http://patorjk.com/software/taag)
+
 # cpsfy
 
 [![npm version](https://img.shields.io/npm/v/cpsfy.svg)](http://npm.im/cpsfy)
@@ -16,6 +26,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a55f3fd9a13396325671/maintainability)](https://codeclimate.com/github/dmitriz/cpsfy/maintainability)
 [![DeepScan grade](https://deepscan.io/api/teams/3918/projects/5693/branches/44286/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=3918&pid=5693&bid=44286)
 [![MIT License](https://img.shields.io/npm/l/cpsfy.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+
 
 Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions with functional composability backed by category theory.
 
