@@ -10,7 +10,6 @@
 
 # cpsfy
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b530e9fcaac446a19d8172962b486b36)](https://app.codacy.com/app/dmitri14_3131/cpsfy?utm_source=github.com&utm_medium=referral&utm_content=dmitriz/cpsfy&utm_campaign=Badge_Grade_Dashboard)
 [![npm version](https://img.shields.io/npm/v/cpsfy.svg)](http://npm.im/cpsfy)
 [![install size](https://packagephobia.now.sh/badge?p=cpsfy)](https://packagephobia.now.sh/result?p=cpsfy)
 [![bundlephobia](https://img.shields.io/bundlephobia/minzip/cpsfy.svg)](https://bundlephobia.com/result?p=cpsfy)
@@ -24,6 +23,7 @@
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dmitriz/cpsfy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/dmitriz/cpsfy/context:javascript)
 [![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/cpsfy/badge)](https://www.codefactor.io/repository/github/dmitriz/cpsfy)
 [![codebeat badge](https://codebeat.co/badges/2480c750-f9ea-46c0-a574-5e72dad17a4f)](https://codebeat.co/projects/github-com-dmitriz-cpsfy-master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b530e9fcaac446a19d8172962b486b36)](https://app.codacy.com/app/dmitri14_3131/cpsfy?utm_source=github.com&utm_medium=referral&utm_content=dmitriz/cpsfy&utm_campaign=Badge_Grade_Dashboard)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a55f3fd9a13396325671/maintainability)](https://codeclimate.com/github/dmitriz/cpsfy/maintainability)
 [![DeepScan grade](https://deepscan.io/api/teams/3918/projects/5693/branches/44286/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=3918&pid=5693&bid=44286)
 [![MIT License](https://img.shields.io/npm/l/cpsfy.svg?style=flat-square)](http://opensource.org/licenses/MIT)
