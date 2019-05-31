@@ -1,4 +1,14 @@
-/* ----- General purpose operators ----- */
+const { mergeArray } = require('./utils')
+
+/* ----- General purpose utils ----- */
+
+// Inherit prototype
+const inheritState = (target, source) =>
+  pipeline(source)(
+    Object.getPrototypeOf,
+    prototype => Object.setPrototypeOf(target, prototype)
+)
+
 
 /**
  * Pipeline Operator:
@@ -20,15 +30,6 @@
 const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
   (acc, fn) => fn(acc),
   fns[0](...args)
-)
-
-
-
-// Helper to inherit the prototype
-const inheritState = (target, source) =>
-  pipeline(source)(
-    Object.getPrototypeOf,
-    prototype => Object.setPrototypeOf(target, prototype)
 )
 
 
@@ -127,12 +128,19 @@ const map = (...fns) => cpsFun => {
  *    (cb1, cb2) => cb1(5) + cb2(7, -9)
  */
 const chain = (...cpsFns) => cpsFun => {
-  let passCb = (...cbs) => cpsFn =>
-      // all callbacks from the chain get passed to each cpsFn
-      (...args) => cpsFn(...args)(...cbs)
+  // let passCb = (...cbs) => cpsFn =>
+  //     // all callbacks from the chain get passed to each cpsFn
+  //     (...args) => cpsFn(...args)(...cbs)
   // precompose every callback with fn matched by index or pass directly the args,
   // collect functions in array and pass as callbacks to cpsFun
-  let cpsNew = (...cbs) => cpsFun(...cpsFns.map(passCb(...cbs)))
+
+  let cpsNew = (...cbs) => {
+    let newCallbacks = cpsFns.map(f => 
+      (...args) => f(...args)(...cbs)
+    )
+    // add missing callbacks unchanged from the same positions
+    return cpsFun(...mergeArray(newCallbacks, cbs))
+  }
   inheritState(cpsNew, cpsFun)
   return cpsNew 
 }

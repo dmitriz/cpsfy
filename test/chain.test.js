@@ -110,3 +110,9 @@ test('multiple callbacks from transforming functions merge by index', t => {
 		t.cis(8)
 	)
 })
+
+test('chain over fewer fns than cbs should preserve the extra outputs', t => {
+	t.plan(2)
+	const cpsFun = (cb1, cbb) => { cb1(0); cbb(2) }
+	chain(x => cb => cb(x + 1))(cpsFun)(t.cis(1), t.cis(2))
+})
