@@ -16,7 +16,7 @@
     "postpublish": "git pull --rebase && git push origin --all; git push origin --tags",
     "test": "npm run tape",
     "ava": "TEST=ava ava test/*test.js",
-    "avaw": "nyc ava test/*test.js -w",
+    "avaw": "TEST=ava nyc ava test/*test.js -w",
     "tape": "nyc tape test/*test.js",
     "tapew": "nyc tape-watch test/*test.js",
     "tap": "tap test/*test.js",
