@@ -43,7 +43,7 @@ For maximum security, this package is intended to be kept minimal and transparen
 - Promises introduce limitations of being able to return only one value only once, that makes it difficult to update them or use uniformly along with streams.
 - Promises provide only one error handling callback, forcing to handle all errors in the same function, and thus making writing smaller focused functions and separating concerns more difficult.
 - The recent `async/await` notation retains the overheads of promises, in addition to ["new and exciting ways to shoot yourself in the foot"](https://thecodebarbarian.com/80-20-guide-to-async-await-in-node.js.html).
-- The present `cpsfy` library aims to provide unified and simple operators for all callback-based (aka Continuation-Passing-Style aka CPS) functions to make their composition as simple as with promises, while avoiding any "magic" nor introducing overheads.
+- The present `cpsfy` library aims to provide unified and simple operators for all callback-based (aka Continuation-Passing-Style aka CPS) functions to make their composition as simple as with promises, while addressing the above limitations and overheads.
 
 
 ## CPS function
