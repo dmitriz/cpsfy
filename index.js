@@ -120,13 +120,8 @@ const map = (...fns) => cpsFun => {
  *    (cb1, cb2) => cb1(5) + cb2(7, -9)
  */
 const chain = (...cpsFns) => cpsFun => {
-  // let passCb = (...cbs) => cpsFn =>
-  //     // all callbacks from the chain get passed to each cpsFn
-  //     (...args) => cpsFn(...args)(...cbs)
-  // precompose every callback with fn matched by index or pass directly the args,
-  // collect functions in array and pass as callbacks to cpsFun
-
   let cpsNew = (...cbs) => {
+    // all callbacks from the chain get passed to each cpsFn
     let newCallbacks = cpsFns.map(f => 
       (...args) => f(...args)(...cbs)
     )
