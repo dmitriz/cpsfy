@@ -1,14 +1,6 @@
-const { mergeArray } = require('./utils')
+const { mergeArray, inheritPrototype } = require('./utils')
 
 /* ----- General purpose utils ----- */
-
-// Inherit prototype
-const inheritState = (target, source) =>
-  pipeline(source)(
-    Object.getPrototypeOf,
-    prototype => Object.setPrototypeOf(target, prototype)
-)
-
 
 /**
  * Pipeline Operator:
@@ -98,7 +90,7 @@ const passToCPS = fns => (cb, idx) => transformCallbackArgs(fns[idx], cb)
 
 const map = (...fns) => cpsFun => {
   let cpsNew = (...cbs) => cpsFun(...cbs.map(passToCPS(fns)))
-  inheritState(cpsNew, cpsFun)
+  inheritPrototype(cpsNew, cpsFun)
   return cpsNew
 }
 
@@ -141,7 +133,7 @@ const chain = (...cpsFns) => cpsFun => {
     // add missing callbacks unchanged from the same positions
     return cpsFun(...mergeArray(newCallbacks, cbs))
   }
-  inheritState(cpsNew, cpsFun)
+  inheritPrototype(cpsNew, cpsFun)
   return cpsNew 
 }
 
