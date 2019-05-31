@@ -28,23 +28,33 @@
 [![MIT License](https://img.shields.io/npm/l/cpsfy.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
 
-Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions with functional composability backed by category theory.
+Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions with functional composability backed by category theory foundations.
 
 ```sh
 npm install cpsfy
 ```
 *No dependency policy.*
-For maximum security, this package is intended to be kept minimal and transparent with no dependencies ever.
+For maximum security, this package is intended to be kept minimal and transparent with **no dependencies ever**.
+
+## Why?
+- Functions are among the most basic and powerful objects in JavaScript.
+- Callbacks are prominent for events and asynchronous functions, but they don't make composition convenient (leading to what is known as "callback hell").
+- Promises are more convenient to compose but introduce overheads, such as conditionally calling `then` and [hence are not safe for compositional refactoring](https://stackoverflow.com/questions/45712106/why-are-promises-monads/50173415#50173415).
+- Promises introduce limitations of being able to return only one value only once, making it difficult to use them uniformly along with streams.
+- Promises provide only one error handling callback, forcing to handle all errors in the same function and thus making difficult to separate errors of different type.
+- The recent `async/await` notation makes async code look like sync but retains overheads of promises and ["gives you a lot of new and exciting ways to shoot yourself in the foot"](https://thecodebarbarian.com/80-20-guide-to-async-await-in-node.js.html).
+- The present `cpsfy` library aims to provide simple operators for the callback-based (aka Continuation-Passing-Style aka CPS) functions to make their composition as simple as with promises, while avoiding any "magic" nor introducing any overheads.
+
 
 ## CPS function
 Any function
 ```js
 const cpsFn = (cb1, cb2, ...) => { ... } 
 ```
-that expects to be called with several (possibly zero) functions (callbacks) as arguments. The number of callbacks may vary each time `cpsFn` is called. Once called and running, `cpsFn` may call any of the callbacks `cbn` any (possibly zero) number of times with any number `m` of arguments `(x1, ..., xm)`, where `m` may also vary from call to call. The `m`-tuple (vector) `(x1, ..., xm)` is regarded as the *output* of `cpsFn` passed to the `n`the callback:
+that expects to be called with several (possibly zero) functions (callbacks) as arguments. The number of callbacks may vary each time `cpsFn` is called. Once called and running, `cpsFn` may call any of its callbacks any (possibly zero) number of times with any number `m` of arguments `(x1, ..., xm)`, where `m` may also vary from call to call. The `m`-tuple (vector) `(x1, ..., xm)` is regarded as the *output* of `cpsFn` from the `n`the callback `cbn`:
 ```js
-// (x1, ..., xm) is output from nth callback whenever
-cbn(x1, ..., xm)  // is called
+// (x1, ..., xm) becomes output from nth callback whenever
+cbn(x1, ..., xm)  // is called, where n = 1, 2, ..., m
 ```
 In other words, a CPS function receives any number of callbacks that it may call in any order any number of times at any moments immediately or in the future with any number of arguments.
 
