@@ -58,9 +58,9 @@ If there are any errors on the way, we want to handle them at the very end
 in a separate function without any change to our main code.
 ```js
 const fs = require('fs')
-// prepare function returning CPS function with 2 callbacks
+// function returning CPS function with 2 callbacks
 const readFile = file => (onRes, onErr) =>  
-  fs.readFile(file, (e, name) => {  // read file as string
+  fs.readFile(file, (e, name) => { // read file as string
     e ? onErr(e) : onRes(name)
   })
 
@@ -68,7 +68,7 @@ const readFile = file => (onRes, onErr) =>
 const getLines = CPS(readFile('name.txt'))
   // map applies function to the file content
   .map(file => file.trim()) 
-  .filter(file => file.length > 0) // only pass if nonempty
+  .filter(file => file.length > 0)// only pass if nonempty
   // chain applies function that returns CPS function
   .chain(file => readFile(file))  // read file content
   .map(text => text.split('\n'))  // split into lines
