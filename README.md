@@ -6,7 +6,7 @@
 ((____   //       //   ) ) //        / /   
 
 ```
-(Logo Credit. http://patorjk.com/software/taag)
+(Generated with http://patorjk.com/software/taag)
 
 # cpsfy
 
