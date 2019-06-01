@@ -1,5 +1,5 @@
 {
-  "version": "2.1.10",
+  "version": "0.0.0-development",
   "name": "cpsfy",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
@@ -22,7 +22,8 @@
     "tap": "tap test/*test.js",
     "sync": "git add . && git commit; git pull && git push",
     "toc": "npx markdown-toc README.md > toc",
-    "commit": "git add . && git cz"
+    "com": "git add . && git cz",
+    "semantic-release": "semantic-release"
   },
   "keywords": [
     "library",
@@ -82,7 +83,8 @@
   "devDependencies": {
     "ava": "1.4.1",
     "nyc": "14.1.1",
-    "tape": "4.10.2"
+    "tape": "4.10.2",
+    "semantic-release": "^15.13.12"
   },
   "dependencies": {}
 }
