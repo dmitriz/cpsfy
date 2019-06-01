@@ -25,6 +25,8 @@
   },
   "keywords": [
     "library",
+    "utilities",
+    "function",
     "variadic",
     "polymorphic",
     "abstraction",
@@ -36,8 +38,9 @@
     "control-flow",
     "pipe",
     "pipeline",
-    "function",
+    "higher-order",
     "compose",
+    "composition",
     "function composition",
     "fluent",
     "point-free",
@@ -48,8 +51,11 @@
     "fantasy-land",
     "static-land",
     "functional",
+    "functional-programming",
+    "functional programming",
     "fp",
     "algebraic",
+    "algebraic-data-types",
     "monad",
     "monadic",
     "applicative",
@@ -67,7 +73,10 @@
     "callback",
     "promise",
     "async",
-    "parallel"
+    "async-function",
+    "asynchronous",
+    "parallel",
+    "control-flow"
   ],
   "devDependencies": {
     "ava": "1.4.1",
