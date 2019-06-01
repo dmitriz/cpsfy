@@ -34,7 +34,8 @@ Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions with fu
 ```sh
 npm install cpsfy
 ```
-(Or `pnpm install cpsfy` to [save your disc space](https://github.com/pnpm/pnpm)
+
+(Or `pnpm install cpsfy` to [save disc space](https://github.com/pnpm/pnpm).)
 
 *No dependency policy.*
 For maximum security, this package is intended to be kept minimal and transparent with **no dependencies ever**.
