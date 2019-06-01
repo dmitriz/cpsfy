@@ -181,9 +181,25 @@ copy((err, data) => err
 ) // => file content is capitalized and printed
 ```
 
-#### Example of error handling in separate callbacks with `chain`
+#### Example of separating error handling with `chain`
+```js
+// convert to CPS function with 2 callbacks
+const readFile = file => (onRes, onErr) => 
+ fs.readFile(file, (e, name) => {
+   e ? onErr(e) : onRes(name)
+ })
+const getName = readFile('index.txt') // CPS function
+// get file name from 'index.txt' and read the file
+const readFileByName = chain(name => readFile(name))(getName)
+// or equivalently
+const readFileByName = chain(readFile)(getName)
 
-
+// handle errors separately in the 2nd callback similar promises
+readFileByName(
+  text => console.log(text), 
+  error => console.err(error)
+)
+```
 
 ### `filter(...predicates)(cpsFunction)`
 ```js
