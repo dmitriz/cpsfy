@@ -61,20 +61,20 @@ const fs = require('fs')
 // prepare function returning CPS function with 2 callbacks
 const readFile = file => (onRes, onErr) =>  
   fs.readFile(file, (e, name) => {  // read file as string
-    e ? onErr(e) : onRes(name) // if no error, pass to 'onRes'
+    e ? onErr(e) : onRes(name)
   })
 
 // CPS wraps a CPS function to provide the methods
-const getLines = CPS(readFile('name.txt')) // read as string
-  // map applies function to the result
-  .map(file => file.trim())         // remove spaces
-  .filter(file => file.length > 0)  // only pass if nonempty
+const getLines = CPS(readFile('name.txt'))
+  // map applies function to the file content
+  .map(file => file.trim()) 
+  .filter(file => file.length > 0) // only pass if nonempty
   // chain applies function that returns CPS function
   .chain(file => readFile(file))  // read file content
   .map(text => text.split('\n'))  // split into lines
-// => CPS function with 2 callbacks in the same order
+// => CPS function with 2 callbacks
 
-// To use, simply pass callbacks in any order
+// To use, simply pass callbacks in the same order
 getLines(
   lines => console.log(lines),  // result callback
   err => console.error(err)  // error callback
