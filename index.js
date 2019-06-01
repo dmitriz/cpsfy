@@ -103,33 +103,36 @@ const map = (...fns) => cpsFun => {
  * @signature (...cpsFns) -> CPS -> CPS (curried)
  *
  * @name CPS.chain
- * @param {...function} cpsFns - tuple of CPS functions.
- * @param {Function} cpsFun - CPS function.
- * @returns {Function} CPS.chain(...fns)(cpsFun)
+ * @param {...Function} fns 
+ *    - tuple of functions, each returning CPS function.
+ * @param {Function} cpsFn - CPS function.
+ * @returns {Function} CPS.chain(...fns)(cpsFn)
  *    - CPS function whose nth callback's output is gathered from
  *    the nth callbacks' outputs of each function fns[j] for each j
- *    evaluated for each output of the jth callback of `cpsFun`
+ *    evaluated for each output of the jth callback of `cpsFn`.
+ *    If 'fns' has fewever functions than the number of callbacks passed,
+ *    the extra callbacks receive the same output as from cpsFn
  *
  * @example
- *    const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7, 9)
+ *    const cpsFn = (cb1, cb2) => cb1(2, 3) + cb2(7, 9)
  *      2 callbacks receive outputs (2, 3) and (7, 9)
  *    const cpsF1 = (x, y) => (cb1, cb2) => cb1(x + y) + cb2(x - y)
  *    const cpsF2 = (x, y) => cb => cb(x, -y)
- *    CPS.chain(cpsF1, cpsF2)(cpsFun)
+ *    CPS.chain(cpsF1, cpsF2)(cpsFn)
  *      is equivalent to the CPS function
  *    (cb1, cb2) => cb1(5) + cb2(7, -9)
  */
-const chain = (...cpsFns) => cpsFun => {
+const chain = (...fns) => cpsFn => {
   let cpsNew = (...cbs) => {
     // all callbacks from the chain get passed to each cpsFn
-    let newCallbacks = cpsFns.map(f => 
+    let newCallbacks = fns.map(f => 
       (...args) => f(...args)(...cbs)
     )
     // add missing callbacks unchanged from the same positions
-    return cpsFun(...mergeArray(newCallbacks, cbs))
+    return cpsFn(...mergeArray(newCallbacks, cbs))
   }
-  inheritPrototype(cpsNew, cpsFun)
-  return cpsNew 
+  inheritPrototype(cpsNew, cpsFn)
+  return cpsNew
 }
 
 
