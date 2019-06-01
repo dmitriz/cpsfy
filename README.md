@@ -52,34 +52,35 @@ For maximum security, this package is intended to be kept minimal and transparen
 
 ## Quick demo
 We want to read the content of the file `name.txt` into string `str` and remove spaces from both ends of `str`. If the resulting `str` is nonempty, 
-we want to read the content of the file with that name into string `content`, otherwise we do nothing.
-Finally we split the `content`  string into array of lines.
+we read the content of the file with that name into string `content`, otherwise do nothing.
+Finally we split the `content` string into array of lines.
 If there are any errors on the way, we want to handle them at the very end
-in a separate function.
+in a separate function without any change to our main code.
 ```js
 const fs = require('fs')
-// prepare function that returns CPS function with 2 callbacks
+// prepare function returning CPS function with 2 callbacks
 const readFile = file => (onRes, onErr) =>  
-  fs.readFile(file, (e, name) => {  // read file content as string
-    e ? onErr(e) : onRes(name) // if no error, pass to 'onRes' callback
+  fs.readFile(file, (e, name) => {  // read file as string
+    e ? onErr(e) : onRes(name) // if no error, pass to 'onRes'
   })
 
-// CPS wraps any CPS function and provides it with `cpsfy` library methods
-const getLines = CPS(readFile('name.txt')) // get content as string
+// CPS wraps a CPS function to provide the methods
+const getLines = CPS(readFile('name.txt')) // read as string
   // map applies function to the result
-  .map(file => file.trim())                // remove spaces
-  .filter(file => file.length > 0)         // only pass ahead if nonempty
+  .map(file => file.trim())         // remove spaces
+  .filter(file => file.length > 0)  // only pass if nonempty
   // chain applies function that returns CPS function
-  .chain(file => readFile(file))  // get content of file into CPS function
-  .map(text => text.split('\n'))  // split result into lines
-// => getLines is a CPS function with 2 callbacks in the same order
+  .chain(file => readFile(file))  // read file content
+  .map(text => text.split('\n'))  // split into lines
+// => CPS function with 2 callbacks in the same order
 
 // To use, simply pass callbacks in any order
 getLines(
-  lines => console.log(lines),  // 1st callback receives final result
+  lines => console.log(lines),  // result callback
   err => console.error(err)  // error callback
 )
-// Note how we handle error at the end without affecting the main logic!
+// Note how we handle error at the end 
+// without affecting the main logic!
 ```
 
 

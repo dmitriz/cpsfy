@@ -22,8 +22,7 @@
     "tap": "tap test/*test.js",
     "sync": "git add . && git commit; git pull && git push",
     "toc": "npx markdown-toc README.md > toc",
-    "com": "git add . && git cz",
-    "semantic-release": "semantic-release"
+    "com": "git add . && git cz"
   },
   "keywords": [
     "library",
