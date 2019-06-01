@@ -21,8 +21,9 @@
     "tapew": "nyc tape-watch test/*test.js",
     "tap": "tap test/*test.js",
     "sync": "git add . && git commit; git pull && git push",
+    "com": "git add . && git cz",
     "toc": "npx markdown-toc README.md > toc",
-    "com": "git add . && git cz"
+    "doc": "md-magic --path 'DOCUMENTATION.md'"
   },
   "keywords": [
     "library",
