@@ -1,0 +1,697 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>cpsfy 2.1.12 | Documentation</title>
+  <meta name='description' content='Tiny goodies for Continuation-Passing-Style functions'>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <link href='assets/bass.css' rel='stylesheet' />
+  <link href='assets/style.css' rel='stylesheet' />
+  <link href='assets/github.css' rel='stylesheet' />
+  <link href='assets/split.css' rel='stylesheet' />
+</head>
+<body class='documentation m0'>
+    <div class='flex'>
+      <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
+        <div class='py1 px2'>
+          <h3 class='mb0 no-anchor'>cpsfy</h3>
+          <div class='mb1'><code>2.1.12</code></div>
+          <input
+            placeholder='Filter'
+            id='filter-input'
+            class='col12 block input'
+            type='text' />
+          <div id='toc'>
+            <ul class='list-reset h5 py1-ul'>
+              
+                
+                <li><a
+                  href='#pipeline'
+                  class="">
+                  pipeline
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#of'
+                  class="">
+                  of
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#ofn'
+                  class="">
+                  ofN
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#chain'
+                  class="">
+                  chain
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#map'
+                  class="">
+                  map
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#scan'
+                  class="">
+                  scan
+                  
+                </a>
+                
+                </li>
+              
+            </ul>
+          </div>
+          <div class='mt1 h6 quiet'>
+            <a href='https://documentation.js.org/reading-documentation.html'>Need help reading this?</a>
+          </div>
+        </div>
+      </div>
+      <div id='split-right' class='relative overflow-auto height-viewport-100'>
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='pipeline'>
+      pipeline
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Pass tuple of values to sequence of functions similar to UNIX pipe
+<code>(x1, ..., xn) | f1 | f2 | ... | fm</code></p>
+
+    <div class='pre p1 fill-light mt0'>pipeline</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>args</span> <code class='quiet'>(...any)</code>
+	    tuple of arbitrary values.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fns</span> <code class='quiet'>(...<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    functions 
+<code>(f1, f2, ..., fn)</code>
+.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>any</code>:
+        <code>pipeline(...args)(...fns)</code>
+<ul>
+<li>Result of functions applied one after another, equivalent to
+<code>fn(...f2(f1(...args))...)</code></li>
+</ul>
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>pipeline(x, y)(f1, f2, f3)
+  <span class="hljs-comment">// is equivalent to </span>
+f3(f2(f1(x, y)))</pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='of'>
+      of
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Create CPS function with provided tuple as immediate output.</p>
+
+    <div class='pre p1 fill-light mt0'>of</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>args</span> <code class='quiet'>(...any)</code>
+	    tuple of arbitrary values.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a></code>:
+        <code>of(...args)</code>
+ - CPS function
+that immediately calls it first callback 
+<code>cb</code>
+ with outputs 
+<code>(...args)</code>
+.
+No other callback is called.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">of</span>(x1, x2, x3)
+  <span class="hljs-comment">// is equivalent to the CPS function </span>
+cb =&gt; cb(x1, x2, x3)</pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='ofn'>
+      ofN
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Multi-callback version of the <code>of</code> operator,
+passing provided tuple into the nth callback.</p>
+
+    <div class='pre p1 fill-light mt0'>ofN</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>n</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    position number of the callback used.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>args</span> <code class='quiet'>(...any)</code>
+	    tuple of arbitrary values.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a></code>:
+        <code>ofN(n)(...args)</code>
+ - CPS function
+that outputs `(...args)
+<code></code>
+ into its nth callback
+no other output is passed to any other callback.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>ofN(<span class="hljs-number">1</span>)(x1, x2)
+  <span class="hljs-comment">// is equivalent to the CPS function </span>
+(cb0, cb1) =&gt; cb1(x1, x2)</pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='chain'>
+      chain
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Chain is the most basic CPS operator.
+It chains outputs of CPS function with
+tuple of functions returning CPS functions,
+where the nth function applies to each output from the nth callback
+and the resulting outputs are gathered by index.
+If fewever functions are passed in the tuple,
+outputs from remaining callbacks are preserved unchanged.</p>
+
+    <div class='pre p1 fill-light mt0'>chain</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fns</span> <code class='quiet'>(...<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    tuple of functions, each returning CPS function.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>cpsFn</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    CPS function.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a></code>:
+        <code>chain(...fns)(cpsFn)</code>
+<ul>
+<li>CPS function whose nth callback's output is gathered from
+the nth callbacks' outputs of each function fns[j] for each j
+evaluated for each output of the jth callback of <code>cpsFn</code>.
+If 'fns' has fewever functions than the number of callbacks passed,
+the extra callbacks receive the same output as from cpsFn</li>
+</ul>
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-comment">// 2 callbacks, 2 functions with 2 arguments</span>
+<span class="hljs-keyword">const</span> cpsFn = <span class="hljs-function">(<span class="hljs-params">cb1, cb2</span>) =&gt;</span> {cb1(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>); cb2(<span class="hljs-number">7</span>, <span class="hljs-number">9</span>)}
+  <span class="hljs-comment">// 2 callbacks receive outputs (2, 3) and (7, 9)</span>
+<span class="hljs-keyword">const</span> f1 = <span class="hljs-function">(<span class="hljs-params">x, y</span>) =&gt;</span> <span class="hljs-function">(<span class="hljs-params">cb1, cb2</span>) =&gt;</span> {cb1(x + y); cb2(x - y)}
+<span class="hljs-keyword">const</span> f2 = <span class="hljs-function">(<span class="hljs-params">x, y</span>) =&gt;</span> <span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> {cb(x, -y)}
+
+chain(f1, f2)(cpsFn)
+  <span class="hljs-comment">// is equivalent to the CPS function</span>
+(cb1, cb2) =&gt; {cb1(<span class="hljs-number">5</span>); cb2(<span class="hljs-number">7</span>, <span class="hljs-number">-9</span>)}</pre>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-comment">// convert to CPS function with 2 callbacks</span>
+<span class="hljs-keyword">const</span> readFile = <span class="hljs-function"><span class="hljs-params">file</span> =&gt;</span> <span class="hljs-function">(<span class="hljs-params">onRes, onErr</span>) =&gt;</span> 
+  fs.readFile(file, (e, name) =&gt; {
+    e ? onErr(e) : onRes(name)
+  })
+<span class="hljs-keyword">const</span> readName = readFile(<span class="hljs-string">'index.txt'</span>) <span class="hljs-comment">// CPS function</span>
+   
+<span class="hljs-keyword">const</span> readFileByName = chain(<span class="hljs-function"><span class="hljs-params">name</span> =&gt;</span> readFile(name))(readName)
+  <span class="hljs-comment">// or equivalently</span>
+<span class="hljs-keyword">const</span> readFileByName = chain(readFile)(readName)</pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='map'>
+      map
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Map CPS function over arbitrary tuple of functions, where for each n,
+the nth function from the tuple transforms the output of the nth callback.
+If fewever functions are passed in the tuple,
+outputs from remaining callbacks are preserved unchanged.
+The pair <code>(map, of)</code> conforms to the Pointed Functor spec,
+see <a href="https://stackoverflow.com/a/41816326/1614973">https://stackoverflow.com/a/41816326/1614973</a>.</p>
+
+    <div class='pre p1 fill-light mt0'>map</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fns</span> <code class='quiet'>(...<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    tuple of functions.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>cpsFn</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    CPS function.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a></code>:
+        <code>map(...fns)</code>
+ 
+<ul>
+<li>function taking CPS function <code>cpsFn</code>
+and returning new CPS function whose nth callback's output equals
+the nth callback's output of <code>cpsFun</code> transformed with function fns[n].
+If n > fns.length, the output is passed unchanged.</li>
+</ul>
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">const</span> cpsFn = <span class="hljs-function">(<span class="hljs-params">cb1, cb2</span>) =&gt;</span> {cb1(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>); cb2(<span class="hljs-number">7</span>)}
+  <span class="hljs-comment">// 2 callbacks receive corresponding outputs (2, 3) and (7)</span>
+map(f1, f2)(cpsFn)
+  <span class="hljs-comment">// is equivalent to the CPS function</span>
+(cb1, cb2) =&gt; {cb1(f1(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>));  cb2(f2(<span class="hljs-number">7</span>))}
+  <span class="hljs-comment">// where f1 and f2 transform respective outputs.</span></pre>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">const</span> cpsFromPromise = <span class="hljs-function"><span class="hljs-params">promise</span> =&gt;</span> <span class="hljs-function">(<span class="hljs-params">onRes, onErr</span>) =&gt;</span> promise.then(onRes, onErr)
+map(f1, f2)(cpsFromPromise(promise))
+  <span class="hljs-comment">// is equivalent to</span>
+cpsFromPromise(promise.then(f1).catch(f2))</pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='scan'>
+      scan
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Iterates tuple of reducers over tuple of vals
+and outputs from CPS function regarded as actions.
+<code>reducers</code> and <code>vals</code> are matched by index.</p>
+
+    <div class='pre p1 fill-light mt0'>scan</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>reducers</span> <code class='quiet'>(...<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    functions of the form 
+<code>red = (acc, ...val) => newAcc</code>
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>vals</span> <code class='quiet'>(...any)</code>
+	    tuple of arbitrary values.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>cpsFn</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    CPS function.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a></code>:
+        <code>scan(...reducers)(...vals)(cpsFn)</code>
+<ul>
+<li>CPS function whose nth callback
+receives the outputs obtained by iterating
+the stream of outputs from the nth callback of <code>cpsFn</code>
+over <code>reducers[n]</code> starting from with <code>vals[n]</code>.</li>
+</ul>
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+      </div>
+    </div>
+  <script src='assets/anchor.js'></script>
+  <script src='assets/split.js'></script>
+  <script src='assets/site.js'></script>
+</body>
+</html>

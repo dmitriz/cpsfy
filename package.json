@@ -22,8 +22,9 @@
     "tap": "tap test/*test.js",
     "sync": "git add . && git commit; git pull && git push",
     "com": "git add . && git cz",
-    "toc": "npx markdown-toc README.md > toc",
-    "doc": "md-magic --path 'DOCUMENTATION.md'"
+    "tocmanual": "npx markdown-toc README.md > toc",
+    "toc": "md-magic --path 'DOCUMENTATION.md'",
+    "doc": "documentation build 'index.js' -f html -o docs"
   },
   "keywords": [
     "library",
@@ -83,8 +84,7 @@
   "devDependencies": {
     "ava": "1.4.1",
     "nyc": "14.1.1",
-    "tape": "4.10.2",
-    "semantic-release": "^15.13.12"
+    "tape": "4.10.2"
   },
   "dependencies": {}
 }

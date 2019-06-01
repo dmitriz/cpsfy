@@ -3,21 +3,19 @@ const { mergeArray, inheritPrototype } = require('./utils')
 /* ----- General purpose utils ----- */
 
 /**
- * Pipeline Operator:
- * pass tuple of values to sequence of functions
- * similar to the UNIX pipe (x1, ..., xn) | f1 | f2 | ... | fm
+ * Pass tuple of values to sequence of functions similar to UNIX pipe 
+ * `(x1, ..., xn) | f1 | f2 | ... | fm`
  * 
- * @name pipeline
  * @param {...*} args - tuple of arbitrary values.
- * @param {...Function} fns - functions (f1, f2, ..., fn).
- * @returns {*} fn(...f2(f1(...args))...) 
- *    - functions applied one after another.
+ * @param {...Function} fns - functions `(f1, f2, ..., fn)`.
+ * @returns {*} `pipeline(...args)(...fns)`
+ *    - Result of functions applied one after another, equivalent to 
+ *    `fn(...f2(f1(...args))...)`
  *
- * @examples
- * pipeline(x)(f1, f2, f3)
- *    is equivalent to f3(f2(f1(x)))
- * pipeline(x,y)(f, g)
- *    is equivalent to g(f(x, y))
+ * @example
+ * pipeline(x, y)(f1, f2, f3)
+ *   // is equivalent to 
+ * f3(f2(f1(x, y)))
  */
 const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
   (acc, fn) => fn(acc),
@@ -31,37 +29,34 @@ const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
 /**
  * Create CPS function with provided tuple as immediate output.
  *
- * @name CPS.of
  * @param {...*} args - tuple of arbitrary values.
- * @returns {Function} CPS.of(...args) - CPS function
- *    that outputs (...args) inside its first callback
- *    no other output is passed to any other callback.
+ * @returns {Function} `of(...args)` - CPS function
+ *    that immediately calls it first callback `cb` with outputs `(...args)`.
+ *    No other callback is called.
  *
  * @example
- *    CPS.of(x1, x2, x3)
- *        is equivalent to the CPS function 
- *    cb => cb(x1, x2, x3)
+ * of(x1, x2, x3)
+ *   // is equivalent to the CPS function 
+ * cb => cb(x1, x2, x3)
  *
- * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
- * see {@link https://stackoverflow.com/a/41816326/1614973}.
  */
 const of = (...args) => cb => cb(...args)
 
+
 /**
- * Multi-callback version of CPS.of
+ * Multi-callback version of the `of` operator,
  * passing provided tuple into the nth callback.
  *
- * @name CPS.ofN
- * @param {Number} n - the number of the callback used.
+ * @param {Number} n - position number of the callback used.
  * @param {...*} args - tuple of arbitrary values.
- * @returns {Function} CPS.ofN(n)(...args) - CPS function
- *    that outputs (...args) into its nth callback
+ * @returns {Function} `ofN(n)(...args)` - CPS function
+ *    that outputs `(...args)`` into its nth callback
  *    no other output is passed to any other callback.
  *
  * @example
- *    CPS.ofN(1)(x1, x2)
- *        is equivalent to the CPS function 
- *    (cb0, cb1) => cb1(x1, x2)
+ * ofN(1)(x1, x2)
+ *   // is equivalent to the CPS function 
+ * (cb0, cb1) => cb1(x1, x2)
  */
 const ofN = n => (...args) => (...cbs) => cbs[n](...args)
 
@@ -78,38 +73,38 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  * 
  * @signature (...fns) -> CPS -> CPS (curried)
  *
- * @name CPS.chain
  * @param {...Function} fns 
  *    - tuple of functions, each returning CPS function.
  * @param {Function} cpsFn - CPS function.
- * @returns {Function} CPS.chain(...fns)(cpsFn)
+ * @returns {Function} `chain(...fns)(cpsFn)`
  *    - CPS function whose nth callback's output is gathered from
  *    the nth callbacks' outputs of each function fns[j] for each j
  *    evaluated for each output of the jth callback of `cpsFn`.
  *    If 'fns' has fewever functions than the number of callbacks passed,
  *    the extra callbacks receive the same output as from cpsFn
  *
- * @example - 2 callbacks, 2 functions with 2 arguments
- *    const cpsFn = (cb1, cb2) => {cb1(2, 3); cb2(7, 9)}
- *      2 callbacks receive outputs (2, 3) and (7, 9)
- *    const f1 = (x, y) => (cb1, cb2) => {cb1(x + y); cb2(x - y)}
- *    const f2 = (x, y) => cb => {cb(x, -y)}
+ * @example 
+ *   // 2 callbacks, 2 functions with 2 arguments
+ * const cpsFn = (cb1, cb2) => {cb1(2, 3); cb2(7, 9)}
+ *   // 2 callbacks receive outputs (2, 3) and (7, 9)
+ * const f1 = (x, y) => (cb1, cb2) => {cb1(x + y); cb2(x - y)}
+ * const f2 = (x, y) => cb => {cb(x, -y)}
  *
- *    CPS.chain(f1, f2)(cpsFn)
- *      is equivalent to the CPS function
- *    (cb1, cb2) => {cb1(5); cb2(7, -9)}
+ * chain(f1, f2)(cpsFn)
+ *   // is equivalent to the CPS function
+ * (cb1, cb2) => {cb1(5); cb2(7, -9)}
  *
- * @example - 2 callbacks, 1 or 2 functions
- *    // convert to CPS function with 2 callbacks
- *    const readFile = file => (onRes, onErr) => 
- *      fs.readFile(file, (e, name) => {
- *        e ? onErr(e) : onRes(name)
- *      })
- *    const readName = readFile('index.txt') // CPS function
+ * @example 
+ *   // convert to CPS function with 2 callbacks
+ * const readFile = file => (onRes, onErr) => 
+ *   fs.readFile(file, (e, name) => {
+ *     e ? onErr(e) : onRes(name)
+ *   })
+ * const readName = readFile('index.txt') // CPS function
  *    
- *    const readFileByName = chain(name => readFile(name))(readName)
- *      or equivalently
- *    const readFileByName = chain(readFile)(readName)
+ * const readFileByName = chain(name => readFile(name))(readName)
+ *   // or equivalently
+ * const readFileByName = chain(readFile)(readName)
  *
  */
 const chain = (...fns) => cpsFn => {
@@ -132,33 +127,32 @@ const chain = (...fns) => cpsFn => {
  * the nth function from the tuple transforms the output of the nth callback.
  * If fewever functions are passed in the tuple,
  * outputs from remaining callbacks are preserved unchanged.
+ * The pair `(map, of)` conforms to the Pointed Functor spec, 
+ * see {@link https://stackoverflow.com/a/41816326/1614973}.
  * 
  * @signature (...fns) -> CPS -> CPS (curried)
  *
- * @name CPS.map
- * @param {...Function} (...fns) - tuple of functions.
- * @returns {function} CPS.map(...fns) - function CPS -> CPS
- *    - function taking a CPS function `cpsFn` 
- *    and returning CPS function whose nth callback's output equals 
+ * @param {...Function} fns - tuple of functions.
+ * @param {Function} cpsFn - CPS function.
+ * @returns {function} `map(...fns)` 
+ *  - function taking CPS function `cpsFn` 
+ *    and returning new CPS function whose nth callback's output equals 
  *    the nth callback's output of `cpsFun` transformed with function fns[n].
  *    If n > fns.length, the output is passed unchanged.
  *
  * @example
- *    const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7)
- *      2 callbacks receive corresponding outputs (2, 3) and (7)
- *    CPS.map(f1, f2)(cpsFun)
- *      is equivalent to the CPS function
- *    (cb1, cb2) => cb1(f1(2, 3)) + cb2(f2(7))
- *      where f1 and f2 transform respective outputs.
+ * const cpsFn = (cb1, cb2) => {cb1(2, 3); cb2(7)}
+ *   // 2 callbacks receive corresponding outputs (2, 3) and (7)
+ * map(f1, f2)(cpsFn)
+ *   // is equivalent to the CPS function
+ * (cb1, cb2) => {cb1(f1(2, 3));  cb2(f2(7))}
+ *   // where f1 and f2 transform respective outputs.
  *
  * @example
- *    const cpsFromPromise = promise => (onRes, onErr) => promise.then(onRes, onErr)
- *    CPS.map(f1, f2)(cpsFromPromise(promise))
- *      is equivalent to
- *    cpsFromPromise(promise.then(f1).catch(f2))
- *
- * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
- * see {@link https://stackoverflow.com/a/41816326/1614973}.
+ * const cpsFromPromise = promise => (onRes, onErr) => promise.then(onRes, onErr)
+ * map(f1, f2)(cpsFromPromise(promise))
+ *   // is equivalent to
+ * cpsFromPromise(promise.then(f1).catch(f2))
  */
 // precompose every callback with fn from array matched by index 
 // if no function provided, default to the identity
@@ -178,32 +172,32 @@ const filter = (...preds) => {
 
 
 /**
- * Iterates tuple of reducers over tuple of states
+ * Iterates tuple of reducers over tuple of vals
  * and outputs from CPS function regarded as actions.
- * `reducers` and `states` are matched by index.
+ * `reducers` and `vals` are matched by index.
  *
- * @signature (...reducers) -> (...states) -> cpsAction -> cpsState
+ * @signature (...reducers) -> (...vals) -> cpsAction -> cpsState
  *
- * @name CPS.scan
- * @param {...function} (...reducers)
- *    where @signature of each reducer is (state, ...actions) -> state
- * @param {...*} (...states) - tuple of states.
- * @param {function} cpsAction - CPS function.
- * @returns {Function} CPS.scan(...reducers)(...states)(cpsAction)
- *    - CPS function whose nth callback receives the outputs obtained by iterating 
- *    the stream of outputs from the nth callback of cpsAction 
- *    over reducers[n] starting from with states[n]
+ * @param {...Function} reducers
+ *    - functions of the form `red = (acc, ...val) => newAcc`
+ * @param {...*} vals - tuple of arbitrary values.
+ * @param {Function} cpsFn - CPS function.
+ * @returns {Function} `scan(...reducers)(...vals)(cpsFn)`
+ *    - CPS function whose nth callback 
+ *    receives the outputs obtained by iterating 
+ *    the stream of outputs from the nth callback of `cpsFn`
+ *    over `reducers[n]` starting from with `vals[n]`.
  */
-const scan = (...reducers) => (...states) => cpsAction => {
+const scan = (...reducers) => (...vals) => {
   // chain receives tuple of functions, one per reducer
   // nth CPS function inside chain receives nth callback output of cpsAction
   let cpsTrasformer = (reducer, idx) => (...action) => (...cbs) => {
-      // accessing states and reducers by index
-      states[idx] = reducer(states[idx], ...action)
-      cbs[idx](states[idx])  
+      // accessing vals and reducers by index
+      vals[idx] = reducer(vals[idx], ...action)
+      cbs[idx](vals[idx])  
     }
   // chaining outputs of cpsAction with multiple reducers, one per state
-  return chain(...reducers.map(cpsTrasformer))(cpsAction)
+  return chain(...reducers.map(cpsTrasformer))
 }
 
 
