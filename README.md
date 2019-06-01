@@ -194,7 +194,7 @@ const readFileByName = chain(name => readFile(name))(getName)
 // or equivalently
 const readFileByName = chain(readFile)(getName)
 
-// handle errors separately in the 2nd callback similar promises
+// handle errors in the 2nd callback similar to promises
 readFileByName(
   text => console.log(text), 
   error => console.err(error)
