@@ -22,6 +22,7 @@ test('further callbacks are unaffected when map over single function', t => {
 })
 
 test('map over multiple functions', t => {
+	t.plan(2)
 	const cpsFun = (cb1, cb2) => {cb1(42); cb2(23)}
 	map(x => x/2, x => x*2)(cpsFun)(t.cis(21), t.cis(46))	
 })

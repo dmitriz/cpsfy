@@ -48,55 +48,14 @@ const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
 const of = (...args) => cb => cb(...args)
 
 
+const ofN = idx => (...args) => (...cbs) => cbs[idx](...args)
 
-
-/**
- * Map CPS function over arbitrary tuple of functions, where for each n, 
- * the nth function from the tuple transforms the output of the nth callback.
- * 
- * @signature (...fns) -> CPS -> CPS (curried)
- *
- * @name CPS.map
- * @param {...function} (...fns) - functions.
- * @param {function} cpsFun - CPS function.
- * @returns {function} CPS.map(...fns)(cpsFun) 
- *    - CPS function whose nth callback's output equals 
- *    the nth callback's output of `cpsFun` transformed via function fns[n]
- *
- * @example
- *    const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7)
- *      2 callbacks receive corresponding outputs (2, 3) and (7)
- *    CPS.map(f1, f2)(cpsFun)
- *      is equivalent to the CPS function
- *    (cb1, cb2) => cb1(f1(2, 3)) + cb2(f2(7))
- *      where f1 and f2 transform respective outputs.
- *
- * @example
- *    const cpsFromPromise = promise => (onRes, onErr) => promise.then(onRes, onErr)
- *    CPS.map(f1, f2)(cpsFromPromise(promise))
- *      is equivalent to
- *    cpsFromPromise(promise.then(f1).catch(f2))
- *
- * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
- * see {@link https://stackoverflow.com/a/41816326/1614973}.
- */
-
-// precompose every callback with fn from array matched by index 
-// if no function provided, default to the identity
-const transformCallbackArgs = (fn, cb) => (...args) => 
-  fn ? cb(fn(...args)) : cb(...args)
-
-const passToCPS = fns => (cb, idx) => transformCallbackArgs(fns[idx], cb)
-
-const map = (...fns) => cpsFun => {
-  let cpsNew = (...cbs) => cpsFun(...cbs.map(passToCPS(fns)))
-  inheritPrototype(cpsNew, cpsFun)
-  return cpsNew
-}
 
 
 /**
- * Chains outputs of CPS function with arbitrary tuple of other CPS functions,
+ * Chain is the most basic CPS operator
+ * that chains outputs of CPS function with
+ * tuple of functions returning CPS functions,
  * where the nth function applies to each output of the nth callback
  * and the resulting outputs are gathered by index.
  * 
@@ -134,6 +93,46 @@ const chain = (...fns) => cpsFn => {
   inheritPrototype(cpsNew, cpsFn)
   return cpsNew
 }
+
+
+
+/**
+ * Map CPS function over arbitrary tuple of functions, where for each n, 
+ * the nth function from the tuple transforms the output of the nth callback.
+ * 
+ * @signature (...fns) -> CPS -> CPS (curried)
+ *
+ * @name CPS.map
+ * @param {...function} (...fns) - functions.
+ * @param {function} cpsFun - CPS function.
+ * @returns {function} CPS.map(...fns)(cpsFun) 
+ *    - CPS function whose nth callback's output equals 
+ *    the nth callback's output of `cpsFun` transformed via function fns[n]
+ *
+ * @example
+ *    const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7)
+ *      2 callbacks receive corresponding outputs (2, 3) and (7)
+ *    CPS.map(f1, f2)(cpsFun)
+ *      is equivalent to the CPS function
+ *    (cb1, cb2) => cb1(f1(2, 3)) + cb2(f2(7))
+ *      where f1 and f2 transform respective outputs.
+ *
+ * @example
+ *    const cpsFromPromise = promise => (onRes, onErr) => promise.then(onRes, onErr)
+ *    CPS.map(f1, f2)(cpsFromPromise(promise))
+ *      is equivalent to
+ *    cpsFromPromise(promise.then(f1).catch(f2))
+ *
+ * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
+ * see {@link https://stackoverflow.com/a/41816326/1614973}.
+ */
+
+// precompose every callback with fn from array matched by index 
+// if no function provided, default to the identity
+const map = (...fns) => chain(...fns.map((f, idx) =>
+  (...args) => ofN(idx)(f(...args))
+))
+
 
 
 // pass through only input truthy `pred`
