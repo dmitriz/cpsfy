@@ -9,7 +9,7 @@ const { mergeArray, inheritPrototype } = require('./utils')
  * 
  * @name pipeline
  * @param {...*} args - tuple of arbitrary values.
- * @param {...functions} fns - functions (f1, f2, ..., fn).
+ * @param {...Function} fns - functions (f1, f2, ..., fn).
  * @returns {*} fn(...f2(f1(...args))...) 
  *    - functions applied one after another.
  *
@@ -29,11 +29,11 @@ const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
 /* ----- CPS operators ----- */
 
 /**
- * Create CPS function with given tuple as immediate output.
+ * Create CPS function with provided tuple as immediate output.
  *
  * @name CPS.of
  * @param {...*} args - tuple of arbitrary values.
- * @returns {function} CPS.of(...args) - CPS function
+ * @returns {Function} CPS.of(...args) - CPS function
  *    that outputs (...args) inside its first callback
  *    no other output is passed to any other callback.
  *
@@ -47,19 +47,36 @@ const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
  */
 const of = (...args) => cb => cb(...args)
 
-
-const ofN = idx => (...args) => (...cbs) => cbs[idx](...args)
+/**
+ * Multi-callback version of CPS.of
+ * passing provided tuple into the nth callback.
+ *
+ * @name CPS.ofN
+ * @param {Number} n - the number of the callback used.
+ * @param {...*} args - tuple of arbitrary values.
+ * @returns {Function} CPS.ofN(n)(...args) - CPS function
+ *    that outputs (...args) into its nth callback
+ *    no other output is passed to any other callback.
+ *
+ * @example
+ *    CPS.ofN(1)(x1, x2)
+ *        is equivalent to the CPS function 
+ *    (cb0, cb1) => cb1(x1, x2)
+ */
+const ofN = n => (...args) => (...cbs) => cbs[n](...args)
 
 
 
 /**
- * Chain is the most basic CPS operator
- * that chains outputs of CPS function with
+ * Chain is the most basic CPS operator.
+ * It chains outputs of CPS function with
  * tuple of functions returning CPS functions,
- * where the nth function applies to each output of the nth callback
+ * where the nth function applies to each output from the nth callback
  * and the resulting outputs are gathered by index.
+ * If fewever functions are passed in the tuple,
+ * outputs from remaining callbacks are preserved unchanged.
  * 
- * @signature (...cpsFns) -> CPS -> CPS (curried)
+ * @signature (...fns) -> CPS -> CPS (curried)
  *
  * @name CPS.chain
  * @param {...Function} fns 
@@ -72,14 +89,28 @@ const ofN = idx => (...args) => (...cbs) => cbs[idx](...args)
  *    If 'fns' has fewever functions than the number of callbacks passed,
  *    the extra callbacks receive the same output as from cpsFn
  *
- * @example
- *    const cpsFn = (cb1, cb2) => cb1(2, 3) + cb2(7, 9)
+ * @example - 2 callbacks, 2 functions with 2 arguments
+ *    const cpsFn = (cb1, cb2) => {cb1(2, 3); cb2(7, 9)}
  *      2 callbacks receive outputs (2, 3) and (7, 9)
- *    const cpsF1 = (x, y) => (cb1, cb2) => cb1(x + y) + cb2(x - y)
- *    const cpsF2 = (x, y) => cb => cb(x, -y)
- *    CPS.chain(cpsF1, cpsF2)(cpsFn)
+ *    const f1 = (x, y) => (cb1, cb2) => {cb1(x + y); cb2(x - y)}
+ *    const f2 = (x, y) => cb => {cb(x, -y)}
+ *
+ *    CPS.chain(f1, f2)(cpsFn)
  *      is equivalent to the CPS function
- *    (cb1, cb2) => cb1(5) + cb2(7, -9)
+ *    (cb1, cb2) => {cb1(5); cb2(7, -9)}
+ *
+ * @example - 2 callbacks, 1 or 2 functions
+ *    // convert to CPS function with 2 callbacks
+ *    const readFile = file => (onRes, onErr) => 
+ *      fs.readFile(file, (e, name) => {
+ *        e ? onErr(e) : onRes(name)
+ *      })
+ *    const readName = readFile('index.txt') // CPS function
+ *    
+ *    const readFileByName = chain(name => readFile(name))(readName)
+ *      or equivalently
+ *    const readFileByName = chain(readFile)(readName)
+ *
  */
 const chain = (...fns) => cpsFn => {
   let cpsNew = (...cbs) => {
@@ -99,15 +130,18 @@ const chain = (...fns) => cpsFn => {
 /**
  * Map CPS function over arbitrary tuple of functions, where for each n, 
  * the nth function from the tuple transforms the output of the nth callback.
+ * If fewever functions are passed in the tuple,
+ * outputs from remaining callbacks are preserved unchanged.
  * 
  * @signature (...fns) -> CPS -> CPS (curried)
  *
  * @name CPS.map
- * @param {...function} (...fns) - functions.
- * @param {function} cpsFun - CPS function.
- * @returns {function} CPS.map(...fns)(cpsFun) 
- *    - CPS function whose nth callback's output equals 
- *    the nth callback's output of `cpsFun` transformed via function fns[n]
+ * @param {...Function} (...fns) - tuple of functions.
+ * @returns {function} CPS.map(...fns) - function CPS -> CPS
+ *    - function taking a CPS function `cpsFn` 
+ *    and returning CPS function whose nth callback's output equals 
+ *    the nth callback's output of `cpsFun` transformed with function fns[n].
+ *    If n > fns.length, the output is passed unchanged.
  *
  * @example
  *    const cpsFun = (cb1, cb2) => cb1(2, 3) + cb2(7)
@@ -126,7 +160,6 @@ const chain = (...fns) => cpsFn => {
  * The pair (CPS.map, CPS.of) conforms to the Pointed Functor spec, 
  * see {@link https://stackoverflow.com/a/41816326/1614973}.
  */
-
 // precompose every callback with fn from array matched by index 
 // if no function provided, default to the identity
 const map = (...fns) => chain(...fns.map((f, idx) =>
@@ -201,5 +234,5 @@ const CPS = cpsFn => {
 }
 
 module.exports = { 
-  pipeline, of, map, chain, filter, scan, CPS 
+  pipeline, of, ofN, map, chain, filter, scan, CPS 
 }

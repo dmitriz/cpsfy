@@ -166,10 +166,10 @@ const copy = chain(
 )(
   readFile('source.txt', 'utf8')  // CPS function
 )
-// or
+// or as method
 const copy = CPS(readFile('source.txt', 'utf8'))
   .chain(text => writFile('target.txt', 'utf8', text))
-// or
+// or with pipeline operator
 const copy = pipeline(readFile('source.txt', 'utf8'))(
   chain(text => writFile('target.txt', 'utf8', text))
 )
@@ -180,6 +180,10 @@ copy((err, data) => err
   : console.log(data)
 ) // => file content is capitalized and printed
 ```
+
+#### Example of error handling in separate callbacks with `chain`
+
+
 
 ### `filter(...predicates)(cpsFunction)`
 ```js
