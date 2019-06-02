@@ -24,7 +24,7 @@
     "com": "git add . && git cz",
     "tocmanual": "npx markdown-toc README.md > toc",
     "toc": "md-magic --path 'DOCUMENTATION.md'",
-    "doc": "documentation build 'index.js' -f html -o docs"
+    "doc": "documentation build 'index.js' -f html -o auto-docs"
   },
   "keywords": [
     "library",

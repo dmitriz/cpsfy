@@ -13,6 +13,7 @@ coverage.lcov
 coverage/
 
 # Generated files
+auto-docs
 toc
 out
 

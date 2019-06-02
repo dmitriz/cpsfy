@@ -94,6 +94,14 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
 
 
 ## Why?
+- Functions are among the most basic and powerful objects in JavaScript.
+- Callbacks are prominent for events and asynchronous functions, but they don't make composition convenient (leading to the so-called "callback hell").
+- Promises are more convenient to compose but introduce overheads, such as conditionally calling `then` and [do not conform to functor or monad laws and thus are not safe for compositional refactoring](https://stackoverflow.com/questions/45712106/why-are-promises-monads/50173415#50173415).
+- Promises introduce limitations of being able to return only one value only once, that makes it difficult to update them or use uniformly along with streams.
+- Promises provide only one error handling callback, forcing to handle all errors in the same function, and thus making writing smaller focused functions and separating concerns more difficult.
+- The recent `async/await` notation retains the overheads of promises, in addition to ["new and exciting ways to shoot yourself in the foot"](https://thecodebarbarian.com/80-20-guide-to-async-await-in-node.js.html).
+
+
 Functions are the most basic and powerful concept.
 A whole program can be written as funciton,
 taking input data and producing output.
@@ -102,6 +110,7 @@ For instance, all asynchronous Node API methods rely on the output data
 returned via callbacks rather than via functions' return values.
 This patter is of course the well-known 
 [Continuation-Passing Style (CPS)](https://en.wikipedia.org/wiki/Continuation-passing_style)
+
 
 
 ## Advanced composability

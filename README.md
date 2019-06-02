@@ -40,15 +40,6 @@ npm install cpsfy
 *No dependency policy.*
 For maximum security, this package is intended to be kept minimal and transparent with **no dependencies ever**.
 
-## Why?
-- Functions are among the most basic and powerful objects in JavaScript.
-- Callbacks are prominent for events and asynchronous functions, but they don't make composition convenient (leading to the so-called "callback hell").
-- Promises are more convenient to compose but introduce overheads, such as conditionally calling `then` and consequently [do not conform to functor or monad laws and thus are not safe for compositional refactoring](https://stackoverflow.com/questions/45712106/why-are-promises-monads/50173415#50173415).
-- Promises introduce limitations of being able to return only one value only once, that makes it difficult to update them or use uniformly along with streams.
-- Promises provide only one error handling callback, forcing to handle all errors in the same function, and thus making writing smaller focused functions and separating concerns more difficult.
-- The recent `async/await` notation retains the overheads of promises, in addition to ["new and exciting ways to shoot yourself in the foot"](https://thecodebarbarian.com/80-20-guide-to-async-await-in-node.js.html).
-- The present `cpsfy` library aims to provide unified and simple operators for all callback-based (aka Continuation-Passing-Style aka CPS) functions to make their composition as simple as with promises, while addressing the above limitations and overheads.
-
 
 ## Quick demo
 We want to read the content of the file `name.txt` into string `str` and remove spaces from both ends of `str`. If the resulting `str` is nonempty, 
@@ -178,7 +169,7 @@ pipeline(cpsFn)(chain(f1, f2, ...))
 ```
 where each `fn` is a curried function
 ```js
-// fn(x1, x2, ...) is expected to return a CPS function
+// fn is expected to return a CPS function
 const fn = (x1, x2, ...) => (cb1, cb2, ...) => { ... }
 ```
 The `chain` operator applies each `fn` to each output from the `n`th callback of `cpsFn`, however, the CPS *ouptup* of `fn` is passed ahead instead of the return value. 
