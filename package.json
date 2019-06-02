@@ -82,7 +82,7 @@
     "control-flow"
   ],
   "devDependencies": {
-    "ava": "^2.0.0",
+    "ava": "2.0.0",
     "nyc": "14.1.1",
     "tape": "4.10.2"
   },
