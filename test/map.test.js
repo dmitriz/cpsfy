@@ -31,3 +31,9 @@ test('map over more functions than callbacks, the extra functions are ignored', 
 	const cpsFun = cb => cb(42)
 	map(x => x*2, x => x+10)(cpsFun)(t.cis(84))	
 })
+
+test('map over nested arrays', t => {
+	const cf0 = cb => cb([1,2])
+	map(arr => arr.map(a => a + 1))(cf0)(t.cDeepEqual([2,3]))
+})
+

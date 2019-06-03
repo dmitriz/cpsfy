@@ -9,5 +9,6 @@ Usage: t.cis(a)(b) instead of t.is(a, b)
 module.exports = (title, fn) =>	
 	test(title, t => {
 		t.cis = a => b => t.is(a, b)
+		t.cDeepEqual = a => b => t.deepEqual(a, b)
 		return fn(t)
 	})

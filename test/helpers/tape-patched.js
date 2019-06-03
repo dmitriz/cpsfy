@@ -8,6 +8,7 @@ Usage: t.cis(a)(b)
 module.exports = (title, fn) =>	
 	test(title, t => {
 		t.cis = a => b => t.is(a, b)
+		t.cDeepEqual = a => b => t.deepEqual(a, b)
 		// run consumer test function
 		fn(t)
 		// tape requires to end each test
