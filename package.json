@@ -4,7 +4,8 @@
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
   "files": [
-    "index.js"
+    "index.js",
+    "utils.js"
   ],
   "repository": "https://github.com/dmitriz/cpsfy.git",
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
