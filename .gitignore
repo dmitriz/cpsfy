@@ -7,15 +7,19 @@ yarn-error.log*
 node_modules/
 
 # Coverage
+coverage/
 .nyc_output
 .codecov
-coverage.lcov
-coverage/
+*.lcov
 
 # Generated files
 auto-docs
 toc
 out
+
+# dotenv environment variables file
+.env
+.env.test
 
 # Apple garbage
 .DS_Store
