@@ -43,38 +43,35 @@ For maximum security, this package is intended to be kept minimal and transparen
 
 
 ## Quick demo
-We want to read the content of the file `name.txt` into string `str` and remove spaces from both ends of `str`. If the resulting `str` is nonempty, 
+We want to read the content of `name.txt` into string `str` and remove spaces from both ends of `str`. If the resulting `str` is nonempty, 
 we read the content of the file with that name into string `content`, otherwise do nothing.
 Finally we split the `content` string into array of lines.
 If there are any errors on the way, we want to handle them at the very end
 in a separate function without any change to our main code.
 ```js
-const fs = require('fs')
-// cpsfy with full control instead of promisify ;-)
-// -> function returning CPS function with 2 callbacks
+//function returning CPS function with 2 callbacks
 const readFileCps = file => (onRes, onErr) =>  
-  fs.readFile(file, (e, name) => { // read file as string
+  require('fs').readFile(file, (e, name) => {
     e ? onErr(e) : onRes(name)
   })
 
-// CPS wraps a CPS function to provide the methods
+// CPS wraps a CPS function to provide the API methods
 const getLines = CPS(readFileCps('name.txt'))
   // map applies function to the file content
   .map(file => file.trim()) 
-  .filter(file => file.length > 0)// only pass if nonempty
+  .filter(file => file.length > 0)
   // chain applies function that returns CPS function
-  .chain(file => readFileCps(file))  // read file content
-  .map(text => text.split('\n'))  // split into lines
+  .chain(file => readFileCps(file))
+  .map(text => text.split('\n'))
 // => CPS function with 2 callbacks
 
 // To use, simply pass callbacks in the same order
 getLines(
-  lines => console.log(lines),  // result callback
-  err => console.error(err)  // error callback
+  lines => console.log(lines),  // onRes callback
+  err => console.error(err)  // onErr callback
 )
-// Note how we handle error at the end 
-// without affecting the main logic!
 ```
+Note how we handle error at the end without affecting the main logic!
 
 
 ## CPS function
@@ -104,7 +101,7 @@ CPS(cpsFn).map(f)
 // 'cpsFn' is piped into 'map(f)' via 'pipeline' operator
 pipeline(cpsFn)(map(f))
 ```
-The wrapped CPS function `CPS(cpsFn)` has all operators available as methods, while it remains plain CPS function, i.e. can be called with the same callbacks:
+The wrapped CPS function `CPS(cpsFn)` has all operators available as methods, while it remains a plain CPS function, i.e. can be called with the same callbacks:
 ```js
 CPS(cpsFn)(f1, f2, ...) // is equivalent to
 cpsFn(f1, f2, ...)
@@ -125,6 +122,7 @@ pipeline(cpsFn)(
 
 ### `map(...functions)(cpsFunction)`
 ```js
+// these are equivalent
 map(f1, f2, ...)(cpsFn)
 CPS(cpsFn).map(f1, f2, ...)
 pipeline(cpsFn)(map(f1, f2, ...))
@@ -165,6 +163,7 @@ getCaps((err, data) => err
 
 ### `chain(...functions)(cpsFunction)`
 ```js
+// these are equivalent
 chain(f1, f2, ...)(cpsFn)
 CPS(cpsFn).chain(f1, f2, ...)
 pipeline(cpsFn)(chain(f1, f2, ...))
@@ -214,6 +213,7 @@ copy((err, data) => err
 
 ### `filter(...predicates)(cpsFunction)`
 ```js
+// these are equivalent
 filter(pred1, pred2, ...)(cpsFn)
 CPS(cpsFn).filter(pred1, pred2, ...)
 pipeline(cpsFn)(filter(pred1, pred2, ...))
@@ -240,6 +240,7 @@ copyNotEmpty(err => console.error(err))
 ### `scan(...reducers)(...initialValues)(cpsFunction)`
 Similar to [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), except that all partial accumulated values are passed into callback whenever there is new output.
 ```js
+// these are equivalent
 scan(red1, red2, ...)(x1, x2, ...)(cpsFn)
 (cpsFn).scan(red1, red2, ...)(x1, x2, ...)
 pipeline(cpsFn)(scan(red1, red2, ...)(x1, x2, ...))
@@ -257,7 +258,7 @@ New CPS function whose output from the `n`the callback is the `n`th accumulated 
 
 #### Example of `scan`
 ```js
-// CPS function with 2 callbacks, a click  on one
+// CPS function with 2 callbacks, clicking on one
 // of the buttons sends '1' into respective callback
 const getVotes = (onUpvote, onDownvote) => {
   upvoteButton.addEventListener('click', 
@@ -270,8 +271,8 @@ const getVotes = (onUpvote, onDownvote) => {
 const add = (acc, x) => acc + x
 // count numbers of up- and downvotes and 
 // pass into respective callbacks
-const countVotes = scan(add, add)(0, 0)(getVotes) // or
-const countVotes = CPS(getVotes).scan(add, add)(0, 0)
+const countVotes = CPS(getVotes)
+  .scan(add, add)(0, 0)
 
 // countVotes is CPS function that we can call 
 // with any pair of callbacks
