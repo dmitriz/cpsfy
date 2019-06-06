@@ -53,8 +53,8 @@ in a separate function without any change to our main code.
 ```js
 //function returning CPS function with 2 callbacks
 const readFileCps = file => (onRes, onErr) =>  
-  require('fs').readFile(file, (e, name) => {
-    e ? onErr(e) : onRes(name)
+  require('fs').readFile(file, (err, content) => {
+    err ? onErr(err) : onRes(content)
   })
 
 // CPS wraps a CPS function to provide the API methods
@@ -139,20 +139,17 @@ cbn(fn(x1, x2, ...))
 whenever `cpsFn` calls its `n`th callback.
 
 #### Example of `map`
+Using `readFileCps` as above.
 ```js
-const fs = require('fs')
-const readFileCps = (file, encoding) =>
-  cb => fs.readFile(file, encoding, cb)   // CPS function
-
 // read file and convert all letters to uppercase
 const getCaps = map(str => str.toUpperCase())(
-  readFileCps('message.txt', 'utf8')
+  readFileCps('message.txt')
 )
 // or
-const getCaps = CPS(readFileCps('message.txt', 'utf8'))
+const getCaps = CPS(readFileCps('message.txt'))
   .map(str => str.toUpperCase())
 // or
-const getCaps = pipeline(readFileCps('message.txt', 'utf8'))(
+const getCaps = pipeline(readFileCps('message.txt'))(
   map(str => str.toUpperCase())
 )
 
@@ -186,23 +183,26 @@ cbmFn(y1, y2, ...)  // is called where
 ```
 
 #### Example of `chain`
+Using `readFileCps` as above.
 ```js
-// returning CPS function
-const writeFileCps = (file, encoding, content) =>
-  cb => fs.readFile(file, encoding, content, cb)
+// write version of readFileCps
+const writeFileCps = (file, content) => (onRes, onErr) =>  
+  require('fs').writeFile(file, content, (err, message) => {
+    err ? onErr(err) : onRes(message)
+  })
 
 const copy = chain(
   // function that returns CPS function
-  text => writeFileCps('target.txt', 'utf8', text)
+  text => writeFileCps('target.txt', text)
 )(
-  readFileCps('source.txt', 'utf8')  // CPS function
+  readFileCps('source.txt')  // CPS function
 )
 // or as method
-const copy = CPS(readFileCps('source.txt', 'utf8'))
-  .chain(text => writeFileCps('target.txt', 'utf8', text))
+const copy = CPS(readFileCps('source.txt'))
+  .chain(text => writeFileCps('target.txt', text))
 // or with pipeline operator
-const copy = pipeline(readFileCps('source.txt', 'utf8'))(
-  chain(text => writeFileCps('target.txt', 'utf8', text))
+const copy = pipeline(readFileCps('source.txt'))(
+  chain(text => writeFileCps('target.txt', text))
 )
 
 // copy is a CPS function, call it with any callback
@@ -229,11 +229,12 @@ predn(x1, x2, ...) == true
 ```
 
 #### Example of `filter`
+Using `readFileCps` and `writeFileCps` as above.
 ```js
 // only copy text if it is not empty
-const copyNotEmpty = CPS(readFileCps('source.txt', 'utf8'))
+const copyNotEmpty = CPS(readFileCps('source.txt'))
   .filter(text => text.length > 0)
-  .chain(text => writFile('target.txt', 'utf8', text))
+  .chain(text => writeFileCps('target.txt', text))
 
 // copyNotEmpty is CPS function, call with any callback
 copyNotEmpty(err => console.error(err))
