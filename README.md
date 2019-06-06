@@ -28,8 +28,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b530e9fcaac446a19d8172962b486b36)](https://app.codacy.com/app/dmitri14_3131/cpsfy?utm_source=github.com&utm_medium=referral&utm_content=dmitriz/cpsfy&utm_campaign=Badge_Grade_Dashboard)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a55f3fd9a13396325671/maintainability)](https://codeclimate.com/github/dmitriz/cpsfy/maintainability)
 [![DeepScan grade](https://deepscan.io/api/teams/3918/projects/5693/branches/44286/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=3918&pid=5693&bid=44286)
-[![GitHub last commit](https://img.shields.io/github/last-commit/dmitriz/cpsfy.svg)](https://github.com/dmitriz/cpsfy/commits/master)
-[![npm downloads](https://img.shields.io/npm/dt/cpsfy.svg)](https://www.npmjs.com/package/cpsfy)
+[![GitHub last commit](https://img.shields.io/github/last-commit/dmitriz/cpsfy.svg?logo=github)](https://github.com/dmitriz/cpsfy/commits/master)
+[![npm downloads](https://img.shields.io/npm/dt/cpsfy.svg?logo=npm)](https://www.npmjs.com/package/cpsfy)
 [![MIT License](https://img.shields.io/npm/l/cpsfy.svg?color=blue)](http://opensource.org/licenses/MIT)
 
 
