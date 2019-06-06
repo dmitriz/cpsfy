@@ -108,7 +108,7 @@ taking input data and producing output.
 However, viewing function's return value as the only output is often too limited.
 For instance, all asynchronous Node API methods rely on the output data 
 returned via callbacks rather than via functions' return values.
-This patter is of course the well-known 
+This pattern is of course the well-known 
 [Continuation-Passing Style (CPS)](https://en.wikipedia.org/wiki/Continuation-passing_style)
 
 
