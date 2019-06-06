@@ -13,7 +13,6 @@
 [![npm version](https://img.shields.io/npm/v/cpsfy.svg)](http://npm.im/cpsfy)
 [![install size](https://packagephobia.now.sh/badge?p=cpsfy)](https://packagephobia.now.sh/result?p=cpsfy)
 [![bundlephobia](https://img.shields.io/bundlephobia/minzip/cpsfy.svg)](https://bundlephobia.com/result?p=cpsfy)
-[![npm downloads](https://img.shields.io/npm/dt/cpsfy.svg)](https://www.npmjs.com/package/cpsfy)
 [![Build Status](https://travis-ci.org/dmitriz/cpsfy.svg?branch=master)](https://travis-ci.org/dmitriz/cpsfy)
 [![CircleCI](https://circleci.com/gh/dmitriz/cpsfy.svg?style=svg)](https://circleci.com/gh/dmitriz/cpsfy)
 [![dependencies](https://david-dm.org/dmitriz/cpsfy.svg)](https://david-dm.org/dmitriz/cpsfy) 
@@ -29,6 +28,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a55f3fd9a13396325671/maintainability)](https://codeclimate.com/github/dmitriz/cpsfy/maintainability)
 [![DeepScan grade](https://deepscan.io/api/teams/3918/projects/5693/branches/44286/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=3918&pid=5693&bid=44286)
 [![GitHub last commit](https://img.shields.io/github/last-commit/dmitriz/cpsfy.svg)](https://github.com/dmitriz/cpsfy/commits/master)
+[![npm downloads](https://img.shields.io/npm/dt/cpsfy.svg)](https://www.npmjs.com/package/cpsfy)
 [![MIT License](https://img.shields.io/npm/l/cpsfy.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
 
