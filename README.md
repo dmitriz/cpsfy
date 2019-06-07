@@ -21,7 +21,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/cpsfy/badge.svg)](https://snyk.io/test/github/dmitriz/cpsfy)
 [![Renovate badge](https://badges.renovateapi.com/github/dmitriz/cpsfy)](https://renovatebot.com/dashboard#dmitriz/cpsfy)
 [![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/cpsfy.svg)](https://greenkeeper.io/)
-[![Coverage Status](https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg?branch=v2.0.10)](https://coveralls.io/github/dmitriz/cpsfy?branch=v2.0.10)
+[![Coverage Status](https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg)](https://coveralls.io/github/dmitriz/cpsfy?branch=v2.0.10)
 [![codecov](https://codecov.io/gh/dmitriz/cpsfy/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/cpsfy)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dmitriz/cpsfy.svg?logo=lgtm)](https://lgtm.com/projects/g/dmitriz/cpsfy/context:javascript)
 [![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/cpsfy/badge)](https://www.codefactor.io/repository/github/dmitriz/cpsfy)
