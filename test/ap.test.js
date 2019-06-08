@@ -1,6 +1,8 @@
 const test = require('./config')
 const { ap } = require('..')
 
+const notCalled = () => {throw Error('I should not be called!')}
+
 test('ap over single CPS function', t => {
 	const cpsFun = cb => cb(42)
 	const cpsNew = ap(cb => cb(x => x*2))(cpsFun)
@@ -8,58 +10,68 @@ test('ap over single CPS function', t => {
 	cpsNew(t.cis(84))
 })
 
-// test('chain over single CPS function with several arguments', t => {
-// 	// (5, 2) passed as output into the first callback
-// 	const cpsFun = cb => cb(5, 2)
-// 	const cpsNew = chain(
-// 		(a, b) => cb => cb(a - b)
+test('ap over single CPS function with several arguments', t => {
+	// (5, 2) passed as output into the first callback
+	const cpsFun = cb => cb(5, 2)
+	const cpsNew = ap(
+		cb => cb((a, b) => a - b)
+	)(cpsFun)
+	// new output is 3 = 5 - 2
+	cpsNew(t.cis(3))
+})
+
+test('ap of single CPS function with no arguments', t => {
+	// empty tuple as output
+	const cpsFun = cb => cb()
+	// transform empty tuple into 30 as output
+	const cpsNew = ap(
+		cb => cb(() => 30)
+	)(cpsFun)
+	// new output is 30
+	cpsNew(t.cis(30))	
+})
+
+test('ap of function with multiple callbacks called', t => {
+	const cpsFun = (cb1, cb2) => {cb1(1); cb2(12)}
+	const cpsNew = ap(
+		cb => cb(x => x + 1)
+	)(cpsFun)
+	t.plan(2)
+	cpsNew(t.cis(2), t.cis(12))
+})
+
+
+test('ap of 2-callback-CPS over single function is passing 2nd callback unchanged', t => {
+	const cpsFun = (cb, onErr) => {onErr('error')}
+	const cpsNew = ap(cb => cb(11))(cpsFun)
+	t.plan(1)
+	cpsNew(notCalled, t.cis('error'))
+})
+
+
+test('ap only applies to callbacks with output', t => {
+	const cpsFun = (cb, onErr) => {onErr('error')}
+	const cpsNew = ap(
+		cb => {cb(x => x + 1)},
+		onErr => {onErr(err => 'logs ' + err)}
+	)(cpsFun)
+	t.plan(1)
+	cpsNew(
+		notCalled,  
+		t.cis('logs error'))
+})
+
+
+// test('ap over pair of functions applies to outputs from separate callbacks', t => {
+// 	const cpsFun = (cb, onErr) => {cb(1); onErr('error')}
+// 	const cpsNew = ap(
+// 		cb => {cb(x => x + 1)},
+// 		onErr => {onErr(err => 'logs ' + err)}
 // 	)(cpsFun)
-// 	// new output is 3 = 5 - 2
-// 	cpsNew(t.cis(3))	
-// })
-
-// test('all repeated outputs are passed', t => {
-// 	const cpsFun = cb => { cb(42); cb(42) }
-// 	const cpsNew = chain(x => cb => cb(x + 1))(cpsFun)
-// 	// the callback t.cis(43) must be executed twice
 // 	t.plan(2)
-// 	cpsNew(t.cis(43))
+// 	cpsNew(t.cis(11),  t.cis('logs error'))
 // })
 
-// test('also all repeated outputs passed from transforming functions', t => {
-// 	const cpsFun = cb => { cb(42) }
-// 	const cpsNew = chain(
-// 		// cb is called twice - 2 outputs
-// 		x => cb => cb(x + 1) + cb(x + 1)
-// 	)(cpsFun)
-// 	// the callback t.cis(43) must be executed twice
-// 	t.plan(2)
-// 	cpsNew(t.cis(43))
-// })
-
-// test('chain over single function with no arguments', t => {
-// 	// empty tuple as output
-// 	const cpsFun = cb => cb()
-// 	// transform empty tuple into 30 as output
-// 	const cpsNew = chain(
-// 		() => cb => cb(30)
-// 	)(cpsFun)
-// 	// new output is 30
-// 	cpsNew(t.cis(30))	
-// })
-
-// test('all callbacks passed when chain with single function', t => {
-// 	// 42 is passed as output
-// 	const cpsFun = cb => cb(42)
-// 	const cpsNew = chain(
-// 		x => (cb1, cb2) => {
-// 			cb1(x * 2)
-// 			cb2(x + 10)
-// 		})(cpsFun)
-// 	// 84 passed into the first, and 52 into the second callback
-// 	t.plan(2)
-// 	cpsNew(t.cis(84), t.cis(52))
-// })
 
 // test('chain over multiple functions with the same output twice', t => {
 // 	// 42 and 10.5 passed respectively into the first and second callback
@@ -92,15 +104,11 @@ test('ap over single CPS function', t => {
 // 	})	
 // })
 
-// test('multiple callbacks from transforming functions merge by index', t => {
+// test('ap over transforming functions with multiple callbacks merge by index', t => {
 // 	const cpsFun = (cb1, cb2) => { cb1(8); cb2(2) }
-// 	const newCps = chain(
-// 		// output 8 is passed here as x
-// 		x => (c1, c2) => c1(x/2) + c2(x), 
-// 		// output 2 is passed here as x
-// 		x => (cb1, cb2) => cb1(x*2) + cb2(x*4),
+// 	const newCps = ap(
+// 		(c1, c2) => {c1(x => x/2); c2(x => x*2)}, 
 // 	)(cpsFun)
-
 // 	// each callback is called twice
 // 	t.plan(4)
 // 	newCps(

@@ -225,8 +225,8 @@ const scan = (...reducers) => (...vals) => {
  *   fs.readFile(file, (e, name) => {
  *     e ? onErr(e) : onRes(name)
  *   })
- * const appendToFile = (cb, err) => addition => {
- *    readFile('old.txt')(content => cb(content + addition), err)
+ * const appendToFile = cb => addition => {
+ *    readFile('old.txt')(content => cb(content + addition))
  * }
  * 
  * const readFilesCombined = ap(appendToFile)(readFile('new.txt'))
@@ -239,20 +239,33 @@ const ap = (...Fns) => cpsFn => {
     args = []
   let cpsNew = (...cbs) => {
     // run with modified callbacks
-    let res = cpsFn(...cbs.map((cb, idx) => (...output) => { 
+    let newCallbacks = cbs.map((cb, idx) => (...output) => { 
         args[idx] = output
-        let f = fns[idx]
-        // if function is available, pass the value
-        if (f) cb(f(...output))
+        // if no Fn is passed for that index, 
+        if (idx >= Fns.length) {
+          cb(...output)
+        } else {
+          let f = fns[idx]
+          // if function is available, pass the value
+          if (f) cb(f(...output))
+        }
       }
-    ))
-    Fns.forEach(Fn => Fn(
-      ...cbs.map((cb, idx) => f => { 
+    )  
+    let res = cpsFn(...newCallbacks)
+
+    // let newCallbacks = fns.map(f => 
+    //   (...args) => f(...args)(...cbs)
+    // )
+    // // add missing callbacks unchanged from the same positions
+    // return cpsFn(...mergeArray(newCallbacks, cbs))
+
+    Fns.forEach((Fn, idx) => {
+      Fn(f => { 
         fns[idx] = f
         let output = args[idx]
-        if (output) cb(f(...output))
+        if (output) cbs[idx](f(...output))
       })
-    ))
+    })
     return res  // keep return value
   }
   inheritPrototype(cpsNew, cpsFn)
