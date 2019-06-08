@@ -6,7 +6,7 @@ node_js:
   - '10'
   - '8'
 script:
-  - yarn add codecov coveralls
+  - yarn add codecov
   - codecov
 after_success:
-  nyc report --reporter=text-lcov | coveralls
+  yarn add coveralls & nyc report --reporter=text-lcov | coveralls
