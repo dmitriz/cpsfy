@@ -78,7 +78,7 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  * @param {Function} cpsFn - CPS function.
  * @returns {Function} `chain(...fns)(cpsFn)`
  *    - CPS function whose nth callback's output is gathered from
- *    the nth callbacks' outputs of each function fns[j] for each j
+ *    the nth callback's outputs of each function fns[j] for each j
  *    evaluated for each output of the jth callback of `cpsFn`.
  *    If 'fns' has fewever functions than the number of callbacks passed,
  *    the extra callbacks receive the same output as from cpsFn
@@ -202,6 +202,67 @@ const scan = (...reducers) => (...vals) => {
 
 
 
+/**
+ * Ap is the core operator to run CPS functions in parallel.
+ * It applies functions to values,
+ * where both functions and values are delivered separately as CPS outputs.
+ * 
+ * @signature (...fns) -> CPS -> CPS (curried)
+ *
+ * @param {...Function} Fns 
+ *    - tuple of CPS functions, each returning a function.
+ * @param {Function} cpsFn - CPS function.
+ * @returns {Function} `ap(...Fns)(cpsFn)`
+ *    - CPS function whose nth callback's output is
+ *    the results of function call `f(...args)`, where 
+ *    function `f` is the latest nth callback's output from Fns[j] for some j
+ *    and `(...args)` is the latest output from the jth callback of `cpsFn`.
+ *    Only the latest outputs are stored for each callback
+ *    and no output is emitted unless both function and arguments are available.
+ *
+ * @example
+ * const readFile = file => (onRes, onErr) => 
+ *   fs.readFile(file, (e, name) => {
+ *     e ? onErr(e) : onRes(name)
+ *   })
+ * const appendToFile = (cb, err) => addition => {
+ *    readFile('old.txt')(content => cb(content + addition), err)
+ * }
+ * 
+ * const readFilesCombined = ap(appendToFile)(readFile('new.txt'))
+ * readFilesCombined(res => console.log(res), err => console.err(err))
+ *
+ */
+const ap = (...Fns) => cpsFn => {
+  // cache latest values
+  let fns = [], 
+    args = []
+  let cpsNew = (...cbs) => {
+    // run with modified callbacks
+    let res = cpsFn(...cbs.map((cb, idx) => (...output) => { 
+        args[idx] = output
+        let f = fns[idx]
+        // if function is available, pass the value
+        if (f) cb(f(...output))
+      }
+    ))
+    Fns.forEach(Fn => Fn(
+      ...cbs.map((cb, idx) => f => { 
+        fns[idx] = f
+        let output = args[idx]
+        if (output) cb(f(...output))
+      })
+    ))
+    return res  // keep return value
+  }
+  inheritPrototype(cpsNew, cpsFn)
+  return cpsNew
+}
+
+
+
+
+
 /* ----- CPS methods ----- */
 
 const apply2this = fn => 
@@ -228,5 +289,5 @@ const CPS = cpsFn => {
 }
 
 module.exports = { 
-  pipeline, of, ofN, map, chain, filter, scan, CPS 
+  pipeline, of, ofN, map, chain, filter, scan, ap, CPS 
 }
