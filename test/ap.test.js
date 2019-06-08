@@ -75,4 +75,3 @@ test('works when value is returned earlier than function', t => {
 	callback(x => x + 3)
 })
 
-

@@ -243,6 +243,7 @@ const ap = (...fns) => cpsFn => {
     // argsCache[idxF] is cached output from cpsFun
     argsCache = {}
   let cpsNew = (...cbs) => {
+<<<<<<< HEAD
 
     let newCallbacks = fns.map((f, idxF) =>
       // getting cpsFun output
@@ -271,6 +272,37 @@ const ap = (...fns) => cpsFn => {
     // add missing callbacks unchanged from the same positions
     return cpsFn(...mergeArray(newCallbacks, cbs))
 
+=======
+    // run with modified callbacks
+    let newCallbacks = cbs.map((cb, idx) => (...output) => { 
+        args[idx] = output
+        // if no Fn is passed for that index, 
+        if (idx >= Fns.length) {
+          cb(...output)
+        } else {
+          let f = fns[idx]
+          // if function is available, pass the value
+          if (f) cb(f(...output))
+        }
+      }
+    )  
+    let res = cpsFn(...newCallbacks)
+
+    // let newCallbacks = fns.map(f => 
+    //   (...args) => f(...args)(...cbs)
+    // )
+    // // add missing callbacks unchanged from the same positions
+    // return cpsFn(...mergeArray(newCallbacks, cbs))
+
+    Fns.forEach((Fn, idx) => {
+      Fn(f => { 
+        fns[idx] = f
+        let output = args[idx]
+        if (output) cbs[idx](f(...output))
+      })
+    })
+    return res  // keep return value
+>>>>>>> add multiple callback tests
   }
   inheritPrototype(cpsNew, cpsFn)
   return cpsNew
