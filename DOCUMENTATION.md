@@ -1496,23 +1496,28 @@ const cpsDb = query => cb => getQuery(query, cb)
 // returns transformer function via 'cb(transformer)'
 const cpsTransformer = path => cb => getTransformer(path, cb)
 // Now use the 'ap' operator to apply the transformer to the query result:
-const getTransformedRes = (query, path) => CPS(cpsDb(query)).ap(cpsTransformer(path))
+const getTransformedRes = (query, path) => 
+  CPS(cpsDb(query)).ap(cpsTransformer(path))
 // or equivalently in the functional style, without the need of the 'CPS' wrapper:
-const getTransformedRes = (query, path) => ap(cpsTransformer(path))(cpsDb(query))
+const getTransformedRes = (query, path) => 
+  ap(cpsTransformer(path))(cpsDb(query))
 ```
 
-Note that we could have used `map` and `chain` to run the same functions sequentially,
-one after another:
+Note that we could have used `map` and `chain` 
+to run the same functions *sequentially*, one after another:
 ```js
 (query, path) => CPS(cpsDb(query))
   .chain(result => cpsTransformer(path)
     .map(transformer => transformer(result)))
 ```
-Here we have to nest, in order to keep `result` in the scope of the second function.
-However, `result` from the first function was not needed to run the `cpsTransformer`,
+Here we have to nest, 
+in order to keep `result` in the scope of the second function.
+However, `result` from the first function was not needed 
+to run the `cpsTransformer`,
 so it was a waste of time and resources to wait for the query `result`
 before getting the `transformer`.
-It would be more efficient to run both functions in parallel and then combine the results,
+It would be more efficient to run both functions in parallel 
+and then combine the results,
 which is precisely what the `ap` operator does.
 
 
@@ -1579,9 +1584,13 @@ const transformed = CPS(cpsFun).ap(F1, F2, ...)
 When called with callbacks `(cb1, cb2, ...)`,
 the output from `cb1` is transformed with the output function from `F1`,
 the output from `cb2` with function from `F2` and so on.
+The `trasformed` function will store the last value
+from each output and only call its callbacks
+when all needed data are available.
 
 For instance, a CPS function with two callbacks such as `(resBack, errBack)`
-can be `ap`ed over a pair of CPS functions, outputting plain functions each
+can be `ap`-plied over a pair of CPS functions, 
+outputting plain functions each:
 ```js
 // These call some remote API
 const cpsResTransformer = cb => getResTransformer(cb)
@@ -1604,8 +1613,15 @@ that is now completely abstracted away from the main code pipeline!
 
 
 ### Applicative laws
-The `ap` operator together with `of` conforms to the [Applicative interface](https://github.com/rpominov/static-land/blob/master/docs/spec.md#applicative)
+The `ap` operator together with `of` conforms to the [Applicative interface](https://github.com/rpominov/static-land/blob/master/docs/spec.md#applicative).
+However:
 
+**Warning.** The `ap` operator runs all CPS functions *in parallel*. 
+As such, it is different from its *sequential* analogue running functions
+one after another. 
+It is the latter - sequential applicative, that is [derived from monad's `chain`](https://github.com/rpominov/static-land/blob/master/docs/spec.md#chain) or via [Fantasy Land typeclasses](https://github.com/fantasyland/fantasy-land#derivations). Or in [Haskell](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Monad.html).
+Instead, we use the parallel `ap` as being more powerful as 
+[explained above](#running-cps-functions-in-parallel).
 
 
 ## CPS.merge (TODO)
