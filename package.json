@@ -22,7 +22,7 @@
     "tapew": "nyc tape-watch test/*test.js",
     "tap": "tap test/*test.js",
     "cov": "tap test/*test.js --coverage-report=lcov",
-    "sync": "git add . && git commit; git pull && git push",
+    "sync": "git add . && git commit && git pull && git push",
     "com": "git add . && git cz",
     "tocmanual": "npx markdown-toc README.md > toc",
     "toc": "md-magic --path 'DOCUMENTATION.md'",
