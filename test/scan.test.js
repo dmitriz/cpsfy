@@ -31,6 +31,6 @@ test('scan over outputs from 2 callbacks', t => {
 	t.plan(2)
 	let count = 0
 	newCps(res => {
-		t.cis(count++ == 0 ? 12 : 15)(res)
+		t.cis(count++ === 0 ? 12 : 15)(res)
 	})	
 })
