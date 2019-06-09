@@ -195,7 +195,7 @@ const scan = (...args) => {
     [acc] = args.slice(-1)
   // chain receives tuple of functions, one per reducer
   // nth CPS function inside chain receives nth callback output of cpsAction
-  let cpsTrasformer = (reducer, idx) => (...action) => cb => {
+  let cpsTrasformer = reducer => (...action) => cb => {
       // accessing vals and reducers by index
       acc = reducer(acc, ...action)
       cb(acc)
