@@ -261,7 +261,6 @@ const redn = (acc, y1, y2, ...) => ...
 New CPS function whose output from the first callback is the accumulated value. For each output `(y1, y2, ...)` from the `n`th callback, 
 the `n`th reducer `redn` is used to compute the new acculated value 
 `redn(acc, y1, y2, ...)`, where `acc` starts with `init`, similar to `reduce`.
-The new accumulated value is passed as output into the first callback.
 
 
 #### Example of `scan`
