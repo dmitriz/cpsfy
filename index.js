@@ -179,14 +179,16 @@ const filter = (...preds) => {
  * @signature (...reducers, init) -> cpsAction -> cpsState
  *
  * @param {...Function} reducers
- *    - functions of the form `red = (acc, ...val) => newAcc`
- * @param {...*} vals - tuple of arbitrary values.
+ *    - functions of the form `red = (acc, ...vals) => newAcc`
+ * @param {*} init - initial value for the iteration.
  * @param {Function} cpsFn - CPS function.
- * @returns {Function} `scan(...reducers)(...vals)(cpsFn)`
- *    - CPS function whose nth callback 
- *    receives the outputs obtained by iterating 
- *    the stream of outputs from the nth callback of `cpsFn`
- *    over `reducers[n]` starting from with `vals[n]`.
+ * @returns {Function} `scan(...reducers, init)(cpsFn)`
+ *    - CPS function whose output from the first callback 
+ *   is the accumulated value. For each output `(y1, y2, ...)` 
+ *   from the `n`th callback of `cpsFn, the `n`th reducer `redn` 
+ *   is used to compute the new acculated value 
+ *   `redn(acc, y1, y2, ...)`, where `acc` starts with `init`, 
+ *   similar to `reduce`.
  */
 const scan = (...args) => {
   let reducers = args.slice(0,-1),
@@ -293,7 +295,9 @@ const objMap = fn => obj =>
 // Prototype methods
 const protoObj = objMap(apply2this)({
   map, 
-  chain
+  chain,
+  filter,
+  scan
 })
 
 const CPS = cpsFn => {
