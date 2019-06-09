@@ -9,3 +9,7 @@ after_success:
   - yarn add codecov coveralls
   - nyc report --reporter=text-lcov | coveralls
   - nyc report --reporter=text-lcov > coverage.lcov && codecov
+cache:
+  directories:
+  - "$HOME/.npm"
+  
