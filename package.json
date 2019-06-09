@@ -1,5 +1,5 @@
 {
-  "version": "2.1.24",
+  "version": "3.0.0",
   "name": "cpsfy",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
