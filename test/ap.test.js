@@ -40,7 +40,6 @@ test('ap of function with multiple callbacks called', t => {
 	cpsNew(t.cis(2), t.cis(12))
 })
 
-
 test('ap of 2-callback-CPS over single function is passing 2nd callback unchanged', t => {
 	const cpsFun = (cb, onErr) => {onErr('error')}
 	const cpsNew = ap(cb => cb(11))(cpsFun)
@@ -48,24 +47,32 @@ test('ap of 2-callback-CPS over single function is passing 2nd callback unchange
 	cpsNew(notCalled, t.cis('error'))
 })
 
-test('ap only applies to callbacks with output', t => {
+test('ap allows handle errors passing into first callback', t => {
 	const cpsFun = (cb, onErr) => {onErr('error')}
 	const cpsNew = ap(
 		cb => {cb(x => x + 1)},
-		onErr => {onErr(err => 'logs ' + err)}
+		onErrUpdate => {onErrUpdate(err => err + ' is logged')}
 	)(cpsFun)
 	t.plan(1)
-	cpsNew(
-		notCalled,  
-		t.cis('logs error'))
+	cpsNew(t.cis('error is logged'), notCalled)
 })
 
 test('works when function is returned earlier than value', t => {
 	let callback = () => {}
-	// give control to f
 	const cpsFun = cb => { callback = cb }
 	const transformer = cb => cb(x => x + 1)
 	ap(transformer)(cpsFun)(t.cis(6))
 	// ensure call after transformer
 	callback(5)
 })
+
+test('works when value is returned earlier than function', t => {
+	let callback = () => {}
+	const cpsFun = cb => cb(1)
+	const transformer = cb => { callback = cb }
+	ap(transformer)(cpsFun)(t.cis(4))
+	// ensure call after transformer
+	callback(x => x + 3)
+})
+
+
