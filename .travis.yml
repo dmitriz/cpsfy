@@ -5,6 +5,8 @@ node_js:
   - '11'
   - '10'
   - '8'
+install:
+  - npm ci
 after_success:
   - yarn add codecov coveralls
   - nyc report --reporter=text-lcov | coveralls
@@ -12,4 +14,3 @@ after_success:
 cache:
   directories:
   - "$HOME/.npm"
-  
