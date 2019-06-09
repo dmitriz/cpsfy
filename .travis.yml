@@ -8,7 +8,7 @@ node_js:
 install:
   - npm ci
 after_success:
-  - yarn add codecov coveralls
+  - npm ci codecov coveralls
   - nyc report --reporter=text-lcov | coveralls
   - nyc report --reporter=text-lcov > coverage.lcov && codecov
 cache:
