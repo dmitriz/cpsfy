@@ -26,6 +26,7 @@
     "com": "git add . && git cz",
     "tocmanual": "npx markdown-toc README.md > toc",
     "toc": "md-magic --path 'DOCUMENTATION.md'",
+    "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "doc": "documentation build 'index.js' -f html -o auto-docs"
   },
   "keywords": [
