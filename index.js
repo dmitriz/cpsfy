@@ -176,25 +176,29 @@ const filter = (...preds) => {
  * and outputs from CPS function regarded as actions.
  * `reducers` and `vals` are matched by index.
  *
- * @signature (...reducers) -> (...vals) -> cpsAction -> cpsState
+ * @signature (...reducers, init) -> cpsAction -> cpsState
  *
  * @param {...Function} reducers
- *    - functions of the form `red = (acc, ...val) => newAcc`
- * @param {...*} vals - tuple of arbitrary values.
+ *    - functions of the form `red = (acc, ...vals) => newAcc`
+ * @param {*} init - initial value for the iteration.
  * @param {Function} cpsFn - CPS function.
- * @returns {Function} `scan(...reducers)(...vals)(cpsFn)`
- *    - CPS function whose nth callback 
- *    receives the outputs obtained by iterating 
- *    the stream of outputs from the nth callback of `cpsFn`
- *    over `reducers[n]` starting from with `vals[n]`.
+ * @returns {Function} `scan(...reducers, init)(cpsFn)`
+ *    - CPS function whose output from the first callback 
+ *   is the accumulated value. For each output `(y1, y2, ...)` 
+ *   from the `n`th callback of `cpsFn, the `n`th reducer `redn` 
+ *   is used to compute the new acculated value 
+ *   `redn(acc, y1, y2, ...)`, where `acc` starts with `init`, 
+ *   similar to `reduce`.
  */
-const scan = (...reducers) => (...vals) => {
+const scan = (...args) => {
+  let reducers = args.slice(0,-1),
+    [acc] = args.slice(-1)
   // chain receives tuple of functions, one per reducer
   // nth CPS function inside chain receives nth callback output of cpsAction
-  let cpsTrasformer = (reducer, idx) => (...action) => (...cbs) => {
+  let cpsTrasformer = reducer => (...action) => cb => {
       // accessing vals and reducers by index
-      vals[idx] = reducer(vals[idx], ...action)
-      cbs[idx](vals[idx])  
+      acc = reducer(acc, ...action)
+      cb(acc)
     }
   // chaining outputs of cpsAction with multiple reducers, one per state
   return chain(...reducers.map(cpsTrasformer))
@@ -217,7 +221,9 @@ const objMap = fn => obj =>
 // Prototype methods
 const protoObj = objMap(apply2this)({
   map, 
-  chain
+  chain,
+  filter,
+  scan
 })
 
 const CPS = cpsFn => {

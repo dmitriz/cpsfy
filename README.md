@@ -242,15 +242,15 @@ const copyNotEmpty = CPS(readFileCps('source.txt'))
 copyNotEmpty(err => console.error(err))
 ```
 
-### `scan(...reducers)(...initialValues)(cpsFunction)`
+### `scan(...reducers, init)(cpsFunction)`
 Similar to [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), except that all partial accumulated values are passed into callback whenever there is new output.
 ```js
 // these are equivalent
-scan(red1, red2, ...)(x1, x2, ...)(cpsFn)
-(cpsFn).scan(red1, red2, ...)(x1, x2, ...)
-pipeline(cpsFn)(scan(red1, red2, ...)(x1, x2, ...))
+scan(red1, red2, ..., init)(cpsFn)
+(cpsFn).scan(red1, red2, ..., init)
+pipeline(cpsFn)(scan(red1, red2, ..., init))
 ```
-where each `redn` is a *reducer*
+where each `redn` is a *reducer* and `init` is the initial accumulated value.
 ```js
 // compute new accumulator value from the old one 
 // and the tuple of current values (y1, y2, ...)
@@ -258,7 +258,9 @@ const redn = (acc, y1, y2, ...) => ...
 ```
 
 #### Result of applying `scan`
-New CPS function whose output from the `n`the callback is the `n`th accumulated value `accn`. Upon each output `(y1, y2, ...)`, the new acculated value `redn(accn, y1, y2, ...)` is computed and passed into the callback. The nth value `xn` serves in place of `acc` at the start, similar to `reduce`. Note that the initial values `(x1, x2, ...)` must be passed as curried arguments to avoid getting mixed with reducers.
+New CPS function whose output from the first callback is the accumulated value. For each output `(y1, y2, ...)` from the `n`th callback, 
+the `n`th reducer `redn` is used to compute the new acculated value 
+`redn(acc, y1, y2, ...)`, where `acc` starts with `init`, similar to `reduce`.
 
 
 #### Example of `scan`
@@ -273,17 +275,19 @@ const getVotes = (onUpvote, onDownvote) => {
     ev => onDownvote(1)
   )  
 }
-const add = (acc, x) => acc + x
 // count numbers of up- and downvotes and 
 // pass into respective callbacks
 const countVotes = CPS(getVotes)
-  .scan(add, add)(0, 0)
+  .scan(
+    ([up, down], upvote) => [up + upvote, down], 
+    ([up, down], downvote) => [up, down + downvote],
+    [0,0]
+   )
 
 // countVotes is CPS function that we can call 
-// with any pair of callbacks
+// with any callback
 countVotes(
-  upvotes => console.log(upvotes, ' votes for'),
-  downvotes => console.log(downvotes, ' votes against'),
+  votes => console.log('Total votes: ', votes),
 )
 ```
 
