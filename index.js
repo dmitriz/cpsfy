@@ -176,7 +176,7 @@ const filter = (...preds) => {
  * and outputs from CPS function regarded as actions.
  * `reducers` and `vals` are matched by index.
  *
- * @signature (...reducers) -> (...vals) -> cpsAction -> cpsState
+ * @signature (...reducers, init) -> cpsAction -> cpsState
  *
  * @param {...Function} reducers
  *    - functions of the form `red = (acc, ...val) => newAcc`
@@ -188,13 +188,15 @@ const filter = (...preds) => {
  *    the stream of outputs from the nth callback of `cpsFn`
  *    over `reducers[n]` starting from with `vals[n]`.
  */
-const scan = (...reducers) => (...vals) => {
+const scan = (...args) => {
+  let reducers = args.slice(0,-1),
+    [acc] = args.slice(-1)
   // chain receives tuple of functions, one per reducer
   // nth CPS function inside chain receives nth callback output of cpsAction
-  let cpsTrasformer = (reducer, idx) => (...action) => (...cbs) => {
+  let cpsTrasformer = (reducer, idx) => (...action) => cb => {
       // accessing vals and reducers by index
-      vals[idx] = reducer(vals[idx], ...action)
-      cbs[idx](vals[idx])  
+      acc = reducer(acc, ...action)
+      cb(acc)
     }
   // chaining outputs of cpsAction with multiple reducers, one per state
   return chain(...reducers.map(cpsTrasformer))
