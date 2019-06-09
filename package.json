@@ -87,5 +87,8 @@
     "nyc": "14.1.1",
     "tape": "4.10.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "codecov": "^3.5.0",
+    "coveralls": "^3.0.4"
+  }
 }
