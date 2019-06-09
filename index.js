@@ -254,14 +254,14 @@ const ap = (...fns) => cpsFn => {
 
     // now run fns in parallel with callbacks
     fns.forEach((f, idxF) => f(...cbs.map((cb, idxCb) =>
-      // f passes functions into its callbacks
+      // f passes function fVal into its callback
       fVal => {
         if(!fCache[idxF]) fCache[idxF] = {}
         fCache[idxF][idxCb] = fVal
         // look over cached arguments from cpsFun
         let output = argsCache[idxF]
         if (output) cb(fVal(...output))
-      } 
+      }
     )))
 
     // add missing callbacks unchanged from the same positions
