@@ -238,9 +238,7 @@ const scan = (...args) => {
  *
  */
 const ap = (...fns) => cpsFn => {
-  // fCache[idxF][idxCb] is cached output from idxCb-th callback of fns[idxF]
   let fCache = {},
-    // argsCache[idxF] is cached output from cpsFun
     argsCache = {}
   let cpsNew = (...cbs) => {
 <<<<<<< HEAD

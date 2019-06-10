@@ -4,10 +4,19 @@ const { ap } = require('..')
 const notCalled = () => {throw Error('I should not be called!')}
 
 test('ap over single CPS function', t => {
-	const cpsFun = cb => cb(42)
+	const cpsFun = cb => {cb(42)}
 	const cpsNew = ap(cb => cb(x => x*2))(cpsFun)
 	// 84 passed as output into the first callback
 	cpsNew(t.cis(84))
+})
+
+test('ap over single CPS function with multiple callbacks', t => {
+	const cpsFun = cb => {cb(2)}
+	const cpsNew = ap(
+		(cb1, cb2) => {cb1(x => x+1); cb2(x => x-1)} 
+	)(cpsFun)
+	t.plan(2)
+	cpsNew(t.cis(3), t.cis(1))
 })
 
 test('ap over single CPS function with several arguments', t => {
