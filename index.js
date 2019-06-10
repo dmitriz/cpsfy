@@ -241,33 +241,21 @@ const ap = (...fns) => cpsFn => {
   let fCache = {},
     argsCache = {}
   let cpsNew = (...cbs) => {
-
-    let newCallbacks = fns.map((f, idxF) =>
-      // getting cpsFun output
-      (...output) => {
-        argsCache[idxF] = output
-        // look over double indexed cached outputs from fns
-        if (fCache[idxF]) {
-          Object.keys(fCache[idxF]).forEach(idxCb => 
-          // apply function to output and pass into callback with that index
-          cbs[idxCb](fCache[idxF][idxCb](...output))
-        )}
-      }
-    )
-
-    // now run fns in parallel with callbacks
-    fns.forEach((f, idxF) => f(...cbs.map((cb, idxCb) =>
-      // f passes function fVal into its callback
-      fVal => {
-        if(!fCache[idxF]) fCache[idxF] = {}
-        fCache[idxF][idxCb] = fVal
-        // look over cached arguments from cpsFun
-        let output = argsCache[idxF]
-        if (output) cb(fVal(...output))
-      }
-    )))
-
-    // add missing callbacks unchanged from the same positions
+    let newCallbacks = fns.map((f, idxF) => (...output) => {
+      argsCache[idxF] = output
+      if (fCache[idxF]) {
+        Object.keys(fCache[idxF]).forEach(idxCb => 
+        cbs[idxCb](fCache[idxF][idxCb](...output))
+      )}
+    })
+    fns.forEach((f, idxF) => f(...cbs.map((cb, idxCb) => outputF => {
+      if(!fCache[idxF]) fCache[idxF] = {}
+      fCache[idxF][idxCb] = outputF
+      // look over previously cached arguments from cpsFn
+      let output = argsCache[idxF]
+      if (output) cb(outputF(...output))
+    })))
+    // add missing callbacks from the same positions
     return cpsFn(...mergeArray(newCallbacks, cbs))
   }
   inheritPrototype(cpsNew, cpsFn)
