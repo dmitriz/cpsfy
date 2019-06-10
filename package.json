@@ -1,5 +1,5 @@
 {
-  "version": "3.0.4",
+  "version": "3.0.5",
   "name": "cpsfy",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
@@ -15,6 +15,7 @@
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "git pull --rebase && git push origin --all; git push origin --tags",
+    "release": "standard-version && git push --follow-tags && npm publish",
     "test": "npm run tape",
     "ava": "TEST=ava ava test/*test.js",
     "avaw": "TEST=ava nyc ava test/*test.js -w",
