@@ -48,7 +48,7 @@ test('chain over single function with no arguments', t => {
 	cpsNew(t.cis(30))	
 })
 
-test('all callbacks passed when chain with single function', t => {
+test('all callbacks passed when chain over single function', t => {
 	// 42 is passed as output
 	const cpsFun = cb => cb(42)
 	const cpsNew = chain(
