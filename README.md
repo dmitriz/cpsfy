@@ -17,7 +17,7 @@
 [![CircleCI](https://circleci.com/gh/dmitriz/cpsfy.svg?style=svg)](https://circleci.com/gh/dmitriz/cpsfy)
 [![dependencies](https://david-dm.org/dmitriz/cpsfy.svg)](https://david-dm.org/dmitriz/cpsfy) 
 [![devDependencies](https://badgen.now.sh/david/dev/dmitriz/cpsfy)](https://david-dm.org/dmitriz/cpsfy?type=dev)
-[![Depfu](https://badges.depfu.com/badges/f143f51aa1ec435952b736476f6f98bc/status.svg)](https://depfu.com/github/dmitriz/cpsfy)
+[![Depfu](https://badges.depfu.com/badges/7f4dd00fbcaa502c2c104ad415223506/status.svg)](https://depfu.com/github/dmitriz/cpsfy)
 [![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/cpsfy/badge.svg)](https://snyk.io/test/github/dmitriz/cpsfy)
 [![Renovate badge](https://badges.renovateapi.com/github/dmitriz/cpsfy)](https://renovatebot.com/dashboard#dmitriz/cpsfy)
 [![Greenkeeper badge](https://badges.greenkeeper.io/dmitriz/cpsfy.svg)](https://greenkeeper.io/)
