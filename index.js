@@ -247,10 +247,11 @@ const ap = (...fns) => cpsFn => {
       (...output) => {
         argsCache[idxF] = output
         // look over double indexed cached outputs from fns
-        if (fCache[idxF]) Object.keys(fCache[idxF]).forEach(idxCb => 
+        if (fCache[idxF]) {
+          Object.keys(fCache[idxF]).forEach(idxCb => 
           // apply function to output and pass into callback with that index
           cbs[idxCb](fCache[idxF][idxCb](...output))
-        )
+        )}
       }
     )
 
