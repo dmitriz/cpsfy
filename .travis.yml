@@ -5,7 +5,12 @@ node_js:
   - '11'
   - '10'
   - '8'
+install:
+  - npm ci
 after_success:
-  - yarn add codecov coveralls
-  - nyc report --reporter=text-lcov | coveralls
-  - nyc report --reporter=text-lcov > coverage.lcov && codecov
+  - nyc report --reporter=text-lcov > coverage.lcov
+  - cat coverage.lcov | coveralls
+  - codecov
+cache:
+  directories:
+  - "$HOME/.npm"
