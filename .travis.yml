@@ -8,8 +8,9 @@ node_js:
 install:
   - npm ci
 after_success:
-  - nyc report --reporter=text-lcov | coveralls
-  - nyc report --reporter=text-lcov > coverage.lcov && codecov
+  - nyc report --reporter=text-lcov > coverage.lcov 
+  - cat coverage.lcov | coveralls
+  - codecov
 cache:
   directories:
   - "$HOME/.npm"
