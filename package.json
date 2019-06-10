@@ -25,6 +25,7 @@
     "cov": "tap test/*test.js --coverage-report=lcov",
     "sync": "git add . && git commit; git pull --rebase && git push",
     "com": "git add . && git cz",
+    "rebcont": "git add . && git rebase --continue",
     "tocmanual": "npx markdown-toc README.md > toc",
     "toc": "md-magic --path 'DOCUMENTATION.md'",
     "doc": "documentation build 'index.js' -f html -o auto-docs"
