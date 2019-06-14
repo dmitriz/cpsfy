@@ -114,7 +114,7 @@ getLinesFromWS(lines => console.log(lines))
 That will print all lines for all files whose names we receive from our websocket.
 And if we feel overwhelmed and only want to see lines 
 containing say "breakfast", nothing can be easier:
-```
+```js
 // just add a filter
 const breakfastLines = CPS(getLinesFromWS)
   .filter(line => /[Bb]reakfast/.test(line))
