@@ -79,7 +79,7 @@ Note how we handle error at the end without affecting the main logic!
 
 
 ### But can't I do it with promises?
-Ok, let us have another example where you can't, shall we? At least not as easy. And maybe ... not really another. :wink:
+Ok, let us have another example where you can't, shall we? At least not as easy. And maybe ... not really another.:wink:
 
 Reading from static files is easy but boring.
 Data is rarely static. 
@@ -121,7 +121,7 @@ const breakfastLines = CPS(getLinesFromWS)
 // call it exactly the same way
 breakfastLines(lines => console.log(lines))
 ```
-and from now on we'll never miss a breakfast. :smile:
+And from now on we'll never miss a breakfast.:smile:
 
 
 ## CPS function
