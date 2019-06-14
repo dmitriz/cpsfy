@@ -78,6 +78,52 @@ getLines(
 Note how we handle error at the end without affecting the main logic!
 
 
+### But can't I do it with promises?
+Ok, let us have another example where you can't, shall we? At least not as easy. And maybe ... not really another. ;-)
+
+Reading from static files is easy but boring.
+Data is rarely static. 
+What if we have to react to data changing in real time?
+Like our file names arriving as data stream? 
+Let us use [the popular websocket library](https://github.com/websockets/ws):
+```js
+const WebSocket = require('ws')
+// general purpose CPS function listening to websocket
+const wsMessageListenerCps = url => cb => new WebSocket(url).on('message', cb)
+```
+And here is the crux: 
+>`wsMessageListenerCps(url)` is just another CPS function!
+
+So we can simply drop it instead of `readFileCps('name.txt')` into exactly the same code and be done with it:
+```js
+const getLinesFromWS = CPS(wsMessageListenerCps(someUrl))
+  .map(file => file.trim()) 
+  .filter(file => file.length > 0)
+  .chain(file => readFileCps(file))
+  .map(text => text.split('\n'))
+
+```
+And if you paid attention, the new CPS function has only one callback,
+while the old one had two! Yet we have used exactly the same code!
+How so? Because we haven't done anything to other callbacks.
+The only difference is in how the final function is called - with one callback instead of two. As `wsMessageListenerCps(url)` accepts one callback, so does 
+`getLinesFromWS` when we call it:
+```js
+getLinesFromWS(lines => console.log(lines))
+```
+That will print all lines for all files whose names we receive from our websocket.
+And if we feel overwhelmed and only want to see lines 
+containing say "breakfast", nothing can be easier:
+```
+// just add a filter
+const breakfastLines = CPS(getLinesFromWS)
+  .filter(line => /[Bb]reakfast/.test(line))
+// call it exactly the same way
+breakfastLines(lines => console.log(lines))
+```
+and from now on we'll never miss a breakfast. :-)
+
+
 ## CPS function
 Any function
 ```js
