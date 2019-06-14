@@ -139,7 +139,7 @@ In other words, a CPS function receives any number of callbacks that it may call
 
 ## API in brief
 ```js
-const { map, chain, filter, scan, CPS, pipeline } 
+const { map, chain, filter, scan, ap, CPS, pipeline } 
   = require('cpsfy')
 ```
 Each of the `map`, `chain`, `filter`, `scan` operators can be used in 3 ways:
@@ -157,18 +157,39 @@ CPS(cpsFn)(f1, f2, ...) // is equivalent to
 cpsFn(f1, f2, ...)
 ```
 
-#### chaining
-```js
-// as methods
-CPS(cpsFn).map(f).chain(g).filter(h)
+### `pipeline(...arguments)(...functions)`
+Pass any number of arguments to a sequence of functions,
+one after another, similar to the UNIX pipe 
+`(x1, ..., xn) | f1 | f2 | ... | fm`.
+Allows to write functional composition in 
+the intiutive linear way.
 
-// or equivalently with 'pipeline' operator
+#### Examples of `pipeline`
+```js
+pipeline(1, 2)(
+  (x, y) => x + y,
+  sum => sum * 2,
+  doubleSum => -doubleSum
+) //=> -6
+```
+
+#### chaining
+The `CPS` factory provides the same methods for simple chaining:
+```js
+CPS(cpsFn).map(f).chain(g).filter(h)
+```
+However, the need to wrap a plain function might feel as overhead.
+The `pipeline` operator allows to write the same code 
+in functional style without the need to wrap:
+```js
+// pass cpsFn directly as argument
 pipeline(cpsFn)(
   map(f),
   chain(g),
   filter(h)
 )
 ```
+
 
 ### `map(...functions)(cpsFunction)`
 ```js
