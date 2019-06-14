@@ -90,6 +90,13 @@ cbn(x1, ..., xm)  // is called, where n = 1, 2, ..., m
 ```
 In other words, a CPS function receives any number of callbacks that it may call in any order any number of times at any moments immediately or in the future with any number of arguments.
 
+### Example of CPS function - WebSocket
+
+```js
+const ws = require('ws')
+const ws_cps = url => cb => new ws(url).on('message', cb))
+```
+
 
 ## API in brief
 ```js

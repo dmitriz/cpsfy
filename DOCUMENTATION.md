@@ -96,7 +96,7 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
 ## Why?
 - Functions are among the most basic and powerful objects in JavaScript.
 - Callbacks are prominent for events and asynchronous functions, but they don't make composition convenient (leading to the so-called "callback hell").
-- Promises are more convenient to compose but introduce overheads, such as conditionally calling `then` and [do not conform to functor or monad laws and thus are not safe for compositional refactoring](https://stackoverflow.com/questions/45712106/why-are-promises-monads/50173415#50173415).
+- Promises can be more convenient to compose in some cases, but introduce performance overheads, such as conditionally calling `then` and potential source for bugs as they [do not conform to functor or monad laws and thus are not safe for compositional refactoring](https://stackoverflow.com/questions/45712106/why-are-promises-monads/50173415#50173415).
 - Promises introduce limitations of being able to return only one value only once, that makes it difficult to update them or use uniformly along with streams.
 - Promises provide only one error handling callback, forcing to handle all errors in the same function, and thus making writing smaller focused functions and separating concerns more difficult.
 - The recent `async/await` notation retains the overheads of promises, in addition to ["new and exciting ways to shoot yourself in the foot"](https://thecodebarbarian.com/80-20-guide-to-async-await-in-node.js.html).
@@ -360,14 +360,13 @@ fs.readdir(source, function (err, files) {
 })
 ```
 
-The solution proposed there to avoid this "hell" consists of splitting into mulitple functions and giving names to each.
+The solution proposed there to avoid this "hell" consists of splitting into multiple functions and giving names to each.
 However, naming is hard and
 [is not always recommended](https://www.cs.ucf.edu/~dcm/Teaching/COT4810-Fall%202012/Literature/Backus.pdf).
 
 
-Using CPS functions along with `map` and `chain` operators,
-we can break that code into a sequence of small functions, chained one after another
-without the need to name them:
+Using instead CPS functions along with `map` and `chain` operators,
+we can break that code into a sequence of small functions, chained one after another without the need to name them:
 ```js
 // wrap into `CPS` object to have `map` and `chain` methods available,
 // directory files are passed as 2nd argument to cb, error as 1st
@@ -396,7 +395,7 @@ CPS(cb => fs.readdir(source, cb))
     // and handle all outputs in the next `chain` function
     widths.forEach(cb)
   })
-  // now that we have called `cb` multiple times, each time chain passes new values to its CPS function
+  // each function inside the chain method passes new values to its callback
   .chain((width, widthIndex) => cb => {
     height = Math.round(width / aspect)
     console.log('resizing ' + filename + 'to ' + height + 'x' + height)
@@ -407,8 +406,8 @@ CPS(cb => fs.readdir(source, cb))
 
 ```
 
-Equivalently, we can use the `pipeline` operator (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Pipeline_operator) to achieve the same result
-in more functional (aka point-free) style:
+Equivalently, the library provides the `pipeline` operator (working similar to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Pipeline_operator) to achieve the same result
+in a more functional (aka point-free) style:
 
 ```js
 pipeline( cb => fs.readdir(source, cb) ) (
