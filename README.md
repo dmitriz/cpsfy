@@ -189,6 +189,23 @@ pipeline(cpsFn)(
   filter(h)
 )
 ```
+But the most important advantage of the `pipeline` style is
+that you can drop there **arbitrary functions** without 
+any need to patch object prototypes.
+For instance, using the above example,
+we can start our pipe with `url` or even insert
+some intermediate function to compute the correct url for us:
+```js
+pipeline(path)(               // begin with path
+  path => 'https://' + patch  // compute url on the spot
+  url => {console.log(url); return url} // check for debugging
+  wsMessageListenerCps,       // return CPS function
+  map(f),                     // use CPS operators as usual
+  chain(g),
+  filter(h)
+)
+
+```
 
 
 ### `map(...functions)(cpsFunction)`
