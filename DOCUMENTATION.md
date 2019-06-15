@@ -361,7 +361,7 @@ fs.readdir(source, function (err, files) {
 ```
 
 The solution proposed there to avoid this "hell" consists of splitting into multiple functions and giving names to each.
-However, naming is hard and
+However, [naming is hard](https://www.reddit.com/r/ProgrammerHumor/comments/bvdrhd/naming_is_the_most_difficult_part/) and
 [is not always recommended](https://www.cs.ucf.edu/~dcm/Teaching/COT4810-Fall%202012/Literature/Backus.pdf).
 
 
