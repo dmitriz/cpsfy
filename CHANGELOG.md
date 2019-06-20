@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.11](https://github.com/dmitriz/cpsfy/compare/v3.1.10...v3.1.11) (2019-06-20)
+
+
+
 ### [3.1.6](https://github.com/dmitriz/cpsfy/compare/v3.1.5...v3.1.6) (2019-06-10)
 
 
