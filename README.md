@@ -89,7 +89,8 @@ Let us use [the popular websocket library](https://github.com/websockets/ws):
 ```js
 const WebSocket = require('ws')
 // general purpose CPS function listening to websocket
-const wsMessageListenerCps = url => cb => new WebSocket(url).on('message', cb)
+const wsMessageListenerCps = url => cb => 
+  new WebSocket(url).on('message', cb)
 ```
 And here is the crux: 
 >`wsMessageListenerCps(url)` is just another CPS function!
