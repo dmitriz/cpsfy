@@ -88,7 +88,7 @@
   ],
   "devDependencies": {
     "ava": "2.2.0",
-    "tape": "^4.11.0"
+    "tape": "4.11.0"
   },
   "dependencies": {}
 }
