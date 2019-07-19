@@ -8,7 +8,7 @@ node_js:
 install:
   - npm ci
 after_success:
-  nyc report --reporter=text-lcov > coverage.lcov &&
+  npx nyc report --reporter=text-lcov > coverage.lcov &&
   cat coverage.lcov | npx coveralls; npx codecov
 cache:
   directories:
