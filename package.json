@@ -18,7 +18,7 @@
     "release": "git checkout master && npm run sync && standard-version && npm publish",
     "test": "npm run tape",
     "tape": "npx nyc tape test/*test.js",
-    "tapew": "npm run tape; npx onchange *.js **/*.js -- npm run tape",
+    "tapew": "npx onchange -i '**/*.js' -- npm run tape",
     "tap": "tap test/*test.js",
     "tapw": "npm run tap -- -w",
     "ava": "TEST=ava npx nyc ava test/*test.js",
