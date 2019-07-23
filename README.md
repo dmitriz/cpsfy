@@ -198,7 +198,7 @@ we can start our pipe with `url` or even insert
 some intermediate function to compute the correct url for us:
 ```js
 pipeline(path)(               // begin with path
-  path => 'https://' + patch  // compute url on the spot
+  path => 'https://' + path  // compute url on the spot
   url => {console.log(url); return url} // check for debugging
   wsMessageListenerCps,       // return CPS function
   map(f),                     // use CPS operators as usual
