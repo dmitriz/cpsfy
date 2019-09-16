@@ -87,7 +87,7 @@
     "control-flow"
   ],
   "devDependencies": {
-    "ava": "2.3.0",
+    "ava": "2.4.0",
     "tape": "4.11.0"
   },
   "dependencies": {}
