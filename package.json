@@ -1,5 +1,5 @@
 {
-  "version": "3.2.2",
+  "version": "3.2.3",
   "name": "cpsfy",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
@@ -91,5 +91,7 @@
     "nyc": "^15.0.0",
     "tape": "4.13.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "standard-version": "^7.1.0"
+  }
 }
