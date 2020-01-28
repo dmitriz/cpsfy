@@ -89,9 +89,9 @@
   "devDependencies": {
     "ava": "2.4.0",
     "nyc": "^15.0.0",
-    "tape": "4.13.0"
+    "tape": "4.13.0",
+    "standard-version": "^7.1.0"
   },
   "dependencies": {
-    "standard-version": "^7.1.0"
   }
 }
