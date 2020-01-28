@@ -2,6 +2,8 @@ const { mergeArray, inheritPrototype } = require('./utils')
 
 /* ----- General purpose utils ----- */
 
+const curry2 = f => (...a) => (...b) => f(...a, ...b)
+
 /**
  * Pass tuple of values to sequence of functions similar to UNIX pipe
  * `(x1, ..., xn) | f1 | f2 | ... | fm`
@@ -294,5 +296,6 @@ const CPS = cpsFn => {
 }
 
 module.exports = {
-  pipeline, of, ofN, map, chain, filter, scan, ap, CPS
+  curry2, pipeline,
+  of, ofN, map, chain, filter, scan, ap, CPS
 }
