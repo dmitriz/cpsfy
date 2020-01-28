@@ -17,7 +17,7 @@
     "postpublish": "npm run sync && git push --follow-tags",
     "release": "git checkout master && npm run sync && standard-version && npm publish",
     "test": "npm run tape",
-    "tape": "npx nyc tape test/*test.js",
+    "tape": "nyc tape test/*test.js",
     "tapew": "npx onchange -i '**/*.js' -- npm run tape",
     "tap": "tap test/*test.js",
     "tapw": "npm run tap -- -w",
@@ -88,6 +88,7 @@
   ],
   "devDependencies": {
     "ava": "2.4.0",
+    "nyc": "^15.0.0",
     "tape": "4.13.0"
   },
   "dependencies": {}
