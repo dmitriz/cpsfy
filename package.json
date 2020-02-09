@@ -21,7 +21,7 @@
     "tapew": "npx onchange -i '**/*.js' -- npm run tape",
     "tap": "tap test/*test.js",
     "tapw": "npm run tap -- -w",
-    "ava": "TEST=ava npx nyc ava test/*test.js",
+    "ava": "TEST=ava nyc ava test/*test.js",
     "avaw": "npm run ava -- -w",
     "cov": "tap test/*test.js --coverage-report=lcov",
     "sync": "git add . && git commit; git pull && git push",
