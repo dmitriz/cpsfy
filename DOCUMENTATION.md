@@ -1,11 +1,12 @@
 # cpsfy
+
 Tiny but powerful goodies for Continuation-Passing-Style functions
 
-> Simplicity is prerequisite for reliability. 
+> Simplicity is prerequisite for reliability.
 > Elegance is not a dispensable luxury but a factor that decides between success and failure.
-> 
+>
 > --- [Edsger W. Dijkstra](https://www.azquotes.com/author/3969-Edsger_Dijkstra)
- 
+
 >```js
 >// ignorant
 >const getServerStuff = callback => ajaxCall(json => callback(json))
@@ -14,9 +15,9 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
 >```
 > --- From [Mostly adequate guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).
 
-
 <!-- AUTO-GENERATED-CONTENT:START (TOC:src=./DOCUMENTATION.md) -->
 - [CPS functions](#cps-functions)
+
 - [Why?](#why)
 - [Advanced composability](#advanced-composability)
 - [What is new here?](#what-is-new-here)
