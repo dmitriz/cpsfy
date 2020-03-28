@@ -91,7 +91,7 @@
     "ava": "3.5.1",
     "nyc": "15.0.0",
     "standard-version": "7.1.0",
-    "tape": "4.13.0"
+    "tape": "4.13.2"
   },
   "dependencies": {}
 }
