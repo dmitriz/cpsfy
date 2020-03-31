@@ -86,7 +86,7 @@
     "control-flow"
   ],
   "devDependencies": {
-    "documentation": "12.1.4",
+    "documentation": "12.2.0",
     "markdown-toc": "1.2.0",
     "ava": "3.5.2",
     "nyc": "15.0.0",
