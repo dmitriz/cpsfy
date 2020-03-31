@@ -20,7 +20,6 @@
 [![Depfu](https://badges.depfu.com/badges/7f4dd00fbcaa502c2c104ad415223506/status.svg)](https://depfu.com/github/dmitriz/cpsfy)
 [![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/cpsfy/badge.svg)](https://snyk.io/test/github/dmitriz/cpsfy)
 [![Renovate badge](https://badges.renovateapi.com/github/dmitriz/cpsfy)](https://renovatebot.com/dashboard#dmitriz/cpsfy)
-
 [![Coverage Status](https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg)](https://coveralls.io/github/dmitriz/cpsfy)
 [![codecov](https://codecov.io/gh/dmitriz/cpsfy/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/cpsfy)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dmitriz/cpsfy.svg?logo=lgtm)](https://lgtm.com/projects/g/dmitriz/cpsfy/context:javascript)
