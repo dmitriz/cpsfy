@@ -88,7 +88,7 @@
   "devDependencies": {
     "documentation": "12.3.0",
     "markdown-toc": "1.2.0",
-    "ava": "3.8.0",
+    "ava": "3.8.1",
     "nyc": "15.0.1",
     "standard-version": "7.1.0",
     "tape": "5.0.0"
