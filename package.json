@@ -89,7 +89,7 @@
     "documentation": "13.0.0",
     "markdown-toc": "1.2.0",
     "ava": "3.8.2",
-    "nyc": "15.0.1",
+    "nyc": "15.1.0",
     "standard-version": "8.0.0",
     "tape": "5.0.1"
   },
