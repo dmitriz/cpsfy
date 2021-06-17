@@ -218,7 +218,7 @@ const f = x => {
 ```
 that can be (pre-)composed with any other function `g`:
 ```js
-const g => y => y * 2
+const g = y => y * 2
 const composed = y => f(g(x))
 // or equivalently in functional way
 const compose = (f,g) => x => f(g(x))
@@ -240,12 +240,12 @@ const result = (x, y) => add(f1(x), f2(y))
 ```
 Defining such abstract composition operator is straightforward:
 ```js
-const binaryCompose => (h, f1, f2) => (x, y) => h(f1(x), f2(y))
+const binaryCompose = (h, f1, f2) => (x, y) => h(f1(x), f2(y))
 const result = binaryCompose(add, f1, f2)
 ```
 However, all 3 parameters `h, f1, f2` are mixed inside the signature, despite of their different roles. It is difficult to remember which function goes where and easy to introduce errors. A more readable and expressive way would be to use the curried signature:
 ```js
-const binaryCompose1 => h => (f1, f2) => (x, y) => h(f1(x), f2(y))
+const binaryCompose1 = h => (f1, f2) => (x, y) => h(f1(x), f2(y))
 const result = binaryCompose1(add)(f1, f2)
 ```
 Now the inside functions `f1, f2` are visibly separated from the outside `h`.
