@@ -90,7 +90,7 @@
     "markdown-toc": "1.2.0",
     "ava": "3.15.0",
     "nyc": "15.1.0",
-    "standard-version": "9.3.0",
+    "standard-version": "9.3.1",
     "tape": "5.2.2"
   },
   "dependencies": {}
