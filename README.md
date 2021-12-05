@@ -327,9 +327,9 @@ copyNotEmpty(err => console.error(err))
 Similar to [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), except that all partial accumulated values are passed into callback whenever there is new output.
 ```js
 // these are equivalent
-scan(red1, red2, ...)(init)(cpsFn)
-(cpsFn).scan(red1, red2, ...)(init)
-pipeline(cpsFn)(scan(red1, red2, ...)(init))
+scan(red1, red2, ..., init)(cpsFn)
+(cpsFn).scan(red1, red2, ..., init)
+pipeline(cpsFn)(scan(red1, red2, ..., init))
 ```
 where each `redn` is a *reducer* and `init` is the initial accumulated value.
 ```js
@@ -361,8 +361,9 @@ const getVotes = (onUpvote, onDownvote) => {
 const countVotes = CPS(getVotes)
   .scan(
     ([up, down], upvote) => [up + upvote, down], 
-    ([up, down], downvote) => [up, down + downvote]
-   )([0,0])
+    ([up, down], downvote) => [up, down + downvote],
+    [0,0]
+   )
 
 // countVotes is CPS function that we can call 
 // with any callback

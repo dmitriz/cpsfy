@@ -1710,7 +1710,7 @@ const filter = (...pred) => pipeline(cpsFun)(
 The `scan` operator acts as "partial reduce" for each output.
 Important example is the stream of states affected by stream of actions:
 ```js
-const cpsState = scan(f)(initState)(cpsAction)
+const cpsState = scan(f, initState)(cpsAction)
 ```
 Here `f` is the reducing function accepting current `state` and
 the next `action` and returning the next state as `f(state, action)`, 
@@ -1732,7 +1732,7 @@ const scan = f => state => cpsAction => pipeline(cpsAction)(
 Note that the function inside `chain` updates the `state` outside its scope,
 so it is not pure, however, we can still `chain` it like any other function.
 
-And here is the mulitple arguments generalization:
+And here is the mulitple arguments generalization (TODO):
 ```js
 // `reducers` and `states` are matched together by index
 const scan = (...reducers) => (...states) => {
