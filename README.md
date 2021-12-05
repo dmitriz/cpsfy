@@ -15,17 +15,17 @@
 [![bundlephobia](https://img.shields.io/bundlephobia/minzip/cpsfy.svg)](https://bundlephobia.com/result?p=cpsfy)
 [![Build Status](https://travis-ci.org/dmitriz/cpsfy.svg?branch=master)](https://travis-ci.org/dmitriz/cpsfy)
 [![CircleCI](https://circleci.com/gh/dmitriz/cpsfy.svg?style=svg)](https://circleci.com/gh/dmitriz/cpsfy)
-[![dependencies](https://david-dm.org/dmitriz/cpsfy.svg)](https://david-dm.org/dmitriz/cpsfy) 
-[![devDependencies](https://badgen.now.sh/david/dev/dmitriz/cpsfy)](https://david-dm.org/dmitriz/cpsfy?type=dev)
+<!-- [![dependencies](https://david-dm.org/dmitriz/cpsfy.svg)](https://david-dm.org/dmitriz/cpsfy)  -->
+<!-- [![devDependencies](https://badgen.now.sh/david/dev/dmitriz/cpsfy)](https://david-dm.org/dmitriz/cpsfy?type=dev) -->
 [![Depfu](https://badges.depfu.com/badges/7f4dd00fbcaa502c2c104ad415223506/status.svg)](https://depfu.com/github/dmitriz/cpsfy)
 [![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/cpsfy/badge.svg)](https://snyk.io/test/github/dmitriz/cpsfy)
-[![Renovate badge](https://badges.renovateapi.com/github/dmitriz/cpsfy)](https://renovatebot.com/dashboard#dmitriz/cpsfy)
+<!-- [![Renovate badge](https://badges.renovateapi.com/github/dmitriz/cpsfy)](https://renovatebot.com/dashboard#dmitriz/cpsfy) -->
 [![Coverage Status](https://coveralls.io/repos/github/dmitriz/cpsfy/badge.svg)](https://coveralls.io/github/dmitriz/cpsfy)
 [![codecov](https://codecov.io/gh/dmitriz/cpsfy/branch/master/graph/badge.svg)](https://codecov.io/gh/dmitriz/cpsfy)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dmitriz/cpsfy.svg?logo=lgtm)](https://lgtm.com/projects/g/dmitriz/cpsfy/context:javascript)
 [![CodeFactor](https://www.codefactor.io/repository/github/dmitriz/cpsfy/badge)](https://www.codefactor.io/repository/github/dmitriz/cpsfy)
 [![codebeat badge](https://codebeat.co/badges/2480c750-f9ea-46c0-a574-5e72dad17a4f)](https://codebeat.co/projects/github-com-dmitriz-cpsfy-master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b530e9fcaac446a19d8172962b486b36)](https://app.codacy.com/app/dmitri14_3131/cpsfy?utm_source=github.com&utm_medium=referral&utm_content=dmitriz/cpsfy&utm_campaign=Badge_Grade_Dashboard)
+<!-- [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b530e9fcaac446a19d8172962b486b36)](https://app.codacy.com/app/dmitri14_3131/cpsfy?utm_source=github.com&utm_medium=referral&utm_content=dmitriz/cpsfy&utm_campaign=Badge_Grade_Dashboard) -->
 [![Maintainability](https://api.codeclimate.com/v1/badges/a55f3fd9a13396325671/maintainability)](https://codeclimate.com/github/dmitriz/cpsfy/maintainability)
 [![DeepScan grade](https://deepscan.io/api/teams/3918/projects/5693/branches/44286/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=3918&pid=5693&bid=44286)
 [![GitHub last commit](https://img.shields.io/github/last-commit/dmitriz/cpsfy.svg?logo=github)](https://github.com/dmitriz/cpsfy/commits/master)
