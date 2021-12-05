@@ -323,7 +323,7 @@ const copyNotEmpty = CPS(readFileCps('source.txt'))
 copyNotEmpty(err => console.error(err))
 ```
 
-### `scan(...reducers)(init)(cpsFunction)`
+### `scan(...reducers, init)(cpsFunction)`
 Similar to [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), except that all partial accumulated values are passed into callback whenever there is new output.
 ```js
 // these are equivalent
