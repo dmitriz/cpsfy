@@ -12,7 +12,7 @@
   "license": "MIT",
   "scripts": {
     "com": "git add . && npx git-cz",
-    "sync": "git add . && git commit; git pull && git push",
+    "sync": "npm run com; git pull && git push",
     "start": "git add . && git commit; npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
@@ -27,8 +27,8 @@
     "avaw": "npm run ava -- -w",
     "cov": "npx tap test/*test.js --coverage-report=lcov",
     "rebcont": "git add . && git rebase --continue",
-    "toc": "markdown-toc DOCUMENTATION.md > toc",
-    "doc": "documentation build 'index.js' -f html -o auto-docs"
+    "toc": "npx markdown-toc DOCUMENTATION.md > toc",
+    "doc": "npx documentation build 'index.js' -f html -o auto-docs"
   },
   "keywords": [
     "library",
@@ -87,6 +87,7 @@
   ],
   "devDependencies": {
     "ava": "^4.0.0",
+    "markdown-toc": "^1.2.0",
     "tape": "^5.4.0"
   }
 }
