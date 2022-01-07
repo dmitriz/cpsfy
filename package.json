@@ -17,7 +17,7 @@
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "npm run sync && git push --follow-tags",
-    "release": "git checkout master && npm run sync && standard-version && npm publish",
+    "release": "git checkout master && npm run sync && npx standard-version && npm publish",
     "test": "npm run tape",
     "tape": "npx nyc tape test/*test.js",
     "tapew": "npx onchange -i '**/*.js' -- npm run tape",
