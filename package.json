@@ -11,6 +11,8 @@
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "scripts": {
+    "com": "git add . && npx git-cz",
+    "sync": "git add . && git commit; git pull && git push",
     "start": "git add . && git commit; npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
@@ -23,9 +25,7 @@
     "tapw": "npm run tap -- -w",
     "ava": "TEST=ava nyc ava test/*test.js",
     "avaw": "npm run ava -- -w",
-    "cov": "tap test/*test.js --coverage-report=lcov",
-    "sync": "git add . && git commit; git pull && git push",
-    "com": "git add . && npx git-cz",
+    "cov": "npx tap test/*test.js --coverage-report=lcov",
     "rebcont": "git add . && git rebase --continue",
     "toc": "markdown-toc DOCUMENTATION.md > toc",
     "doc": "documentation build 'index.js' -f html -o auto-docs"
