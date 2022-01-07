@@ -21,9 +21,9 @@
     "test": "npm run tape",
     "tape": "npx nyc tape test/*test.js",
     "tapew": "npx onchange -i '**/*.js' -- npm run tape",
-    "tap": "tap test/*test.js",
+    "tap": "npx tap test/*test.js",
     "tapw": "npm run tap -- -w",
-    "ava": "TEST=ava nyc ava test/*test.js",
+    "ava": "TEST=ava npx nyc ava test/*test.js",
     "avaw": "npm run ava -- -w",
     "cov": "npx tap test/*test.js --coverage-report=lcov",
     "rebcont": "git add . && git rebase --continue",
@@ -86,6 +86,7 @@
     "control-flow"
   ],
   "devDependencies": {
+    "ava": "^4.0.0",
     "tape": "^5.4.0"
   }
 }
