@@ -265,6 +265,13 @@ const ap = (...fns) => cpsFn => {
 }
 
 
+/**
+ * Lift binary function to act on values wraped inside CPS functions
+ */
+const lift2 = f => (F1, F2) => pipeline(F2)(
+  ap(map(curry2(f))(F1))
+)
+
 
 
 
@@ -297,5 +304,5 @@ const CPS = cpsFn => {
 
 module.exports = {
   curry2, pipeline,
-  of, ofN, map, chain, filter, scan, ap, CPS
+  of, ofN, map, chain, filter, scan, ap, lift2, CPS
 }
