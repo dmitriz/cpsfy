@@ -41,7 +41,7 @@ test('ap of single CPS function with no arguments', t => {
 	cpsNew(t.cis(30))	
 })
 
-test('ap of function with multiple callbacks called', t => {
+test('ap of function with multiple callbacks over single function only affects first callback output', t => {
 	const cpsFun = (cb1, cb2) => {cb1(1); cb2(12)}
 	const cpsNew = ap(
 		cb => cb(x => x + 1)
@@ -50,9 +50,30 @@ test('ap of function with multiple callbacks called', t => {
 	cpsNew(t.cis(2), t.cis(12))
 })
 
+test('ap over 2 functions with multiple callbacks passed into separate callbacks', t => {
+	const cpsFun = (cb1, cb2) => {cb1(1); cb2(12)}
+	const cpsNew = ap(
+		cb => cb(x => x + 1), 
+		(cb1,cb2) => cb2(x => x - 1)
+	)(cpsFun)
+	t.plan(2)
+	cpsNew(t.cis(2),t.cis(11))
+})
+
+test('ap over 2 functions with multiple callbacks passed into the same callback', t => {
+	const cpsFun = (cb1, cb2) => {cb1(1); cb2(3)}
+	const cpsNew = ap(
+		(cb1,cb2) => cb2(x => x + 1), 
+		(cb1,cb2) => cb2(x => x - 1)
+	)(cpsFun)
+	t.plan(2)
+	// only 2nd callback is called twice
+	cpsNew(notCalled,t.cis(2))
+})
+
 test('ap of 2-callback-CPS over single function is passing 2nd callback unchanged', t => {
 	const cpsFun = (cb, onErr) => {onErr('error')}
-	const cpsNew = ap(cb => cb(_ => 11))(cpsFun)
+	const cpsNew = ap(cb => cb(notCalled))(cpsFun)
 	t.plan(1)
 	cpsNew(notCalled, t.cis('error'))
 })
