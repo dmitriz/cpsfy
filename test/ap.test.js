@@ -3,19 +3,20 @@ const { ap } = require('..')
 
 const notCalled = () => {throw Error('I should not be called!')}
 
-test('ap over single CPS function', t => {
+test('ap over single CPS function applies function to output', t => {
 	const cpsFun = cb => {cb(42)}
 	const cpsNew = ap(cb => cb(x => x*2))(cpsFun)
 	// 84 passed as output into the first callback
 	cpsNew(t.cis(84))
 })
 
-test('ap over single CPS function with multiple callbacks', t => {
+test('ap of single CPS function with multiple callbacks', t => {
 	const cpsFun = cb => {cb(2)}
 	const cpsNew = ap(
 		(cb1, cb2) => {cb1(x => x+1); cb2(x => x-1)} 
 	)(cpsFun)
 	t.plan(2)
+	// apply both output functions to x and pass into respective callbacks
 	cpsNew(t.cis(3), t.cis(1))
 })
 
@@ -51,7 +52,7 @@ test('ap of function with multiple callbacks called', t => {
 
 test('ap of 2-callback-CPS over single function is passing 2nd callback unchanged', t => {
 	const cpsFun = (cb, onErr) => {onErr('error')}
-	const cpsNew = ap(cb => cb(11))(cpsFun)
+	const cpsNew = ap(cb => cb(_ => 11))(cpsFun)
 	t.plan(1)
 	cpsNew(notCalled, t.cis('error'))
 })

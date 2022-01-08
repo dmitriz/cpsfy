@@ -68,7 +68,7 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
     + [Associativity law](#associativity-law)
     + [Identity laws](#identity-laws)
 - [Application of `chain`: Turn Node API into Promise style callbacks](#application-of-chain-turn-node-api-into-promise-style-callbacks)
-- [CPS.ap (TODO)](#cpsap-todo)
+- [CPS.ap](#cpsap-todo)
   * [Running CPS functions in parallel](#running-cps-functions-in-parallel)
   * [Lifting functions of multiple arguments](#lifting-functions-of-multiple-arguments)
     + [Promise.all](#promiseall)
@@ -97,7 +97,7 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
 - Functions are among the most basic and powerful objects in JavaScript.
 - Callbacks are prominent for events and asynchronous functions, but they don't make composition convenient (leading to the so-called "callback hell").
 - Promises can be more convenient to compose in some cases, but introduce performance overheads, such as conditionally calling `then` and potential source for bugs as they [do not conform to functor or monad laws and thus are not safe for compositional refactoring](https://stackoverflow.com/questions/45712106/why-are-promises-monads/50173415#50173415).
-- Promises introduce limitations of being able to return only one value only once, that makes it difficult to update them or use uniformly along with streams.
+- Promises introduce limitations of being able to return only one value only once, that makes it difficult to update them or use along with streams.
 - Promises provide only one error handling callback, forcing to handle all errors in the same function, and thus making writing smaller focused functions and separating concerns more difficult.
 - The recent `async/await` notation retains the overheads of promises, in addition to ["new and exciting ways to shoot yourself in the foot"](https://thecodebarbarian.com/80-20-guide-to-async-await-in-node.js.html).
 
@@ -142,6 +142,9 @@ as well as to the callbacks accepting output:
 const api = (input1, input2, ...) => (callback1, callbacks2, ...) => 
   doSomeWork(input1, ... , callback1, ...)
 ```
+Whoever we increase the groups of inputs and of callbacks, 
+both groups remain cleanly separated by means of currying!
+
 
 ### Variadic input and output
 JavaScript's functions are variadic by design,
@@ -151,13 +154,13 @@ That feature makes it very convenient and powerful to implement optional paramet
 const f = (required, optionalWithDefault = default, iAmOptional) => { ... }
 ```
 Now, given the clean separation provided by currying as mentioned above, 
-we get for free the full functional variadic power provded by JS:
+we get for free the full functional variadic power provided by JS:
 ```js
 const api = (...inputs) => (...callbacks) => doSomeWork(inputs, callbacks)
 ```
 Here `...inputs` is the array holding all arguments passed to the function
 at the run time, by means of the [Rest parameters syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters).
-In particular, zero arguments are also allowed on each side.
+In particular, zero number of arguments is also allowed on each side.
 
 
 ### Full power of multiple outputs streams
@@ -209,11 +212,11 @@ However, there are fundamental design differences with Haskell:
 
 #### JavaScript functions are by design not required to be [pure](https://en.wikipedia.org/wiki/Pure_function)
 
-While one can always restrict to pure functions only, the available design allows to treat all functions uniformly, including non-pure ones. That provides considerable additional power at no extra cost. As a basic example, consider non-pure function mutating a variable
+While one can always restrict to pure functions only, the available design allows to treat all functions uniformly, including non-pure ones. That provides considerable additional power at no extra cost. As a basic example, consider non-pure function mutating an outside variable
 ```js
 var a = 0
 const f = x => {
-  x = x + a
+  a = a + x
 }
 ```
 that can be (pre-)composed with any other function `g`:
@@ -230,7 +233,7 @@ The `compose` operator is defined in uniform fashion and thus allows to compose 
 
 #### JavaScript functions are by design accepting arbitrary number of arguments
 
-Again, one can always restrict to single argument, but that way considerable additional power provided by the language design is lost. For instance, object methods (that in JavaScript are treated as regular functions) are often defined with no parameters. As basic example consider adding results of two separate computations:
+Again, one can always restrict to single argument, but that way considerable additional power provided by the language design is lost. For instance, object methods (that in JavaScript can be treated as regular functions) are often defined with no parameters. As basic example consider adding results of two separate computations:
 ```js
 const f1 = x => someComputation1(x)
 const f2 = y => someComputation2(y)
@@ -266,8 +269,8 @@ const cps = (f1, f2, ...) => {
 ```
 that expects to be called with zero or several functions as arguments.
 By *expects* we mean that this library and the following discussion 
-only applies when functions are passed.
-In a strictly typed language that would mean those arguments are required to be functions.
+only applies when functions are passed as arguments to a CPS function.
+In a strictly typed language that would mean those arguments were required to be functions.
 However, in JavaScript, where it is possible to pass any argument,
 we don't aim to force errors when some arguments passed are not functions
 and let the standard JavaScript engine deal with it the usual way,
@@ -295,7 +298,7 @@ we mean its call with both arguments and callbacks passed:
 ```js
 paramCps(...args)(...callbacks)
 ```
-Otherwise `parmCps(...args)` is considered a *partial call*.
+Otherwise `paramCps(...args)` is considered a *partial call*.
 
 
 ## Using CPS functions
@@ -305,9 +308,7 @@ Using CPS functions is as simple as using JavaScript Promises:
 // one for the result and one for the error
 const cpsQuery = query => (resBack, errBack) => 
   // assuming Node style callback with error param first
-  queryDb(query, (err, res) => err 
-    ? resBack(res) 
-    : errBack(err))
+  queryDb(query, (err, res) => err ? resBack(res) : errBack(err))
 // Now just call as regular curried function
 cpsQuery({name: 'Jane'})(
   result => console.log("Your Query returned: ", result), 
@@ -321,8 +322,8 @@ promiseQuery({name: 'Jane'}).then(
   error => console.error("Sorry, an error happened: ", error)
 )
 ```
-Except that, calling `then` method is replaced by plain function call
-and arbitrary number of callbacks is allowed,
+Except that, calling `then` method is replaced by a plain function call of the CPS function
+and arbitrary number of callbacks is allowed (instead of only 2 callbacks for a promise),
 each of which can be called arbitrary many times,
 as e.g. in the event streams.
 A Promise is essentially a CPS function with its first event cached,
@@ -444,7 +445,7 @@ is more suitable, see below.
 
 
 ## Asynchronous iteration over array
-On of the functions in the above example illustrates 
+One of the functions in the above example illustrates 
 how multiple outputs fit nicely in the asynchronous iteration pattern:
 
 ```js
@@ -507,7 +508,7 @@ CPS(cpsFun)
 ```
 
 Here `(x, y)` is the first output from `cpsFun` (the one passed into the first callback).
-Now every such output will be passed into `somePromise` via [`chain`](#cpschain),
+Now every such output will be passed into `somePromise` via the [`chain`](#cpschain) method,
 that will subsequently pass its result or error into the final callbacks
 that are attached via plain function call.
 And even better, the error callbacks will also receive 
@@ -1192,17 +1193,17 @@ because it effectively chains two such functions
 by passing the output of one funciton as input to the other.
 And the rule becomes very simple:
 
-*Use `map` with "plain" functions and `flatMap` with CPS functions inside*
+*Use `map` with "plain" functions and `chain` with CPS functions inside*
 
 
 ### Composing multiple outputs
 In the previous case we had `chain` over a CPS function with single output,
 even when the output itself is a tuple.
 In comparison, a general Promise has two outputs - the result and the error.
-Of course, in case of Promises, there are more restrctions such as only one of these two
+Of course, in case of Promises, there are more restrictions such as only one of these two
 outputs can be emitted.
 
-No such restrictions are iposed on CPS functions,
+No such restrictions are imposed on CPS functions,
 where two or more callbacks can receive arbitrary number of outputs arbitrarily often.
 To keep things simple, consider how the Promise functionality can be extended
 without the output exclusivity restriction:
@@ -1218,7 +1219,7 @@ So both callbacks are called with their individual results at different moments.
 
 A very useful and realistic example of this functionality would be,
 when the server sent an error but then eventually managed to deliver the data.
-That would be impossible to implement with Promises.
+That would be impossible to easily implement with Promises.
 
 Back to our example,
 we now want to use the output for the next CPS computation:
@@ -1239,20 +1240,13 @@ That is, we must pass only the first result `res1` to `anotherCps`.
 Whose output will be our final result inside the first callback,
 whereas all other callbacks remain unchanged.
 
-So the functionality of `newCps` is equivalent to the following:
-```js
-const newCps = (...args) => cpsFun(
-  res1 => anotherCps(res1)(...args), 
-  res2 => cb2(args[1])
-)
-```
 Note how all callbacks are passed to the inner CPS function in the same order as `args`.
 That guarantees that no outgoing information from `anotherCps` can ever get lost.
 
 
 ### Passing multiple CPS functions to `chain`
 
-Similarly to `map`, also `chain` accepts arbitrary number of functins, 
+Similarly to `map`, also `chain` accepts arbitrary number of functions, 
 this time CPS functions:
 ```js
 const newCps = oldCps.chain(
@@ -1473,13 +1467,13 @@ promiseStyle
   .chain(doSomeWork)
   .map(doMoreWork)
     ...
-  .chain(null, handleAllErrors)
+  .chain(handleAllErrors)
 
 ```
 
 
 
-## CPS.ap (TODO)
+## CPS.ap
 The `ap` operator plays an important role when
 *running functions in parallel* and combining their outputs.
 
@@ -1527,7 +1521,7 @@ That way simple plain functions can be created and re-used
 with arbitrary data, regardless of how the data are retrieved.
 In the above example we have used the general purpose plain function
 ```js
-const f =(result, transformer) => transformer(result)
+const f = (result, transformer) => transformer(result)
 ```
 which is, of course, just the ordinary function call.
 That function was "lifted" to act on the data delivered as outputs
@@ -1537,7 +1531,7 @@ Since this use case is very common,
 we have the convenience operator doing exactly that called `lift`:
 ```js
 const getTransformedRes = (query, path) => 
-  lift(transformer => transformer(result))
+  lift((result, transformer) => transformer(result))
     (cpsDb(query), cpsTransformer(path))
 ```
 
@@ -1588,7 +1582,7 @@ from each output and only call its callbacks
 when all needed data are available.
 
 For instance, a CPS function with two callbacks such as `(resBack, errBack)`
-can be `ap`-plied over a pair of CPS functions, 
+can be `ap`-plied over a pair of CPS functions 
 outputting plain functions each:
 ```js
 // These call some remote API
