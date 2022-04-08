@@ -88,6 +88,6 @@
   "devDependencies": {
     "ava": "4.1.0",
     "markdown-toc": "1.2.0",
-    "tape": "5.5.2"
+    "tape": "5.5.3"
   }
 }
