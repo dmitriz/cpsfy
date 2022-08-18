@@ -116,3 +116,21 @@ test('chain over fewer fns than cbs should preserve the extra outputs', t => {
 	const cpsFun = (cb1, cbb) => { cb1(0); cbb(2) }
 	chain(x => cb => cb(x + 1))(cpsFun)(t.cis(1), t.cis(2))
 })
+
+test('missing functions inside chain preserve outputs', t=>{
+	const cpsFun = (cb1, cbb) => { cb1(0); cbb(2) }
+	chain()(cpsFun)(t.cis(0), t.cis(2))
+})
+
+test('nill values in place of functions preserve outputs', t=>{
+	const cpsFun = (cb1, cb2) => { cb1(0); cb2(2) }
+	chain(undefined, x => (cb1,cb2) => cb2(x + 1))(cpsFun)(t.cis(0), t.cis(3))
+	chain(null, x => (cb1,cb2) => cb2(x + 1))(cpsFun)(t.cis(0), t.cis(3))
+	chain(null, null)(cpsFun)(t.cis(0), t.cis(2))
+})
+
+test('further functions inside chain are ignored', t=>{
+	const cpsFun = (cb1, cb2) => { cb1(0); cb2(2) }
+	chain(null, null, _ => notCalled )(cpsFun)(t.cis(0), t.cis(2))	
+})
+

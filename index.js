@@ -110,6 +110,7 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  *
  */
 const chain = (...fns) => cpsFn => {
+  fns = fns.map((f,ind) => (null == f) ? ofN(ind) : f)
   let cpsNew = (...cbs) => {
     // all callbacks from the chain get passed to each cpsFn
     let newCallbacks = fns.map(f =>
