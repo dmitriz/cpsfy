@@ -7,6 +7,23 @@ test('scan over single callback output', t => {
 	t.plan(1)
 	scan(reducer, 10)(cpsFun)(t.cis(52))
 })
+test('scan over single callback preserves outputs from other callbacks', t => {
+	const reducer = (acc, x) => acc + x
+	const cpsFun = (c1,c2) => {c1(42);c2(5)}
+	t.plan(2)
+	scan(reducer, 10)(cpsFun)(t.cis(52),t.cis(5))
+})
+test('scan ignores undefined/null args', t => {
+	const r = (acc, x) => acc + x
+	const cpsFun = (c1,c2) => {c1(42)}
+	const cpsFun1 = (c1,c2) => {c2(42)}
+	const cpsFun2 = (c1,c2) => {c1(10+11);c2(11)}
+	t.plan(5)
+	scan(null, r, 10)(cpsFun)(t.cis(42))
+	scan(undefined, r, 10)(cpsFun)(t.cis(42))
+	scan(undefined, r, 10)(cpsFun1)(t.cis(10+42))
+	scan(undefined, r, 10)(cpsFun2)(t.cis(10+11))
+})
 test('scan over single repeated callback output', t => {
 	let called = false
 	const reducer = (acc, x) => acc + x

@@ -196,10 +196,10 @@ const filter = (...preds) => {
 const scan = (...args) => {
   if (args.length < 2) throw Error(`Scan needs at least 2 args, curently: ${JSON.stringify(args)}`)
   let reducers = args.slice(0,-1),
-    [acc] = args.slice(-1)
+    acc = args.at(-1)
   // chain receives tuple of functions, one per reducer
   // nth CPS function inside chain receives nth callback output of cpsAction
-  let cpsTrasformer = reducer => (...action) => cb => {
+  let cpsTrasformer = reducer => (null == reducer) ? undefined : (...action) => cb => {
       // accessing vals and reducers by index
       acc = reducer(acc, ...action)
       cb(acc)
