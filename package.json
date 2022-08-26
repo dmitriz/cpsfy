@@ -87,7 +87,7 @@
     "control-flow"
   ],
   "devDependencies": {
-    "ava": "^4.3.1",
+    "ava": "4.3.1",
     "markdown-toc": "1.2.0",
     "tape": "5.6.0"
   }
