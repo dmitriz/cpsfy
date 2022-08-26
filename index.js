@@ -194,6 +194,7 @@ const filter = (...preds) => {
  *   similar to `reduce`.
  */
 const scan = (...args) => {
+  if (args.length < 2) throw Error(`Scan needs at least 2 args, curently: ${JSON.stringify(args)}`)
   let reducers = args.slice(0,-1),
     [acc] = args.slice(-1)
   // chain receives tuple of functions, one per reducer
@@ -207,6 +208,8 @@ const scan = (...args) => {
   return chain(...reducers.map(cpsTrasformer))
 }
 
+// simplified scan dropping the seed
+const scanS = (...args) => scan(...args, undefined)
 
 
 /**
@@ -312,5 +315,5 @@ const CPS = cpsFn => {
 
 module.exports = {
   curry2, pipeline,
-  of, ofN, map, chain, filter, scan, ap, lift2, CPS
+  of, ofN, map, chain, filter, scan, scanS, ap, lift2, CPS
 }
