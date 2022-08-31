@@ -313,7 +313,11 @@ const CPS = cpsFn => {
   return cpsWrapped
 }
 
+const node2cps = nodeApi => (...args) => CPS(
+  (onRes, onErr) => nodeApi(...args, (e, ...x) => e ? onErr(e) : onRes(...x))
+)
+
 module.exports = {
   curry2, pipeline,
-  of, ofN, map, chain, filter, scan, scanS, ap, lift2, CPS
+  of, ofN, map, chain, filter, scan, scanS, ap, lift2, CPS, node2cps
 }

@@ -18,9 +18,8 @@
     "postversion": "npm publish",
     "postpublish": "npm run syn && git push --follow-tags",
     "release": "git checkout master && npm run syn && npx standard-version && npm publish",
-    "test": "npm run tape",
-    "testw": "npm run avaw",
     "tape": "npx nyc tape test/*test.js",
+    "tape": "npm run tape",
     "tapew": "npx onchange -i '**/*.js' -- npm run tape",
     "tap": "npx tap test/*test.js",
     "tapw": "npm run tap -- -w",
@@ -29,7 +28,9 @@
     "cov": "npx tap test/*test.js --coverage-report=lcov",
     "rebcont": "git add . && git rebase --continue",
     "toc": "npx markdown-toc DOCUMENTATION.md > toc",
-    "doc": "npx documentation build 'index.js' -f html -o auto-docs"
+    "doc": "npx documentation build 'index.js' -f html -o auto-docs",
+    "test": "npm run ava",
+    "testw": "npm run avaw"
   },
   "keywords": [
     "library",
