@@ -1,5 +1,5 @@
 {
-  "version": "3.5.1",
+  "version": "3.6.0",
   "name": "cpsfy",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
@@ -18,7 +18,6 @@
     "postversion": "npm publish",
     "postpublish": "npm run syn && git push --follow-tags",
     "release": "git checkout master && npm run syn && npx standard-version && npm publish",
-    "tape": "npx nyc tape test/*test.js",
     "tape": "npm run tape",
     "tapew": "npx onchange -i '**/*.js' -- npm run tape",
     "tap": "npx tap test/*test.js",
