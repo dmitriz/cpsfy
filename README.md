@@ -13,7 +13,7 @@
 [![npm version](https://img.shields.io/npm/v/cpsfy.svg?logo=npm)](http://npm.im/cpsfy)
 [![install size](https://packagephobia.now.sh/badge?p=cpsfy)](https://packagephobia.now.sh/result?p=cpsfy)
 [![bundlephobia](https://img.shields.io/bundlephobia/minzip/cpsfy.svg)](https://bundlephobia.com/result?p=cpsfy)
-[![Node.js workflow](https://github.com/dmitriz/cpsfy/actions/workflows/test.yaml/badge.svg)](https://github.com/dmitriz/cpsfy/actions)
+[![Node.js workflow](https://github.com/dmitriz/cpsfy/actions/workflows/codeql.yaml/badge.svg)](https://github.com/dmitriz/cpsfy/actions)
 [![CircleCI](https://circleci.com/gh/dmitriz/cpsfy.svg?style=svg)](https://circleci.com/gh/dmitriz/cpsfy)
 [![Depfu](https://badges.depfu.com/badges/7f4dd00fbcaa502c2c104ad415223506/status.svg)](https://depfu.com/github/dmitriz/cpsfy)
 [![Known Vulnerabilities](https://snyk.io/test/github/dmitriz/cpsfy/badge.svg)](https://snyk.io/test/github/dmitriz/cpsfy)<!-- [![Renovate badge](https://badges.renovateapi.com/github/dmitriz/cpsfy)](https://renovatebot.com/dashboard#dmitriz/cpsfy) -->
