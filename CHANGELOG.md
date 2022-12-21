@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.6.1](https://github.com/dmitriz/cpsfy/compare/v3.6.0...v3.6.1) (2022-12-21)
+
 ### [3.2.8](https://github.com/dmitriz/cpsfy/compare/v3.2.7...v3.2.8) (2022-01-07)
 
 ### [3.2.7](https://github.com/dmitriz/cpsfy/compare/v3.2.6...v3.2.7) (2021-12-05)
