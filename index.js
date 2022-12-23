@@ -1,4 +1,4 @@
-const { mergeArray, inheritPrototype } = require('./utils')
+const { isNil, mergeArray, inheritPrototype } = require('./utils')
 
 /* ----- General purpose utils ----- */
 
@@ -103,12 +103,12 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  *   // 2 callbacks, 2 functions with 2 arguments
  * const cpsFn = (cb1, cb2) => {cb1(2, 3); cb2(7, 9)}
  *   // 2 callbacks receive outputs (2, 3) and (7, 9)
- * const f1 = (x, y) => (cb1, cb2) => {cb1(x + y); cb2(x - y)}
+ * const f1 = (x, y) => (cb1, cb2) => {cb1(x+y); cb2(x-y)}
  * const f2 = (x, y) => cb => {cb(x, -y)}
  *
  * chain(f1, f2)(cpsFn)
  *   // is equivalent to the CPS function
- * (cb1, cb2) => {cb1(5); cb2(7, -9)}
+ * (cb1, cb2) => {cb1(2+3); cb2(2-3); cb1(7, -9)}
  *
  * @example
  *   // convert to CPS function with 2 callbacks
@@ -124,7 +124,7 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  *
  */
 const chain = (...fns) => cpsFn => {
-  fns = fns.map((f,ind) => (null == f) ? ofN(ind) : f)
+  fns = fns.map((f,ind) => isNil(f) ? ofN(ind) : f)
   let cpsNew = (...cbs) => {
     // all callbacks from the chain get passed to each cpsFn
     let newCallbacks = fns.map(f =>
@@ -213,7 +213,7 @@ const scan = (...args) => {
     acc = args.at(-1)
   // chain receives tuple of functions, one per reducer
   // nth CPS function inside chain receives nth callback output of cpsAction
-  let cpsTrasformer = reducer => (null == reducer) ? undefined : (...action) => cb => {
+  let cpsTrasformer = reducer => isNil(reducer) ? undefined : (...action) => cb => {
       // accessing vals and reducers by index
       acc = reducer(acc, ...action)
       cb(acc)

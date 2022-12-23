@@ -1,5 +1,20 @@
 const test = require('./config')
-const { mergeArray } = require('../utils')
+const { isNil, mergeArray } = require('../utils')
+
+test('isNil is true for null or undefined', t=>{
+	t.is(isNil(undefined), true)
+	t.is(isNil(null), true)
+})
+test('isNil is false for values other than null or undefined', t=>{
+	t.is(isNil(NaN), false)
+	t.is(isNil(0), false)
+	t.is(isNil(10), false)
+	t.is(isNil([]), false)
+	t.is(isNil([1]), false)
+	t.is(isNil({}), false)
+	t.is(isNil({a:1}), false)
+})
+
 
 test('merge longer array into shorter', t => {
 	t.deepEqual(
