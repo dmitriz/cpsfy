@@ -327,6 +327,17 @@ const CPS = cpsFn => {
   return cpsWrapped
 }
 
+
+/* ------- CPS utils ------ */
+
+/**
+ * Convert NodeJS Api function to CPS factory
+ * 
+ * @param {Function} nodeApi - function with Node style callback `cb` as last argument:
+ *    cb(error, result)
+ * @returns {Function} node2cps(nodeApi) - CPS factory function taking all args but last
+ *    that returns CPS function with 2 callbacks similar to Promise
+ */
 const node2cps = nodeApi => (...args) => CPS(
   (onRes, onErr) => nodeApi(...args, (e, ...x) => e ? onErr(e) : onRes(...x))
 )

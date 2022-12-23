@@ -55,12 +55,12 @@ const readFileCps = file => (onRes, onErr) =>
     err ? onErr(err) : onRes(content)
   })
 
-// CPS wraps a CPS function to provide the API methods
+// the provided `CPS` operator wraps a CPS function to provide the API methods
 const getLines = CPS(readFileCps('name.txt'))
   // map applies function to the file content
   .map(file => file.trim()) 
   .filter(file => file.length > 0)
-  // chain applies function that returns CPS function
+  // chain applies function that returns a CPS function
   .chain(file => readFileCps(file))
   .map(text => text.split('\n'))
 // => CPS function with 2 callbacks
@@ -392,10 +392,5 @@ running in parallel.
 ## More details?
 This `README.md` is kept minimal to reduce the package size. For more human introduction, motivation, use cases and other details, please see [DOCUMENTATION](DOCUMENTATION.md).
 
-
 ## License
 MIT © [Dmitri Zaitsev](https://github.com/dmitriz)
-
-
-
-
