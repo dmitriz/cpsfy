@@ -26,7 +26,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/dmitriz/cpsfy.svg?logo=github)](https://github.com/dmitriz/cpsfy/commits/master)
 [![npm downloads](https://img.shields.io/npm/dt/cpsfy.svg?logo=npm)](https://www.npmjs.com/package/cpsfy)
 [![MIT License](https://img.shields.io/npm/l/cpsfy.svg?color=blue)](http://opensource.org/licenses/MIT)
-<!-- [![Node.js workflow](https://github.com/dmitriz/cpsfy/actions/workflows/codeql.yaml/badge.svg)](https://github.com/dmitriz/cpsfy/actions) --><!-- [![dependencies](https://david-dm.org/dmitriz/cpsfy.svg)](https://david-dm.org/dmitriz/cpsfy)  --><!-- [![devDependencies](https://badgen.now.sh/david/dev/dmitriz/cpsfy)](https://david-dm.org/dmitriz/cpsfy?type=dev) --><!-- [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b530e9fcaac446a19d8172962b486b36)](https://app.codacy.com/app/dmitri14_3131/cpsfy?utm_source=github.com&utm_medium=referral&utm_content=dmitriz/cpsfy&utm_campaign=Badge_Grade_Dashboard) -->
+<!-- [![Node.js workflow](https://github.com/dmitriz/cpsfy/actions/workflows/test.yaml/badge.svg)](https://github.com/dmitriz/cpsfy/actions) --><!-- [![dependencies](https://david-dm.org/dmitriz/cpsfy.svg)](https://david-dm.org/dmitriz/cpsfy)  --><!-- [![devDependencies](https://badgen.now.sh/david/dev/dmitriz/cpsfy)](https://david-dm.org/dmitriz/cpsfy?type=dev) --><!-- [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b530e9fcaac446a19d8172962b486b36)](https://app.codacy.com/app/dmitri14_3131/cpsfy?utm_source=github.com&utm_medium=referral&utm_content=dmitriz/cpsfy&utm_campaign=Badge_Grade_Dashboard) -->
 
 
 Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions with functional composability backed by category theory foundations.
