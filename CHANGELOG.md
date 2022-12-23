@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.0](https://github.com/dmitriz/cpsfy/compare/v3.6.2...v3.7.0) (2022-12-23)
+
+
+### Features
+
+* 🎸 add pipe utility ([7ab965f](https://github.com/dmitriz/cpsfy/commit/7ab965ff35271f2334a143f8d8ccdf4de131cd60))
+
 ### [3.6.2](https://github.com/dmitriz/cpsfy/compare/v3.6.1...v3.6.2) (2022-12-23)
 
 ### [3.6.1](https://github.com/dmitriz/cpsfy/compare/v3.6.0...v3.6.1) (2022-12-21)
