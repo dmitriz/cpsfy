@@ -6,7 +6,7 @@ const curry2 = f => (...a) => (...b) => f(...a, ...b)
 
 /**
  * Pass tuple of values to sequence of functions similar to UNIX pipe
- * `(x1, ..., xn) | f1 | f2 | ... | fm`
+ * `(x1, ..., xn) | f1 | f2 | ... | fm`.
  *
  * @param {...*} args - tuple of arbitrary values.
  * @param {...Function} fns - functions `(f1, f2, ..., fn)`.
@@ -24,6 +24,20 @@ const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
   fns[0](...args)
 )
 
+/**
+ * Compose functions left to right as in ramda's `pipe`.
+ * 
+ * @param {...Function} fns - functions `(f1, f2, ..., fn)`.
+ * @returns {*} `pipe(...fns)`
+ *    - Composite function `(...args) => fn(...f2(f1(...args))...)`.
+ * 
+ * @example
+ * pipe((a,b)=>a+b, x=>x*2)
+ *   // is equivalent to
+ * (a,b)=>(a+b)*2
+ * 
+ */
+const pipe = (...fns) => (...args) => pipeline(...args)(...fns)
 
 
 /* ----- CPS operators ----- */
@@ -318,6 +332,6 @@ const node2cps = nodeApi => (...args) => CPS(
 )
 
 module.exports = {
-  curry2, pipeline,
+  curry2, pipeline, pipe,
   of, ofN, map, chain, filter, scan, scanS, ap, lift2, CPS, node2cps
 }
