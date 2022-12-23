@@ -111,6 +111,26 @@ test('multiple callbacks from transforming functions merge by index', t => {
 	)
 })
 
+
+test('multiple callbacks with two args', t => {
+	const cpsFun = (cb1, cb2) => { cb1(2,3); cb2(1,4) }
+	const newCps = chain(
+		// output (2,3) is passed here as (x,y)
+		(x, y) => (cb1, cb2) => {cb1(x+y); cb2(x-y)},
+		// output (1,4) is passed here as (x,y)
+		(x, y) => cb => {cb(x+y)}
+	)(cpsFun)
+
+	// each callback is called twice
+	t.plan(3)
+	newCps(
+		// 2+3=1+4 is passed twice into the first callback
+		t.cis(2+3),
+		t.cis(2-3)
+	)
+})
+ 
+
 test('chain over fewer fns than cbs should preserve the extra outputs', t => {
 	t.plan(2)
 	const cpsFun = (cb1, cb2) => { cb1(0); cb2(2) }

@@ -344,5 +344,6 @@ const node2cps = nodeApi => (...args) => CPS(
 
 module.exports = {
   curry2, pipeline, pipe,
-  of, ofN, map, chain, filter, scan, scanS, ap, lift2, CPS, node2cps
+  of, ofN, map, chain, filter, scan, scanS, ap, lift2, 
+  CPS, node2cps
 }
