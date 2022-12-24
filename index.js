@@ -320,12 +320,16 @@ const protoObj = objMap(apply2this)({
   scan
 })
 
-const CPS = cpsFn => {
+/**
+ * Wraps CPS function into object providing all CPS operators as methods
+ */
+exports.CPS = cpsFn => {
   // clone the function
   let cpsWrapped = (...args) => cpsFn(...args)
   Object.setPrototypeOf(cpsWrapped, protoObj)
   return cpsWrapped
 }
+
 
 
 /* ------- CPS utils ------ */
@@ -338,7 +342,7 @@ const CPS = cpsFn => {
  * @returns {Function} node2cps(nodeF) - CPS factory function taking all args but last
  *     that returns CPS function with 2 callbacks similar to Promise
  */
-const node2cps = nodeF => (...args) => CPS(
+exports.node2cps = nodeF => (...args) => exports.CPS(
   (onRes, onErr) => nodeF(...args, (e, ...x) => e ? onErr(e) : onRes(...x))
 )
 
@@ -349,11 +353,11 @@ const node2cps = nodeF => (...args) => CPS(
  * @param {Function} promiseFactory - function that returns Promise
  * @returns {Function} promiseF2cps(promiseFactory) - CPS factory function
  */
-const promiseF2cps = promiseFactory => (...args) => (onRes, onErr) => promiseFactory(...args).then(onRes, onErr)
+exports.promiseF2cps = promiseFactory => (...args) => (onRes, onErr) => promiseFactory(...args).then(onRes, onErr)
 
 
 module.exports = {
+  ...exports,
   curry2, pipeline, pipe,
-  of, ofN, map, chain, filter, scan, scanS, ap, lift2, 
-  CPS, node2cps, promiseF2cps
+  of, ofN, map, chain, filter, scan, scanS, ap, lift2,
 }
