@@ -355,6 +355,16 @@ exports.node2cps = nodeF => (...args) => exports.CPS(
  */
 exports.promiseF2cps = promiseFactory => (...args) => (onRes, onErr) => promiseFactory(...args).then(onRes, onErr)
 
+/**
+ * convert syncrounous outputs CPS function to array of outputs
+ *  output (x1,...,xn) in jth callback adds [x1,...,xn] or x1 if n=1 to jth
+ */
+exports.cpsSync2arr = cpsF => {
+  let arr = []
+  cpsF((...args) => arr.push(args))
+  return arr
+}
+
 
 module.exports = {
   ...exports,
