@@ -331,19 +331,29 @@ const CPS = cpsFn => {
 /* ------- CPS utils ------ */
 
 /**
- * Convert NodeJS Api function to CPS factory
+ * Convert NodeJS function to CPS factory
  * 
- * @param {Function} nodeApi - function with Node style callback `cb` as last argument:
- *    cb(error, result)
- * @returns {Function} node2cps(nodeApi) - CPS factory function taking all args but last
- *    that returns CPS function with 2 callbacks similar to Promise
+ * @param {Function} nodeF - function with Node style callback `cb` as last argument:
+ *     cb(error, result)
+ * @returns {Function} node2cps(nodeF) - CPS factory function taking all args but last
+ *     that returns CPS function with 2 callbacks similar to Promise
  */
-const node2cps = nodeApi => (...args) => CPS(
-  (onRes, onErr) => nodeApi(...args, (e, ...x) => e ? onErr(e) : onRes(...x))
+const node2cps = nodeF => (...args) => CPS(
+  (onRes, onErr) => nodeF(...args, (e, ...x) => e ? onErr(e) : onRes(...x))
 )
+
+/**
+ * Convert Promise factory to CPS factory
+ *     makes promise lazy by defering promise creation
+ * 
+ * @param {Function} promiseFactory - function that returns Promise
+ * @returns {Function} promiseF2cps(promiseFactory) - CPS factory function
+ */
+const promiseF2cps = promiseFactory => (...args) => (onRes, onErr) => promiseFactory(...args).then(onRes, onErr)
+
 
 module.exports = {
   curry2, pipeline, pipe,
   of, ofN, map, chain, filter, scan, scanS, ap, lift2, 
-  CPS, node2cps
+  CPS, node2cps, promiseF2cps
 }
