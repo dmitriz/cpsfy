@@ -323,14 +323,6 @@ exports.lift2 = f => (F1, F2) => pipeline(F2)(
   ap(map(exports.multiCurryN(2)(f))(F1))
 )
 
-/**
- * Lift ternary function to act on values wraped inside CPS functions
- */
-exports.lift3 = f => (F1, F2, F3) => pipeline(F1)(
-  ap(map(x=>y=>z=>f(x,y,z)))
-)
-
-
 
 
 /* ----- CPS methods ----- */
