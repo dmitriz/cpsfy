@@ -99,7 +99,7 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
 - Promises can be more convenient to compose in some cases, but introduce performance overheads, such as conditionally calling `then` and potential source for bugs as they [do not conform to functor or monad laws and thus are not safe for compositional refactoring](https://stackoverflow.com/questions/45712106/why-are-promises-monads/50173415#50173415).
 - Promises introduce limitations of being able to return only one value only once, that makes it difficult to update them or use along with streams.
 - Promises provide only one error handling callback, forcing to handle all errors in the same function, and thus making writing smaller focused functions and separating concerns more difficult.
-- The recent `async/await` notation retains the overheads of promises, in addition to ["new and exciting ways to shoot yourself in the foot"](https://thecodebarbarian.com/80-20-guide-to-async-await-in-node.js.html).
+- The recent `async/await` notation retains some overheads of promises, in addition to ["new and exciting ways to shoot yourself in the foot"](https://thecodebarbarian.com/80-20-guide-to-async-await-in-node.js.html).
 
 
 Functions are the most basic and powerful concept.

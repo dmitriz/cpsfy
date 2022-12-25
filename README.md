@@ -75,8 +75,7 @@ Note how we handle error at the end without affecting the main logic!
 
 
 ### But can't I do it with promises?
-Ok, let us have another example where you can't, shall we? At least not as easy. And maybe ... not really another.:wink:
-
+Ok, let us have another example where you can't.:wink:
 Reading from static files is easy but boring.
 Data is rarely static. 
 What if we have to react to data changing in real time?
