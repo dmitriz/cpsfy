@@ -181,7 +181,10 @@ const map = (...fns) => chain(...fns.map((f, idx) =>
 
 
 
-// pass through only input truthy `pred`
+/**
+ * Filter outputs making predicates `(pred0,...,predn)` truthy.
+ *  Pass through only outputs from jth callback making `predj` truthy.
+ */
 const filter = (...preds) => {
   // call `chain` with the list of functions, one per each predicate
   let transformer = (pred, idx) => (...inputs) =>

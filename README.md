@@ -99,11 +99,11 @@ const getLinesFromWS = CPS(wsMessageListenerCps(someUrl))
   .map(text => text.split('\n'))
 
 ```
-And if you paid attention, the new CPS function has only one callback,
-while the old one had two! Yet we have used exactly the same code!
+The new CPS function has only one callback, while the old one had two! 
+Yet we have used exactly the same code!
 How so? Because we haven't done anything to other callbacks.
-The only difference is in how the final function is called - with one callback instead of two. As `wsMessageListenerCps(url)` accepts one callback, so does 
-`getLinesFromWS` when we call it:
+The only difference is in how the final function is called - with one callback instead of two. 
+As `wsMessageListenerCps(url)` accepts one callback, so does `getLinesFromWS` when we call it:
 ```js
 getLinesFromWS(lines => console.log(lines))
 ```
