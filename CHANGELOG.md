@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.9.0](https://github.com/dmitriz/cpsfy/compare/v3.8.0...v3.9.0) (2022-12-25)
+
+
+### Features
+
+* 🎸 add mapSpread operator ([b8ae547](https://github.com/dmitriz/cpsfy/commit/b8ae5476efeedd9ee3c1cd7bcba40b617f7f9909))
+* 🎸 add operator converting sync cps outputs to array ([e6a6635](https://github.com/dmitriz/cpsfy/commit/e6a6635d01b76394dbd66535d84ec62e89f9603e))
+
 ## [3.8.0](https://github.com/dmitriz/cpsfy/compare/v3.7.2...v3.8.0) (2022-12-24)
 
 
