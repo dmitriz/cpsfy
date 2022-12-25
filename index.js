@@ -2,7 +2,15 @@ const { isNil, mergeArray, inheritPrototype } = require('./utils')
 
 /* ----- General purpose utils ----- */
 
-const curry2 = f => (...a) => (...b) => f(...a, ...b)
+exports.multiCurry2 = f => (...a) => (...b) => f(...a, ...b)
+
+exports.multiCurryN = n => f => {
+  while(--n > 0) {
+    f = exports.multiCurry2(f)
+  }
+  return f
+}
+
 
 /**
  * Pass tuple of values to sequence of functions similar to UNIX pipe
@@ -312,15 +320,15 @@ const ap = (...fns) => cpsFn => {
  * Lift binary function to act on values wraped inside CPS functions
  */
 exports.lift2 = f => (F1, F2) => pipeline(F2)(
-  ap(map(curry2(f))(F1))
+  ap(map(exports.multiCurryN(2)(f))(F1))
 )
 
 /**
  * Lift ternary function to act on values wraped inside CPS functions
  */
-// const lift3 = f => (F1, F2, F3) => pipeline(F1)(
-//   ap(map(x=>y=>z=>f(x,y,z)))
-// )
+exports.lift3 = f => (F1, F2, F3) => pipeline(F1)(
+  ap(map(x=>y=>z=>f(x,y,z)))
+)
 
 
 
@@ -393,6 +401,6 @@ exports.cpsSync2arr = cpsF => {
 
 module.exports = {
   ...exports,
-  curry2, pipeline, pipe,
+  pipeline, pipe,
   of, ofN, map, chain, filter, scan, scanS, ap,
 }

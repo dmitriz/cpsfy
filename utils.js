@@ -1,5 +1,5 @@
 // true if and only if the value is null or undefined
-exports.isNil = x => undefined == x || null == x
+exports.isNil = x => undefined === x || null === x
 
 // merge extra elements from array2 if it is longer	
 exports.mergeArray = (array1, array2) =>
