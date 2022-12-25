@@ -87,7 +87,7 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  * If fewever functions are passed in the tuple,
  * outputs from remaining callbacks are preserved unchanged.
  *
- * @signature (...fns) -> CPS -> CPS (curried)
+ * @signature (...fns) -> CPS -> CPS
  *
  * @param {...Function} fns
  *    - tuple of functions, each returning CPS function.
@@ -100,15 +100,17 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  *    the extra callbacks receive the same output as from cpsFn
  *
  * @example
- *   // 2 callbacks, 2 functions with 2 arguments
- * const cpsFn = (cb1, cb2) => {cb1(2, 3); cb2(7, 9)}
- *   // 2 callbacks receive outputs (2, 3) and (7, 9)
- * const f1 = (x, y) => (cb1, cb2) => {cb1(x+y); cb2(x-y)}
- * const f2 = (x, y) => cb => {cb(x, -y)}
+ *   // callbacks cb1,cb2 receive outputs respectively (2,3) and (7,9)
+ * const cpsFn = (cb1,cb2) => {cb1(2,3); cb2(7,9)}
+ * const f1 = (x,y) => (cb1,cb2) => {cb1(x+y); cb2(x-y)}
+ * const f2 = (x,y) => cb => {cb(x,-y)}
  *
- * chain(f1, f2)(cpsFn)
+ * chain(f1,f2)(cpsFn)
+ *   // cpsFn -> (2,3) -> f1 -> (2+3) -> c1  /->(7,-9) -> c1
+ *   //      \              \-> (2-3) -> c2 /
+ *   //      \-> (7,9) -> f2 -------------- 
  *   // is equivalent to the CPS function
- * (cb1, cb2) => {cb1(2+3); cb2(2-3); cb1(7, -9)}
+ * (c1,c2) => {c1(2+3); c2(2-3); c1(7,-9)}
  *
  * @example
  *   // convert to CPS function with 2 callbacks
@@ -286,7 +288,7 @@ const ap = (...fns) => cpsFn => {
 /**
  * Lift binary function to act on values wraped inside CPS functions
  */
-const lift2 = f => (F1, F2) => pipeline(F2)(
+exports.lift2 = f => (F1, F2) => pipeline(F2)(
   ap(map(curry2(f))(F1))
 )
 
@@ -356,7 +358,7 @@ exports.node2cps = nodeF => (...args) => exports.CPS(
 exports.promiseF2cps = promiseFactory => (...args) => (onRes, onErr) => promiseFactory(...args).then(onRes, onErr)
 
 /**
- * convert syncrounous outputs CPS function to array of outputs
+ * convert syncrounous outputs of CPS function to array of output arrays
  *  output (x1,...,xn) in jth callback adds [x1,...,xn] or x1 if n=1 to jth
  */
 exports.cpsSync2arr = cpsF => {
@@ -369,5 +371,5 @@ exports.cpsSync2arr = cpsF => {
 module.exports = {
   ...exports,
   curry2, pipeline, pipe,
-  of, ofN, map, chain, filter, scan, scanS, ap, lift2,
+  of, ofN, map, chain, filter, scan, scanS, ap,
 }
