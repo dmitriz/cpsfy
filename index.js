@@ -6,18 +6,18 @@ const curry2 = f => (...a) => (...b) => f(...a, ...b)
 
 /**
  * Pass tuple of values to sequence of functions similar to UNIX pipe
- * `(x1, ..., xn) | f1 | f2 | ... | fm`.
+ * `(x0,...,xn) | f0 | f1 | ... | fm`.
  *
  * @param {...*} args - tuple of arbitrary values.
- * @param {...Function} fns - functions `(f1, f2, ..., fn)`.
+ * @param {...Function} fns - functions `(f0,f1,...,fn)`.
  * @returns {*} `pipeline(...args)(...fns)`
  *    - Result of functions applied one after another, equivalent to
- *    `fn(...f2(f1(...args))...)`
+ *    `fn(...f1(f0(...args))...)`
  *
  * @example
- * pipeline(x, y)(f1, f2, f3)
+ * pipeline(x,y)(f0,f1,f2)
  *   // is equivalent to
- * f3(f2(f1(x, y)))
+ * f2(f1(f0(x,y)))
  */
 const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
   (acc, fn) => fn(acc),
@@ -27,9 +27,9 @@ const pipeline = (...args) => (...fns) => fns.slice(1).reduce(
 /**
  * Compose functions left to right as in ramda's `pipe`.
  * 
- * @param {...Function} fns - functions `(f1, f2, ..., fn)`.
+ * @param {...Function} fns - functions `(f0,f1,...,fn)`.
  * @returns {*} `pipe(...fns)`
- *    - Composite function `(...args) => fn(...f2(f1(...args))...)`.
+ *    - Composite function `(...args) => fn(...f1(f0(...args))...)`.
  * 
  * @example
  * pipe((a,b)=>a+b, x=>x*2)
@@ -45,15 +45,15 @@ const pipe = (...fns) => (...args) => pipeline(...args)(...fns)
 /**
  * Create CPS function with provided tuple as immediate output.
  *
- * @param {...*} args - tuple of arbitrary values.
- * @returns {Function} `of(...args)` - CPS function
- *    that immediately calls it first callback `cb` with outputs `(...args)`.
- *    No other callback is called.
+ * @param {...*} (x0,...,xn) - tuple of arbitrary values.
+ * @returns {Function} `of(x1,...,xn)` - CPS function
+ *    that immediately calls it 1st callback `cb` with outputs `(x0,...,xn)`.
+ *    No other callback is called. (For multi-callback version see `ofN`.)
  *
  * @example
- * of(x1, x2, x3)
+ * of(x0,x1,x2)
  *   // is equivalent to the CPS function
- * cb => cb(x1, x2, x3)
+ * cb => cb(x0,x1,x2)
  *
  */
 const of = (...args) => cb => cb(...args)
@@ -70,9 +70,9 @@ const of = (...args) => cb => cb(...args)
  *    no other output is passed to any other callback.
  *
  * @example
- * ofN(1)(x1, x2)
+ * ofN(1)(x0,x1)
  *   // is equivalent to the CPS function
- * (cb0, cb1) => cb1(x1, x2)
+ * (cb0,cb1) => cb1(x0,x1)
  */
 const ofN = n => (...args) => (...cbs) => cbs[n](...args)
 
@@ -89,10 +89,10 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  *
  * @signature (...fns) -> CPS -> CPS
  *
- * @param {...Function} fns
+ * @param {...Function} (f0,...,fn)
  *    - tuple of functions, each returning CPS function.
  * @param {Function} cpsFn - CPS function.
- * @returns {Function} `chain(...fns)(cpsFn)`
+ * @returns {Function} `chain(f0,...,fn)(cpsFn)`
  *    - CPS function whose nth callback's output is gathered from
  *    the nth callback's outputs of each function fns[j] for each j
  *    evaluated for each output of the jth callback of `cpsFn`.
@@ -100,7 +100,7 @@ const ofN = n => (...args) => (...cbs) => cbs[n](...args)
  *    the extra callbacks receive the same output as from cpsFn
  *
  * @example
- *   // callbacks cb1,cb2 receive outputs respectively (2,3) and (7,9)
+ *   // callbacks `cb0,cb1` receive outputs respectively `(2,3)` and `(7,9)`
  * const cpsFn = (cb1,cb2) => {cb1(2,3); cb2(7,9)}
  * const f1 = (x,y) => (cb1,cb2) => {cb1(x+y); cb2(x-y)}
  * const f2 = (x,y) => cb => {cb(x,-y)}
@@ -146,18 +146,18 @@ const chain = (...fns) => cpsFn => {
  * the nth function from the tuple transforms the output of the nth callback.
  * If fewever functions are passed in the tuple,
  * outputs from remaining callbacks are preserved unchanged.
- * The pair `(map, of)` conforms to the Pointed Functor spec,
+ * The pair `(map,of)` conforms to the Pointed Functor spec,
  * see {@link https://stackoverflow.com/a/41816326/1614973}.
  *
- * @signature (...fns) -> CPS -> CPS (curried)
+ * @signature (...fns) -> CPS -> CPS
  *
- * @param {...Function} fns - tuple of functions.
+ * @param {...Function} (f0,...,fn) - tuple of functions.
  * @param {Function} cpsFn - CPS function.
- * @returns {function} `map(...fns)`
+ * @returns {function} `map(f0,...,fn)`
  *  - function taking CPS function `cpsFn`
  *    and returning new CPS function whose nth callback's output equals
- *    the nth callback's output of `cpsFun` transformed with function fns[n].
- *    If n > fns.length, the output is passed unchanged.
+ *    the jth callback's output of `cpsFun` transformed with function `fj`.
+ *    If `fj` is undefined or null, the output is passed unchanged.
  *
  * @example
  * const cpsFn = (cb1, cb2) => {cb1(2, 3); cb2(7)}
