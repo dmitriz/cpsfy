@@ -160,23 +160,43 @@ const chain = (...fns) => cpsFn => {
  *    If `fj` is undefined or null, the output is passed unchanged.
  *
  * @example
- * const cpsFn = (cb1, cb2) => {cb1(2, 3); cb2(7)}
- *   // 2 callbacks receive corresponding outputs (2, 3) and (7)
- * map(f1, f2)(cpsFn)
+ *   // 2 callbacks receive respective outputs (2,3) and (7)
+ * const cpsFn = (cb0,cb1) => {cb0(2,3); cb1(7)}
+ * const f0 = (x,y) => x+y
+ * const f1 = z => z*6
+ * map(f0,f1)(cpsFn)
  *   // is equivalent to the CPS function
- * (cb1, cb2) => {cb1(f1(2, 3));  cb2(f2(7))}
- *   // where f1 and f2 transform respective outputs.
+ * (cb0,cb1) => {cb0(2+3); cb1(f1(7*6))}
  *
  * @example
- * const cpsFromPromise = promise => (onRes, onErr) => promise.then(onRes, onErr)
- * map(f1, f2)(cpsFromPromise(promise))
+ * const cpsFromPromise = promise => (onRes,onErr) => promise.then(onRes,onErr)
+ * map(f0,f1)(cpsFromPromise(promise))
  *   // is equivalent to
- * cpsFromPromise(promise.then(f1).catch(f2))
+ * cpsFromPromise(promise.then(f0).catch(f1))
  */
 // precompose every callback with fn from array matched by index
 // if no function provided, default to the identity
 const map = (...fns) => chain(...fns.map((f, idx) =>
   (...args) => ofN(idx)(f(...args))
+))
+
+
+/**
+ * Same as `map` but spread return values of transforming functions.
+ * This allows to transform output tuples into tuples rather than single values as `map` does.
+ * As JavaScript has no tuples, use arrays instead.
+ * 
+ * @example
+ *   // 1 callback receives output `(2,3)`
+ * const cpsFn = cb => cb(2,3)
+ *   // `f` transforms `(x,y)` to `(x+y,x-y)` (written as array)
+ * const f = (x,y) => [x+y,x-y]
+ * map(f)(cpsFn)
+ *   // is equivalent to the CPS function
+ * cb => cb(2+3,2-3)
+ */
+exports.mapSpread = (...fns) => chain(...fns.map((f, idx) =>
+  (...args) => ofN(idx)(...f(...args))
 ))
 
 

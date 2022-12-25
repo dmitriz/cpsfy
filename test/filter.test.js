@@ -24,7 +24,7 @@ test('filter tuples', t => {
 	const cpsFun = cb => cb(1,2) + cb(3,4)
 	t.plan(1)
 	const cpsNew = filter(a => a > 1)(cpsFun)
-	cpsNew(t.cis(3))
+	cpsNew(t.cis(3,4))
 })
 
 test('filter multiple outputs', t => {
