@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/dmitriz/cpsfy/compare/v4.0.0...v5.0.0) (2022-12-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* 🧨 lift3 discontinued
+
+### Features
+
+* 🎸 remove lift3 ([90aa148](https://github.com/dmitriz/cpsfy/commit/90aa1482e42261daf921b15c0add843b1b56a2db))
+
 ## [4.0.0](https://github.com/dmitriz/cpsfy/compare/v3.9.0...v4.0.0) (2022-12-25)
 
 
