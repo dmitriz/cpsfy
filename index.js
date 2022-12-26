@@ -12,18 +12,18 @@ exports.curryGroupsN = n => f => {
 }
 
 /**
- * Transform `reducer: (state,next) => state` into accumulator function updating state inside closure.
+ * Transform `reducer: (state,next) => state` into update function inside closure.
  * 
  * @param {Function} reducer: (state,next) -> state
- * @returns {Function} accum(reducer): initState -> (x0,...,xn) -> reducer(prevState,x0,...,xn)
+ * @returns {Function} update(reducer): initState -> (x0,...,xn) -> reducer(prevState,x0,...,xn)
  * 
- * @example accumulator = accum((state,x) => state+x)
- * acc = accumulator(5) // initialize accumulator function with initial state = 5
+ * @example updater = update((state,x) => state+x)
+ * acc = updater(5) // initialize updater function with initial state = 5
  * acc(2) //=> 5+2
  * acc(2) //=> 5+2+2
  * acc(4) //=> 5+2+2+4
  */
-exports.accum = reducer => state => (...vals) => {state = reducer(state, ...vals); return state}
+exports.update = reducer => state => (...vals) => {state = reducer(state, ...vals); return state}
 
 
 /**
@@ -198,7 +198,7 @@ const chain = (...fns) => cpsFn => {
  */
 // precompose every callback with fn from array matched by index
 // if no function provided, default to the identity
-const map = (...fns) => chain(...fns.map((f, idx) =>
+const map = (...fns) => chain(...fns.map((f,idx) =>
   (...args) => ofN(idx)(f(...args))
 ))
 
@@ -217,7 +217,7 @@ const map = (...fns) => chain(...fns.map((f, idx) =>
  *   // is equivalent to the CPS function
  * cb => cb(2+3,2-3)
  */
-exports.mapSpread = (...fns) => chain(...fns.map((f, idx) =>
+exports.mapSpread = (...fns) => chain(...fns.map((f,idx) =>
   (...args) => ofN(idx)(...f(...args))
 ))
 
@@ -236,7 +236,7 @@ const filter = (...preds) => {
 
 
 /**
- * Iterates tuple of reducers over tuple of vals
+ * Iterate tuple of reducers over tuple of vals
  * and outputs from CPS function regarded as actions.
  * `reducers` and `vals` are matched by index.
  *
