@@ -18,13 +18,15 @@
     "postversion": "npm publish",
     "postpublish": "npm run syn && git push --follow-tags",
     "release": "git checkout master && npm run syn && npx standard-version && npm publish",
-    "tape": "npm run tape",
+    "tape": "npx tape test/*test.js",
     "tapew": "npx onchange -i '**/*.js' -- npm run tape",
     "tap": "npx tap test/*test.js",
     "tapw": "npm run tap -- -w",
     "ava": "TEST=ava npx nyc ava test/*test.js",
     "avaw": "npm run ava -- -w",
-    "cov": "npx tap test/*test.js --coverage-report=lcov",
+    "ava-c8": "TEST=ava npx c8 ava test/*test.js",
+    "cov-tap": "npx tap test/*test.js --coverage-report=lcov",
+    "cov-ava": "TEST=ava npx c8 ava test/*test.js --coverage-report=lcov",
     "rebcont": "git add . && git rebase --continue",
     "toc": "npx markdown-toc DOCUMENTATION.md > toc",
     "doc": "npx documentation build 'index.js' -f html -o auto-docs --github",
@@ -89,6 +91,6 @@
   "devDependencies": {
     "ava": "5.1.0",
     "markdown-toc": "1.2.0",
-    "tape": "5.6.1"
+    "tape": "^4.16.1"
   }
 }
