@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0](https://github.com/dmitriz/cpsfy/compare/v5.0.0...v6.0.0) (2022-12-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* 🧨 scan and scanN changed to behavior consistent with map
+* 🧨 accumulator renamed to update
+
+### Features
+
+* 🎸 add accum operator ([60072fd](https://github.com/dmitriz/cpsfy/commit/60072fd735c6836d02040dbc3eab71053c03820e))
+* 🎸 add updateSpread operator ([ffef10a](https://github.com/dmitriz/cpsfy/commit/ffef10a0898bcea1f7eb66270a71a5533248e75f))
+* 🎸 scan and scanN now work like map ([f206747](https://github.com/dmitriz/cpsfy/commit/f206747468c88b55983799633895a31af3160e2b))
+
+
+### Bug Fixes
+
+* 🐛 map with missing functions preserves output ([ef834cb](https://github.com/dmitriz/cpsfy/commit/ef834cbe3d7dfb820b879a5e8198ae52041487b3))
+
+
+* 💡 renamed update function ([a9d7938](https://github.com/dmitriz/cpsfy/commit/a9d79386de89bcc36f449ed48f78b27b05fa7275))
+
 ## [5.0.0](https://github.com/dmitriz/cpsfy/compare/v4.0.0...v5.0.0) (2022-12-25)
 
 
