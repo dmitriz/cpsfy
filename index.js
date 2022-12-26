@@ -284,7 +284,7 @@ exports.scan = (...initStates) => (...reducers) => exports.map(...reducers.map(
 ))
 
 // simplified scan dropping the seed
-const scanS = (...args) => exports.scan(...args, undefined)
+const scanS = (...args) => exports.scan()(...args)
 
 
 /**
