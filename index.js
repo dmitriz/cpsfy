@@ -25,6 +25,16 @@ exports.curryGroupsN = n => f => {
  */
 exports.update = reducer => state => (...vals) => {state = reducer(state, ...vals); return state}
 
+/**
+ * Same as `update` but spread return values of curried reducer.
+ * This allows to update tuples rather than single values as `update` does.
+ * Reducer is curried for clean separation of arguments.
+ * As JavaScript has no tuples, use arrays instead.
+ * 
+ * @param {Function} reducer: (s0,...,sn) -> (x0,...,xm) -> (s0,...,sn)
+ * @returns {Function} updateSpread(reducer): (s0,...,sn) -> (x0,...,xn) -> reducer(s0,...,sn)(x0,...,xm)
+ */
+exports.updateSpread = reducer => (...state) => (...vals) => {state = reducer(...state)(...vals); return state}
 
 /**
  * Pass tuple of values to sequence of functions similar to UNIX pipe
