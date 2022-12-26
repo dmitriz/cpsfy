@@ -208,7 +208,7 @@ const chain = (...fns) => cpsFn => {
  */
 // precompose every callback with fn from array matched by index
 // if no function provided, default to the identity
-const map = (...fns) => chain(...fns.map((f,idx) =>
+exports.map = (...fns) => chain(...fns.map((f,idx) => isNil(f) ? null :
   (...args) => ofN(idx)(f(...args))
 ))
 
@@ -264,23 +264,27 @@ const filter = (...preds) => {
  *   `redn(acc, y1, y2, ...)`, where `acc` starts with `init`,
  *   similar to `reduce`.
  */
-const scan = (...args) => {
-  if (args.length < 2) throw Error(`Scan needs at least 2 args, curently: ${JSON.stringify(args)}`)
-  let reducers = args.slice(0,-1),
-    acc = args.at(-1)
-  // chain receives tuple of functions, one per reducer
-  // nth CPS function inside chain receives nth callback output of cpsAction
-  let cpsTrasformer = reducer => isNil(reducer) ? undefined : (...action) => cb => {
-      // accessing vals and reducers by index
-      acc = reducer(acc, ...action)
-      cb(acc)
-    }
-  // chaining outputs of cpsAction with multiple reducers, one per state
-  return chain(...reducers.map(cpsTrasformer))
-}
+// const scan = (...args) => {
+//   if (args.length < 2) throw Error(`Scan needs at least 2 args, curently: ${JSON.stringify(args)}`)
+//   let reducers = args.slice(0,-1),
+//     acc = args.at(-1)
+//   // chain receives tuple of functions, one per reducer
+//   // nth CPS function inside chain receives nth callback output of cpsAction
+//   let cpsTrasformer = reducer => isNil(reducer) ? undefined : (...action) => cb => {
+//       // accessing vals and reducers by index
+//       acc = reducer(acc, ...action)
+//       cb(acc)
+//     }
+//   // chaining outputs of cpsAction with multiple reducers, one per state
+//   return chain(...reducers.map(cpsTrasformer))
+// }
+
+exports.scan = (...initStates) => (...reducers) => exports.map(...reducers.map(
+  (reducer,idx) => isNil(reducer) ? null : exports.update(reducer)(initStates[idx])
+))
 
 // simplified scan dropping the seed
-const scanS = (...args) => scan(...args, undefined)
+const scanS = (...args) => exports.scan(...args, undefined)
 
 
 /**
@@ -344,7 +348,7 @@ const ap = (...fns) => cpsFn => {
  * Lift binary function to act on values wraped inside CPS functions
  */
 exports.lift2 = f => (F1, F2) => pipeline(F2)(
-  ap(map(exports.curryGroupsN(2)(f))(F1))
+  ap(exports.map(exports.curryGroupsN(2)(f))(F1))
 )
 
 
@@ -363,10 +367,9 @@ const objMap = fn => obj =>
 
 // Prototype methods
 const protoObj = objMap(apply2this)({
-  map,
+  ...exports,
   chain,
   filter,
-  scan
 })
 
 /**
@@ -418,5 +421,5 @@ exports.cpsSync2arr = cpsF => {
 module.exports = {
   ...exports,
   pipeline, pipe,
-  of, ofN, map, chain, filter, scan, scanS, ap,
+  of, ofN, chain, filter, scanS, ap,
 }

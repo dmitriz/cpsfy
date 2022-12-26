@@ -37,3 +37,7 @@ test('map over arrays', t => {
 	map(arr => arr.map(a => a + 1))(F)(t.cDeepEqual([2,3]))
 })
 
+test('map ignores undefined/null args', t => {
+	const cpsFun = (c1,c2) => {c1(42)}
+	map(null, x=>x)(cpsFun)(t.cis(42))
+})
