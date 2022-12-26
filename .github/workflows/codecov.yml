@@ -6,9 +6,15 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Install modules
-      run: npm i
+      run: |
+        npm i
+        npm i codecov coveralls
+        nyc report --reporter=text-lcov | coveralls
+        nyc report --reporter=text-lcov > coverage.lcov && codecov
     - name: Generate coverage report
-      run: npm run cov
+      run: |
+        nyc report --reporter=text-lcov | coveralls
+        nyc report --reporter=text-lcov > coverage.lcov && codecov
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
