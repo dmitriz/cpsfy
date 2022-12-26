@@ -18,11 +18,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### ⚠ BREAKING CHANGES
 
-* 🧨 old curry2 became multiCurry2 to avoid collision with ramda's curryN
+* 🧨 old curry2 became curryGroups2 to avoid collision with ramda's curryN
 
 ### Features
 
-* 🎸 add multiCurry functions ([7a1eb52](https://github.com/dmitriz/cpsfy/commit/7a1eb520e1dc696742fe3940d4328d91adfc3870))
+* 🎸 add curryGroups functions ([7a1eb52](https://github.com/dmitriz/cpsfy/commit/7a1eb520e1dc696742fe3940d4328d91adfc3870))
 
 ## [3.9.0](https://github.com/dmitriz/cpsfy/compare/v3.8.0...v3.9.0) (2022-12-25)
 

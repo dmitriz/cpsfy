@@ -2,14 +2,28 @@ const { isNil, mergeArray, inheritPrototype } = require('./utils')
 
 /* ----- General purpose utils ----- */
 
-exports.multiCurry2 = f => (...a) => (...b) => f(...a, ...b)
+exports.curryGroups2 = f => (...a) => (...b) => f(...a, ...b)
 
-exports.multiCurryN = n => f => {
+exports.curryGroupsN = n => f => {
   while(--n > 0) {
-    f = exports.multiCurry2(f)
+    f = exports.curryGroups2(f)
   }
   return f
 }
+
+/**
+ * Transform `reducer: (state,next) => state` into accumulator function updating state inside closure.
+ * 
+ * @param {Function} reducer: (state,next) -> state
+ * @returns {Function} accum(reducer): initState -> (x0,...,xn) -> reducer(prevState,x0,...,xn)
+ * 
+ * @example accumulator = accum((state,x) => state+x)
+ * acc = accumulator(5) // initialize accumulator function with initial state = 5
+ * acc(2) //=> 5+2
+ * acc(2) //=> 5+2+2
+ * acc(4) //=> 5+2+2+4
+ */
+exports.accum = reducer => state => (...vals) => {state = reducer(state, ...vals); return state}
 
 
 /**
@@ -234,7 +248,7 @@ const filter = (...preds) => {
  * @param {Function} cpsFn - CPS function.
  * @returns {Function} `scan(...reducers, init)(cpsFn)`
  *    - CPS function whose output from the first callback
- *   is the accumulated value. For each output `(y1, y2, ...)`
+ *   is the accumd value. For each output `(y1, y2, ...)`
  *   from the `n`th callback of `cpsFn, the `n`th reducer `redn`
  *   is used to compute the new acculated value
  *   `redn(acc, y1, y2, ...)`, where `acc` starts with `init`,
@@ -320,7 +334,7 @@ const ap = (...fns) => cpsFn => {
  * Lift binary function to act on values wraped inside CPS functions
  */
 exports.lift2 = f => (F1, F2) => pipeline(F2)(
-  ap(map(exports.multiCurryN(2)(f))(F1))
+  ap(map(exports.curryGroupsN(2)(f))(F1))
 )
 
 
