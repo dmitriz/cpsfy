@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.1.0](https://github.com/dmitriz/cpsfy/compare/v6.0.2...v6.1.0) (2022-12-30)
+
+
+### Features
+
+* 🎸 add err2cb util ([aedc57a](https://github.com/dmitriz/cpsfy/commit/aedc57ae4b8c7c612610cb6dc1fe3d5286ae7833))
+* 🎸 add file/stream utils ([bb9a28f](https://github.com/dmitriz/cpsfy/commit/bb9a28f99d8ed09301ddfc5111328e0e8a33d8b5))
+
 ### [6.0.2](https://github.com/dmitriz/cpsfy/compare/v6.0.1...v6.0.2) (2022-12-26)
 
 ### [6.0.1](https://github.com/dmitriz/cpsfy/compare/v6.0.0...v6.0.1) (2022-12-26)
