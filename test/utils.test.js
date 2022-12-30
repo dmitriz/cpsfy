@@ -1,5 +1,6 @@
 const test = require('./config')
-const { isNil, mergeArray, err2cb } = require('../utils')
+const { err2cb } = require('..')
+const { isNil, mergeArray } = require('../utils')
 
 test('isNil is true for null or undefined', t=>{
 	t.is(isNil(undefined), true)
@@ -22,26 +23,34 @@ test('merge longer array into shorter', t => {
 		[1,2,5]
 	)
 })
-
 test('merge into empty array', t => {
 	t.deepEqual(mergeArray([], [1,2]), [1,2])
 })
-
 test('no change for arrays of equal length', t => {
 	t.deepEqual(mergeArray([1], [2]), [1])
 })
-
 test('take the 1st array when both are of equal length', t => {
 	t.deepEqual(mergeArray([1], [2]), [1])
 })
-
 test('take the 1st array when the 2nd has smaller length', t => {
 	t.deepEqual(mergeArray([1,3], [2]), [1,3])
 })
 
 
 test('err2cb preserves cps function without errors', t=>{
-	err2cb(c=>c(2))(t.cis(2))
+	t.plan(5)
+	const cpsF1 = c=>c(2)
+	const cpsF2 = (c1,c2)=>{c1(2);c2(4)}
+	err2cb(cpsF1)(t.cis(2), _=>notCalled)
+	err2cb(cpsF1,1)(t.cis(2))
+	err2cb(cpsF1,2)(t.cis(2), _=>notCalled)
+	err2cb(cpsF2)(t.cis(2),t.cis(4))
+})
+test('err2cb outputs error to 2nd callback by default', t=>{
+	t.plan(2)
+	const cpsF1 = c => bad
+	t.throws(cpsF1)
+	err2cb(cpsF1)(_=>notCalled, e => {t.is(typeof e, 'object')}) 
 })
 
 

@@ -1,4 +1,5 @@
-const { isNil, mergeArray, inheritPrototype } = require('./utils')
+const { isNil, mergeArray, inheritPrototype, err2cb } = require('./utils')
+exports.err2cb = err2cb
 
 /* ----- General purpose utils ----- */
 
