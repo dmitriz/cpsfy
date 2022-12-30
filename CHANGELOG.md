@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.1.1](https://github.com/dmitriz/cpsfy/compare/v6.1.0...v6.1.1) (2022-12-30)
+
+
+### Bug Fixes
+
+* 🐛 uncomment untested functions ([f747420](https://github.com/dmitriz/cpsfy/commit/f747420f3016fff20e8d2ea235fbad5f768ce39a))
+
 ## [6.1.0](https://github.com/dmitriz/cpsfy/compare/v6.0.2...v6.1.0) (2022-12-30)
 
 
