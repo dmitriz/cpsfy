@@ -1,5 +1,5 @@
 const test = require('./config')
-const { isNil, mergeArray } = require('../utils')
+const { isNil, mergeArray, err2cb } = require('../utils')
 
 test('isNil is true for null or undefined', t=>{
 	t.is(isNil(undefined), true)
@@ -38,3 +38,10 @@ test('take the 1st array when both are of equal length', t => {
 test('take the 1st array when the 2nd has smaller length', t => {
 	t.deepEqual(mergeArray([1,3], [2]), [1,3])
 })
+
+
+test('err2cb preserves cps function without errors', t=>{
+	err2cb(c=>c(2))(t.cis(2))
+})
+
+
