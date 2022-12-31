@@ -1,6 +1,8 @@
 const test = require('./config')
-const { err2cb } = require('..')
+const { err2cb, stream2lines } = require('..')
 const { isNil, mergeArray } = require('../utils')
+
+const { Readable } = require('node:stream')
 
 test('isNil is true for null or undefined', t=>{
 	t.is(isNil(undefined), true)
@@ -51,6 +53,21 @@ test('err2cb outputs error to 2nd callback by default', t=>{
 	const cpsF1 = c => bad
 	t.throws(cpsF1)
 	err2cb(cpsF1)(_=>notCalled, e => {t.is(typeof e, 'object')}) 
+})
+
+test('stream2lines transforms stream without returns to its content', async t=>{
+	t.plan(1)
+	const stream = Readable.from('abc', {objectMode: false})
+	await new Promise((onRes, onErr)=> 
+		stream2lines(stream)(t.cis('abc'), onErr, onRes)
+	)
+})
+test('stream2lines transforms stream with returns to multiple outputs', async t=>{
+	t.plan(2)
+	const stream = Readable.from('abc\nabc', {objectMode: false})
+	await new Promise((onRes, onErr)=>
+		stream2lines(stream)(t.cis('abc'),onErr, onRes)
+	)
 })
 
 

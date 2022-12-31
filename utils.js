@@ -32,13 +32,6 @@ exports.err2cb = (cpsF, n=2) => (...cbs) =>
 // ---- File/Stream utils ---- //
 
 /**
- * Transform file path into Node stream of the file content
- *  based on `fs.createReadStream`
- *  https://nodejs.org/api/fs.html#fscreatereadstreampath-options
- */
-// exports.file2stream = fs.createReadStream
-
-/**
  * Transform Readable Node stream to CPS function with 3 callbacks (onRes, onErr, onEnd):
  *  - onRes receives content of each line from stream;
  *  - onErr receives errors;
@@ -47,5 +40,6 @@ exports.err2cb = (cpsF, n=2) => (...cbs) =>
  * @param {Stream} input - Readable Node stream
  * @returns {Function} - CPS function
  */
-// exports.stream2lines = input => (onRes, onErr, onEnd) => 
-    // {try {createInterface(input).on('line', onRes).on('close', _ => onEnd(null))} catch(err) {onErr(err)}}
+exports.stream2lines = input => exports.err2cb((onRes, onErr, onEnd) =>
+  createInterface(input).on('line', onRes).on('close', _ => onEnd(null))
+)

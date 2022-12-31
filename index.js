@@ -1,5 +1,4 @@
-const { isNil, mergeArray, inheritPrototype, err2cb } = require('./utils')
-exports.err2cb = err2cb
+const { isNil, mergeArray, inheritPrototype } = require('./utils')
 
 /* ----- General purpose utils ----- */
 
@@ -420,6 +419,7 @@ exports.cpsSync2arr = cpsF => {
 
 
 module.exports = {
+  ...require('./utils'),
   ...exports,
   pipeline, pipe,
   of, ofN, chain, filter, scanS, ap,
