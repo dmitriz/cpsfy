@@ -8,7 +8,7 @@ Usage: t.cis(a)(b) instead of t.is(a, b)
 */
 module.exports = (title, fn) =>	
 	test(title, t => {
-		t.cis = (...a) => (...b) => t.deepEqual(a, b)
-		t.cDeepEqual = (...a) => (...b) => t.deepEqual(a, b)
+		t.cis = (...a) => (...b) => t.deepEqual(b,a)
+		t.cDeepEqual = (...a) => (...b) => t.deepEqual(b,a)
 		return fn(t)
 	})
