@@ -90,7 +90,6 @@
   ],
   "devDependencies": {
     "ava": "5.2.0",
-    "markdown-toc": "1.2.0",
     "tape": "^4.16.1"
   }
 }
