@@ -1,6 +1,7 @@
 name: Codecov
 on: 
-  push
+  push:
+  workflow_dispatch:
 jobs:
   coverage:
     runs-on: ubuntu-latest
