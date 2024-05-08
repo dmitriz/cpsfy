@@ -1,5 +1,6 @@
 name: Codecov
-on: push
+on: 
+  push
 jobs:
   coverage:
     runs-on: ubuntu-latest
