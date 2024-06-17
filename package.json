@@ -90,6 +90,6 @@
   ],
   "devDependencies": {
     "ava": "6.1.3",
-    "tape": "^4.16.1"
+    "tape": "^5.8.1"
   }
 }
