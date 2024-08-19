@@ -1,4 +1,4 @@
-const test = process.env.TEST || 'tape'
+const test = process.env.TEST || 'ava'
 
 const getTestPatch = ({
 	'tape': _ => require('./helpers/tape-patched'),
