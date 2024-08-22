@@ -13,7 +13,7 @@
   "scripts": {
     "com": "git add . && git commit",
     "syn": "npm run com; git pull && git push",
-    "start": "git add . ; git commit; npm version",
+    "start": "npm run com && npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "npm run syn && git push --follow-tags",
