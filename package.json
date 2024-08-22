@@ -12,7 +12,7 @@
   "license": "MIT",
   "scripts": {
     "com": "git add . && git commit",
-    "syn": "npm run com; git pull && git push",
+    "syn": "npm run com && git pull && git push",
     "start": "npm run com && npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
