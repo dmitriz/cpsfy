@@ -11,9 +11,9 @@
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "scripts": {
-    "com": "git add . && npx git-cz",
+    "com": "git add . && git commit",
     "syn": "npm run com; git pull && git push",
-    "start": "git add . && git commit; npm version",
+    "start": "git add . ; git commit; npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "npm run syn && git push --follow-tags",
