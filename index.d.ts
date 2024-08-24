@@ -6,7 +6,7 @@ type ChainFns<
   FromCallbacks extends Array<(...args: unknown[]) => void>,
   ToCallbacks extends Array<(...args: unknown[]) => void>,
 > = {
-  [T in keyof FromCallbacks]?: (...args: Parameters<FromCallbacks[T]>) => CPSFn<ToCallbacks> | undefined
+  [T in keyof FromCallbacks]?: ((...args: Parameters<FromCallbacks[T]>) => CPSFn<ToCallbacks>) | undefined
 }
 
 type CPS<
