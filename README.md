@@ -32,6 +32,9 @@
 
 Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions with functional composability backed by category theory foundations.
 
+NEW: [Listen to the NotebookLM generated podcast](
+https://notebooklm.google.com/notebook/1647f150-a773-4c38-bfc7-8c13ef4af66d/audio)
+
 ```sh
 npm install cpsfy
 ```
