@@ -24,7 +24,7 @@
     "postpublish": "npm run syn && git push --follow-tags",
     "release": "git checkout master && npm run syn && npx standard-version && npm publish",
     "rebcont": "git add . && git rebase --continue",
-    "toc": "markdown-toc DOCUMENTATION.md > toc",
+    "toc": "npx markdown-toc DOCUMENTATION.md > toc",
     "doc": "documentation build 'index.js' -f html -o auto-docs --github"
   },
   "keywords": [
