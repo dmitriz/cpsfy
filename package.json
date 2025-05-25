@@ -31,9 +31,8 @@
     "cov-ava": "npx c8 ava test/*test.js && npx c8 report --reporter=lcov --report-dir=coverage",
     "rebcont": "git add . && git rebase --continue",
     "toc": "npx markdown-toc DOCUMENTATION.md > toc",
-    "doc": "npx documentation build 'index.js' -f html -o auto-docs --github",
-    "clean-cov": "rm -rf coverage lcov.info codecov.exe",
-    "codecov": "npm run clean-cov && npm run cov-ava && curl -Os https://uploader.codecov.io/latest/windows/codecov.exe && ./codecov.exe -f coverage/lcov.info"
+    "doc": "npx documentation build 'index.js' -f html -o auto-docs --github",    "clean-cov": "rm -rf coverage lcov.info",
+    "codecov": "npm run clean-cov && npm run cov-ava"
   },
   "keywords": [
     "library",
