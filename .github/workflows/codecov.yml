@@ -19,7 +19,7 @@ jobs:
       - name: Run tests with coverage
         run: npm run cov-ava
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4.6.0
         with:
           files: ./coverage/lcov.info
           verbose: true
