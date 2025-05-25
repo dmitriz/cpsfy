@@ -2,7 +2,6 @@ name: CodeCov Coverage
 
 on:
   push:
-  pull_request:
   workflow_dispatch: # Allow manual triggering
 
 jobs:
