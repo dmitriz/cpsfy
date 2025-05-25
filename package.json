@@ -28,8 +28,7 @@
     "avaw": "npx ava test/*test.js -w",
     "ava-c8": "npx c8 ava test/*test.js",
     "cov-tap": "npx tap test/*test.js --coverage-report=lcov",
-    "cov-ava": "npx c8 ava test/*test.js --coverage-report=lcov",
-    "rebcont": "git add . && git rebase --continue",
+    "cov-ava": "npx c8 --reporter=lcov --report-dir=coverage ava test/*test.js",    "rebcont": "git add . && git rebase --continue",
     "toc": "npx markdown-toc DOCUMENTATION.md > toc",
     "doc": "npx documentation build 'index.js' -f html -o auto-docs --github",
     "codecov": "npm run cov-ava && npx codecov"
