@@ -20,8 +20,6 @@
     "postversion": "npm publish",
     "postpublish": "npm run syn && git push --follow-tags",
     "release": "git checkout master && npm run syn && npx standard-version && npm publish",
-    "tape": "TEST=tape npx nyc tape test/*test.js",
-    "tapew": "TEST=tape npx onchange -i '**/*.js' -- npm run tape",
     "tap": "npx tap test/*test.js",
     "tapw": "npm run tap -- -w",
     "ava": "npx nyc ava test/*test.js",
