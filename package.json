@@ -15,7 +15,7 @@
     "test-wait": "npm run ava-wait",
     "ava-c8": "c8 ava",
     "ava-wait": "ava -w",
-    "cov-ava": "c8 --reporter=lcov --report-dir=coverage ava test/*test.js",
+    "cov-ava": "c8 --reporter=lcov --report-dir=coverage ava",
     "com": "git add . && git commit",
     "syn": "npm run com && git pull && git push",
     "start": "npm run com && npm version",
