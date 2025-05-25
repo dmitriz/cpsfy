@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { filter } = require('..')
 
 test('filter single output', t => {

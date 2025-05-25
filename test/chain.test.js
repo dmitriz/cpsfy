@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { chain } = require('..')
 
 test('chain over single CPS function', t => {

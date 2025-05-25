@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { update, map, scan, scanS } = require('..')
 
 test('scan over single callback output', t => {

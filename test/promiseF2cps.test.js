@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { promiseF2cps } = require('..')
 
 test('promiseF2cps converts fulfilled promise to cps factory returning value in the 1st callback', async t=>{

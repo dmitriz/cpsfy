@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { curryGroups2 } = require('..')
 
 test('curryGroups2 arg function', t => {

@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { curryGroupsN } = require('..')
 
 const add = (x,y)=>x+y

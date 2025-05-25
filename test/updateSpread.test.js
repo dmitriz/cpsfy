@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { updateSpread } = require('..')
 
 test('updateSpread transforms simple curried reducer that returns array', t=>{

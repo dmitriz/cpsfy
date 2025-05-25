@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { node2cps } = require('..')
 
 const node_ex = (x,f) => {f(null,x+1)}

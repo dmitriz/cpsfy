@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { CPS } = require('..')
 
 const cpsFun = cb => cb(42)

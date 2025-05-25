@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { ofN } = require('..')
 
 test('single output into the 1st callback', t => {

@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { mapSpread } = require('..')
 
 test('mapSpread transforms output 1-tuples to m-tuples', t => {

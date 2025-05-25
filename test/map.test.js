@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { map } = require('..')
 
 test('map over single function', t => {

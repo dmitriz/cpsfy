@@ -11,8 +11,11 @@
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "scripts": {
-    "test": "npm run ava",
-    "testw": "npm run avaw",
+    "test": "npm run ava-c8",
+    "test-wait": "npm run ava-wait",
+    "ava-c8": "c8 ava",
+    "ava-cov": "c8 --reporter=lcov --report-dir=coverage ava",
+    "ava-wait": "ava -w",
     "com": "git add . && git commit",
     "syn": "npm run com && git pull && git push",
     "start": "npm run com && npm version",
@@ -20,16 +23,6 @@
     "postversion": "npm publish",
     "postpublish": "npm run syn && git push --follow-tags",
     "release": "git checkout master && npm run syn && npx standard-version && npm publish",
-    "tape": "TEST=tape npx nyc tape test/*test.js",
-    "tapew": "TEST=tape npx onchange -i '**/*.js' -- npm run tape",
-    "tap": "npx tap test/*test.js",
-    "tapw": "npm run tap -- -w",
-    "ava": "npx nyc ava test/*test.js",
-    "avaw": "npx ava test/*test.js -w",
-    "ava-c8": "npx c8 ava test/*test.js",
-    "cov-tap": "npx tap test/*test.js --coverage-report=lcov",
-    "cov-ava": "npx c8 --reporter=lcov --report-dir=coverage ava test/*test.js",
-    "rebcont": "git add . && git rebase --continue",
     "toc": "npx markdown-toc DOCUMENTATION.md > toc",
     "doc": "npx documentation build 'index.js' -f html -o auto-docs --github"
   },
@@ -90,6 +83,6 @@
   ],
   "devDependencies": {
     "ava": "^6.3.0",
-    "tape": "^5.9.0"
+    "c8": "^10.1.3"
   }
 }
