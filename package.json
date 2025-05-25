@@ -87,7 +87,8 @@
     "asynchronous",
     "parallel",
     "control-flow"
-  ],  "devDependencies": {
+  ],
+  "devDependencies": {
     "ava": "^6.3.0",
     "tape": "^5.9.0"
   }
