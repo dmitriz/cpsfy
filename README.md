@@ -32,6 +32,9 @@
 
 Tiny but powerful goodies for Continuation-Passing-Style (CPS) functions with functional composability backed by category theory foundations.
 
+NEW: [Listen to the NotebookLM generated podcast](
+https://notebooklm.google.com/notebook/1647f150-a773-4c38-bfc7-8c13ef4af66d/audio)
+
 ```sh
 npm install cpsfy
 ```
@@ -338,9 +341,10 @@ const redn = (acc, y1, y2, ...) => ...
 ```
 
 #### Result of applying `scan`
-New CPS function whose output from the first callback is the accumulated value. For each output `(y1, y2, ...)` from the `n`th callback, 
+New CPS function whose function whose outputs are the accumulated values. 
+For each output `(y1, y2, ...)` from the `n`th callback, 
 the `n`th reducer `redn` is used to compute the new acculated value 
-`redn(acc, y1, y2, ...)`, where `acc` starts with `init`, similar to `reduce`.
+`redn(acc, y1, y2, ...)`, where `acc` starts with the `n`th initial state `initStaten`, similar to `reduce`.
 
 
 #### Example of `scan`

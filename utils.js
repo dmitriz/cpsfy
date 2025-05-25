@@ -1,4 +1,3 @@
-const fs = require('node:fs')
 const { createInterface } = require('node:readline')
 
 // true if and only if the value is null or undefined

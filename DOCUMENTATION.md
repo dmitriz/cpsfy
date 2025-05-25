@@ -68,7 +68,7 @@ Tiny but powerful goodies for Continuation-Passing-Style functions
     + [Associativity law](#associativity-law)
     + [Identity laws](#identity-laws)
 - [Application of `chain`: Turn Node API into Promise style callbacks](#application-of-chain-turn-node-api-into-promise-style-callbacks)
-- [CPS.ap](#cpsap-todo)
+- [CPS.ap](#cpsap)
   * [Running CPS functions in parallel](#running-cps-functions-in-parallel)
   * [Lifting functions of multiple arguments](#lifting-functions-of-multiple-arguments)
     + [Promise.all](#promiseall)

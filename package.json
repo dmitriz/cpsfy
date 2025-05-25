@@ -1,5 +1,5 @@
 {
-  "version": "6.1.2",
+  "version": "6.2.0",
   "name": "cpsfy",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
@@ -11,22 +11,22 @@
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "scripts": {
-    "com": "git add . && npx git-cz",
-    "syn": "npm run com; git pull && git push",
-    "start": "git add . && git commit; npm version",
+    "com": "git add . && git commit",
+    "syn": "npm run com && git pull && git push",
+    "start": "npm run com && npm version",
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "npm run syn && git push --follow-tags",
     "release": "git checkout master && npm run syn && npx standard-version && npm publish",
-    "tape": "npx nyc tape test/*test.js",
-    "tapew": "npx onchange -i '**/*.js' -- npm run tape",
+    "tape": "TEST=tape npx nyc tape test/*test.js",
+    "tapew": "TEST=tape npx onchange -i '**/*.js' -- npm run tape",
     "tap": "npx tap test/*test.js",
     "tapw": "npm run tap -- -w",
-    "ava": "TEST=ava npx nyc ava test/*test.js",
-    "avaw": "TEST=ava npx ava test/*test.js -w",
-    "ava-c8": "TEST=ava npx c8 ava test/*test.js",
+    "ava": "npx nyc ava test/*test.js",
+    "avaw": "npx ava test/*test.js -w",
+    "ava-c8": "npx c8 ava test/*test.js",
     "cov-tap": "npx tap test/*test.js --coverage-report=lcov",
-    "cov-ava": "TEST=ava npx c8 ava test/*test.js --coverage-report=lcov",
+    "cov-ava": "npx c8 ava test/*test.js --coverage-report=lcov",
     "rebcont": "git add . && git rebase --continue",
     "toc": "npx markdown-toc DOCUMENTATION.md > toc",
     "doc": "npx documentation build 'index.js' -f html -o auto-docs --github",
@@ -87,9 +87,8 @@
     "asynchronous",
     "parallel",
     "control-flow"
-  ],
-  "devDependencies": {
-    "ava": "6.1.3",
-    "tape": "^4.16.1"
+  ],  "devDependencies": {
+    "ava": "^6.3.0",
+    "tape": "^5.9.0"
   }
 }

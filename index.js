@@ -247,21 +247,21 @@ const filter = (...preds) => {
 
 /**
  * Iterate tuple of reducers over tuple of vals
- * and outputs from CPS function regarded as actions.
+ * and outputs from CPS function regarded as actions (in state/action terminology).
  * `reducers` and `vals` are matched by index.
  *
- * @signature (...reducers, init) -> cpsAction -> cpsState
+ * @signature (...initStates) -> (...reducers) -> cpsAction -> cpsState
  *
  * @param {...Function} reducers
  *    - functions of the form `red = (acc, ...vals) => newAcc`
- * @param {*} init - initial value for the iteration.
+ * @param { ...initStates} - initial values for the iteration.
  * @param {Function} cpsFn - CPS function.
- * @returns {Function} `scan(...reducers, init)(cpsFn)`
- *    - CPS function whose output from the first callback
- *   is the accumd value. For each output `(y1, y2, ...)`
+ * @returns {Function} `scan(...initStates)(...reducers)(cpsFn)`
+ *    - CPS function whose outputs are the accumulated values. 
+ *   For each output `(y1, y2, ...)`
  *   from the `n`th callback of `cpsFn, the `n`th reducer `redn`
- *   is used to compute the new acculated value
- *   `redn(acc, y1, y2, ...)`, where `acc` starts with `init`,
+ *   is used to compute the new acculated output from the `n`th callback of `cpsFn` as
+ *   `redn(acc, y1, y2, ...)`, where `acc` starts with `initStaten`,
  *   similar to `reduce`.
  */
 // const scan = (...args) => {
