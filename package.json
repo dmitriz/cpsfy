@@ -3,8 +3,10 @@
   "name": "cpsfy",
   "description": "Tiny goodies for Continuation-Passing-Style functions",
   "main": "index.js",
+  "types": "index.d.ts",
   "files": [
     "index.js",
+    "index.d.ts",
     "utils.js"
   ],
   "repository": "https://github.com/dmitriz/cpsfy.git",
