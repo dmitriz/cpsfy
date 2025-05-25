@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { pipeline } = require('..')
 
 test('pass single argument to function', t => {

@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { cpsSync2arr } = require('..')
 
 test('cpsSync2arr converts syncronous outputs from 1st callback into array', t=>{

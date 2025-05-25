@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { update } = require('..')
 
 test('update transforms simple reducer to updater', t=>{

@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { of } = require('..')
 
 test('create CPS functions with single output', t => {

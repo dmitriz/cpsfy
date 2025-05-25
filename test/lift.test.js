@@ -1,4 +1,4 @@
-const test = require('./config')
+const test = require('./helpers/ava-patched')
 const { lift2 } = require('..')
 
 const notCalled = () => {throw Error('I should not be called!')}
