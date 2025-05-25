@@ -11,6 +11,8 @@
   "author": "Dmitri Zaitsev <dmitri14@gmail.com> (https://github.com/dmitriz)",
   "license": "MIT",
   "scripts": {
+    "test": "npm run ava",
+    "testw": "npm run avaw",    
     "com": "git add . && git commit",
     "syn": "npm run com && git pull && git push",
     "start": "npm run com && npm version",
@@ -26,12 +28,12 @@
     "avaw": "npx ava test/*test.js -w",
     "ava-c8": "npx c8 ava test/*test.js",
     "cov-tap": "npx tap test/*test.js --coverage-report=lcov",
-    "cov-ava": "npx c8 ava test/*test.js --coverage-report=lcov",
+    "cov-ava": "npx c8 ava test/*test.js && npx c8 report --reporter=lcov --report-dir=coverage",
     "rebcont": "git add . && git rebase --continue",
     "toc": "npx markdown-toc DOCUMENTATION.md > toc",
     "doc": "npx documentation build 'index.js' -f html -o auto-docs --github",
-    "test": "npm run ava",
-    "testw": "npm run avaw"
+    "clean-cov": "rm -rf coverage lcov.info codecov.exe",
+    "codecov": "npm run clean-cov && npm run cov-ava && curl -Os https://uploader.codecov.io/latest/windows/codecov.exe && ./codecov.exe -f coverage/lcov.info"
   },
   "keywords": [
     "library",
