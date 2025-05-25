@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run tests with coverage
-        run: npm run cov-ava
+        run: npm run ava-cov
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
