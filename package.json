@@ -82,7 +82,7 @@
     "control-flow"
   ],
   "devDependencies": {
-    "ava": "^6.3.0",
+    "ava": "^6.4.0",
     "c8": "^10.1.3"
   }
 }
